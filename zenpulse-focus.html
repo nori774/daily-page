@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZenPulse | Minimalist Focus Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@300;600&display=swap" rel="stylesheet">
+    <!-- Tone.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <style>
+        :root {
+            --bg-paper: #fcfcfc;
+            --text-main: #1a1a1a;
+            --text-sub: #666666;
+            --accent-pink: #ff2d55;
+            --border-light: rgba(0, 0, 0, 0.08);
+            --glass-bg: rgba(255, 255, 255, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-paper);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-image: radial-gradient(#e5e5e5 0.5px, transparent 0.5px);
+            background-size: 20px 20px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: auto auto;
+            gap: 1.5rem;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 300;
+            font-size: 3rem;
+            grid-column: span 4;
+            text-align: left;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        /* Bento Grid Cards */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 0.5px solid var(--border-light);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Card Variations */
+        .timer-card { grid-column: span 2; grid-row: span 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .audio-card { grid-column: span 2; }
+        .coach-card { grid-column: span 1; }
+        .tasks-card { grid-column: span 3; }
+
+        /* Timer UI */
+        #timer-display {
+            font-family: 'Outfit', sans-serif;
+            font-size: 4.5rem;
+            font-weight: 600;
+            margin: 1rem 0;
+            color: var(--text-main);
+        }
+
+        /* Squishy Button */
+        .btn {
+            background: var(--text-main);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 9999px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+            outline: none;
+        }
+
+        .btn:active {
+            transform: scale(0.9);
+        }
+
+        .btn-pink { background: var(--accent-pink); }
+
+        /* Audio Controls */
+        .chord-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .chord-btn {
+            aspect-ratio: 1;
+            border: 0.5px solid var(--border-light);
+            background: white;
+            border-radius: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .chord-btn.active {
+            background: var(--text-main);
+            color: white;
+            transform: scale(0.95);
+        }
+
+        /* Coach UI */
+        .coach-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-pink);
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 45, 85, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 45, 85, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 45, 85, 0); }
+        }
+
+        #coach-text {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: var(--text-sub);
+        }
+
+        /* Task List */
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 0;
+            border-bottom: 0.5px solid var(--border-light);
+        }
+
+        .task-item:last-child { border-bottom: none; }
+        
+        input[type="checkbox"] {
+            width: 1.2rem;
+            height: 1.2rem;
+            accent-color: var(--accent-pink);
+        }
+
+        footer {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .container { grid-template-columns: 1fr; }
+            .card { grid-column: span 1 !important; }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>ZenPulse</h1>
+
+        <!-- Timer Card -->
+        <div class="card timer-card">
+            <p style="text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.1em; color: var(--text-sub);">Focus Timer</p>
+            <div id="timer-display">25:00</div>
+            <div style="display: flex; gap: 1rem;">
+                <button class="btn" id="start-btn">Start</button>
+                <button class="btn" id="reset-btn" style="background: transparent; color: var(--text-main); border: 1px solid var(--text-main);">Reset</button>
+            </div>
+        </div>
+
+        <!-- Coach Card -->
+        <div class="card coach-card">
+            <div class="coach-avatar"></div>
+            <p id="coach-text">「深呼吸をして、目の前の1つに集中しましょう。私はここにいます。」</p>
+        </div>
+
+        <!-- Audio Card -->
+        <div class="card audio-card">
+            <p style="text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.1em; color: var(--text-sub);">Zen Chord Generator</p>
+            <div class="chord-grid">
+                <button class="chord-btn" data-note="C4">C</button>
+                <button class="chord-btn" data-note="E4">E</button>
+                <button class="chord-btn" data-note="G4">G</button>
+                <button class="chord-btn" data-note="B4">B</button>
+                <button class="chord-btn" data-note="D4">D</button>
+                <button class="chord-btn" data-note="A4">A</button>
+                <button class="chord-btn" data-note="F4">F</button>
+                <button class="chord-btn" data-note="C5">C+</button>
+            </div>
+            <p style="font-size: 0.7rem; margin-top: 1rem; color: var(--text-sub);">Click to generate ambient harmony.</p>
+        </div>
+
+        <!-- Tasks Card -->
+        <div class="card tasks-card">
+            <p style="text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.1em; color: var(--text-sub); margin-bottom: 1rem;">Deep Work Tasks</p>
+            <div class="task-item">
+                <input type="checkbox">
+                <span>UIデザインの微調整 (0.5px borders)</span>
+            </div>
+            <div class="task-item">
+                <input type="checkbox">
+                <span>Tone.jsのシンセサイザー実装</span>
+            </div>
+            <div class="task-item">
+                <input type="checkbox">
+                <span>エージェント・コーチのメッセージ更新</span>
+            </div>
+        </div>
+    </div>
+
+    <footer>&copy; 2026 OShama Squad | Agentic Focus Tool</footer>
+
+    <script>
+        // Timer Logic
+        let timeLeft = 25 * 60;
+        let timerId = null;
+        const timerDisplay = document.getElementById('timer-display');
+        const startBtn = document.getElementById('start-btn');
+        const coachText = document.getElementById('coach-text');
+
+        function updateTimer() {
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            timerDisplay.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+            if (timeLeft === 0) {
+                clearInterval(timerId);
+                coachText.textContent = "「お疲れ様です。素晴らしい集中力でした。少し休憩しませんか？」";
+            }
+        }
+
+        startBtn.addEventListener('click', () => {
+            if (timerId) {
+                clearInterval(timerId);
+                timerId = null;
+                startBtn.textContent = 'Start';
+                coachText.textContent = "「一旦立ち止まるのも勇気です。準備ができたらまた始めましょう。」";
+            } else {
+                Tone.start();
+                timerId = setInterval(() => {
+                    timeLeft--;
+                    updateTimer();
+                }, 1000);
+                startBtn.textContent = 'Pause';
+                coachText.textContent = "「集中モードに入りました。周囲の雑音は私が消しておきます。」";
+            }
+        });
+
+        document.getElementById('reset-btn').addEventListener('click', () => {
+            clearInterval(timerId);
+            timerId = null;
+            timeLeft = 25 * 60;
+            updateTimer();
+            startBtn.textContent = 'Start';
+        });
+
+        // Zen Chord Logic
+        const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+        synth.set({
+            oscillator: { type: "sine" },
+            envelope: { attack: 2, decay: 1, sustain: 0.5, release: 2 }
+        });
+
+        const reverb = new Tone.Reverb(5).toDestination();
+        synth.connect(reverb);
+
+        document.querySelectorAll('.chord-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const note = btn.dataset.note;
+                if (btn.classList.contains('active')) {
+                    btn.classList.remove('active');
+                    synth.triggerRelease(note);
+                } else {
+                    btn.classList.add('active');
+                    synth.triggerAttack(note);
+                }
+            });
+        });
+
+        // Simulating Agentic Coach Interactivity
+        setInterval(() => {
+            if (timerId) {
+                const phrases = [
+                    "「その調子です。呼吸を整えて。」",
+                    "「余計なタブは閉じてしまいましょうか。」",
+                    "「あなたの創造性が高まっています。」",
+                    "「水は飲みましたか？脳には水分が必要です。」"
+                ];
+                coachText.textContent = phrases[Math.floor(Math.random() * phrases.length)];
+            }
+        }, 30000);
+    </script>
+</body>
+</html>
