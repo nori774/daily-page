@@ -6,75 +6,114 @@
     <title>HAMAtoChord Daily App Gallery</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #FF69B4;
             --secondary: #FFB6C1;
             --accent: #FF1493;
-            --bg: linear-gradient(135deg, #FFE4E1, #FFB6C1, #FF69B4);
+            --bg-gradient: linear-gradient(135deg, #FFE4E1, #FFB6C1, #FF69B4);
+            --glass: rgba(255, 255, 255, 0.7);
+            --radius: 16px;
         }
+
         body {
-            font-family: 'Outfit', 'Noto Sans JP', sans-serif;
-            background: var(--bg);
-            background-attachment: fixed;
             margin: 0;
-            padding: 40px 20px;
-            color: #333;
+            padding: 0;
+            font-family: 'Outfit', 'Noto Sans JP', sans-serif;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
             min-height: 100vh;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 40px;
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: var(--accent);
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 40px;
-        }
-        .app-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-        }
-        .app-card {
-            background: white;
-            padding: 20px;
-            border-radius: 16px;
-            text-decoration: none;
             color: #333;
-            transition: transform 0.2s, box-shadow 0.2s;
-            border: 2px solid var(--secondary);
             display: flex;
             flex-direction: column;
             align-items: center;
+        }
+
+        header {
+            width: 100%;
+            padding: 60px 20px;
             text-align: center;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
         }
-        .app-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
-            border-color: var(--primary);
+
+        header h1 {
+            margin: 0;
+            font-size: 3rem;
+            color: var(--accent);
+            letter-spacing: -1px;
         }
-        .app-date {
-            font-size: 0.8rem;
-            color: #888;
-            margin-bottom: 8px;
+
+        header p {
+            margin: 15px 0 0;
+            font-size: 1.2rem;
+            color: #555;
         }
-        .app-name {
+
+        .container {
+            max-width: 800px;
+            width: 90%;
+            padding-bottom: 60px;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .app-item {
+            background: var(--glass);
+            border-radius: var(--radius);
+            padding: 30px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s;
+        }
+
+        .app-item:hover {
+            transform: scale(1.02);
+            background: #fff;
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.2);
+        }
+
+        .app-info h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+
+        .app-info p {
+            margin: 5px 0 0;
+            color: #777;
+        }
+
+        .date-badge {
+            background: var(--secondary);
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 20px;
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 0.9rem;
         }
-        .footer {
-            margin-top: 40px;
+
+        footer {
+            width: 100%;
+            padding: 30px;
             text-align: center;
+            background: rgba(0, 0, 0, 0.05);
+            margin-top: auto;
         }
-        .footer a {
+
+        footer a {
             color: var(--accent);
             text-decoration: none;
             font-weight: bold;
@@ -82,18 +121,27 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>💖 HAMAtoChord Daily App Gallery</h1>
-        <div class="app-list" id="app-list">
-            <!-- New apps will be added here -->
-            <a href="nap-swarm-agency.html" class="app-card">
-                <div class="app-date">2026-03-11</div>
-                <div class="app-name">ひるねエージェント・スウォーム</div>
-            </a>
-        </div>
-        <div class="footer">
-            <p>Created by <a href="https://x.com/HAMAtoChord" target="_blank">@HAMAtoChord</a></p>
-        </div>
+
+<header>
+    <h1>Daily App Gallery</h1>
+    <p>HAMAtoChord's experimental web application collection</p>
+</header>
+
+<div class="container">
+    <div class="gallery">
+        <a href="2026-03-11.html" class="app-item">
+            <div class="app-info">
+                <h2>Agent Orchestrator</h2>
+                <p>Trend analysis by AI Agent Team</p>
+            </div>
+            <div class="date-badge">2026.03.11</div>
+        </a>
     </div>
+</div>
+
+<footer>
+    <p>© 2026 HAMAtoChord | <a href="https://x.com/HAMAtoChord">X @HAMAtoChord</a></p>
+</footer>
+
 </body>
 </html>
