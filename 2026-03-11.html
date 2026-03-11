@@ -3,280 +3,315 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HAMAtoChord AI Agent Orchestrator - 2026.03.11</title>
+    <title>Star Chord Harmonizer - 2026.03.11</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.26/Tone.js"></script>
     <style>
         :root {
             --primary: #FF69B4;
             --secondary: #FFB6C1;
             --accent: #FF1493;
-            --bg-gradient: linear-gradient(135deg, #FFE4E1, #FFB6C1, #FF69B4);
-            --glass: rgba(255, 255, 255, 0.7);
-            --radius: 16px;
+            --dark: #1a1a2e;
         }
 
         body {
             margin: 0;
             padding: 0;
+            overflow: hidden;
+            background-color: var(--dark);
             font-family: 'Outfit', 'Noto Sans JP', sans-serif;
-            background: var(--bg-gradient);
-            background-attachment: fixed;
-            min-height: 100vh;
-            color: #333;
+            color: white;
+        }
+
+        #ui-layer {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+        }
+
+        p {
+            margin: 5px 0 0;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        #controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            pointer-events: auto;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        #start-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 26, 46, 0.9);
             display: flex;
             flex-direction: column;
-            align-items: center;
-        }
-
-        header {
-            width: 100%;
-            padding: 40px 20px;
-            text-align: center;
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            margin-bottom: 40px;
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 2.5rem;
-            color: var(--accent);
-            letter-spacing: -1px;
-        }
-
-        header p {
-            margin: 10px 0 0;
-            font-weight: bold;
-            color: #555;
-        }
-
-        .container {
-            max-width: 1000px;
-            width: 90%;
-            padding-bottom: 60px;
-        }
-
-        .trends-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-
-        .card {
-            background: var(--glass);
-            backdrop-filter: blur(5px);
-            border-radius: var(--radius);
-            padding: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .card h2 {
-            margin-top: 0;
-            font-size: 1.2rem;
-            color: var(--accent);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .card ul {
-            padding-left: 20px;
-            margin-bottom: 0;
-        }
-
-        .card li {
-            margin-bottom: 10px;
-            font-size: 0.95rem;
-        }
-
-        .orchestrator {
-            background: var(--glass);
-            border-radius: var(--radius);
-            padding: 40px;
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .orchestrator h2 {
-            font-size: 1.8rem;
-            margin-bottom: 30px;
-            color: var(--accent);
-        }
-
-        .agents {
-            display: flex;
             justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .agent-btn {
-            background: #fff;
-            border: 2px solid var(--secondary);
-            border-radius: 50px;
-            padding: 15px 30px;
-            font-size: 1rem;
-            font-weight: bold;
+            align-items: center;
+            z-index: 100;
             cursor: pointer;
-            transition: all 0.2s;
+        }
+
+        #start-overlay h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
             color: var(--primary);
-            box-shadow: 0 4px 0 var(--secondary);
         }
 
-        .agent-btn:hover {
-            background: var(--secondary);
-            color: #fff;
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 var(--secondary);
-        }
-
-        .agent-btn.active {
-            background: var(--accent);
-            color: #fff;
-            border-color: var(--accent);
-            transform: translateY(4px);
-            box-shadow: none;
-        }
-
-        #prediction-box {
-            margin-top: 30px;
-            min-height: 120px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: var(--radius);
-            font-size: 1.1rem;
-            line-height: 1.6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px dashed var(--secondary);
-        }
-
-        footer {
-            width: 100%;
-            padding: 30px;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.05);
-            margin-top: auto;
-        }
-
-        footer a {
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: bold;
-            margin: 0 10px;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
+        .hint {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
             font-size: 0.8rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            background: var(--accent);
-            color: #fff;
+            opacity: 0.6;
+            animation: pulse 2s infinite;
         }
 
-        @media (max-width: 600px) {
-            header h1 { font-size: 1.8rem; }
-            .orchestrator { padding: 20px; }
-            .agent-btn { width: 100%; }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
         }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="badge">DAILY APP | 2026.03.11</div>
-    <h1>Agent Orchestrator</h1>
-    <p>HAMAtoChord presents: Today's Trend Analysis by AI Agents</p>
-</header>
-
-<div class="container">
-    <div class="orchestrator">
-        <h2>エージェントを選択してトレンドを分析！</h2>
-        <div class="agents">
-            <button class="agent-btn" onclick="predict('whimsy')">Whimsy Injector</button>
-            <button class="agent-btn" onclick="predict('reality')">Reality Checker</button>
-            <button class="agent-btn" onclick="predict('frontend')">Frontend Wizard</button>
-        </div>
-        <div id="prediction-box">
-            エージェントをクリックしてみて下さい！今日のトレンドについて教えてくれます！
-        </div>
+    <div id="start-overlay" onclick="startApp()">
+        <h2>Star Chord Harmonizer</h2>
+        <p>Click to Start & Harmonize the Universe</p>
     </div>
 
-    <div class="trends-grid">
-        <div class="card">
-            <h2><span style="font-size:1.5rem">🐙</span> GitHub Trending</h2>
-            <ul>
-                <li><strong>agency-agents</strong>: AIエージェント専門チームの構築フレームワーク！</li>
-                <li><strong>MiroFish</strong>: 群体知能エンジンで未来を予測する凄いやつです！</li>
-                <li><strong>promptfoo</strong>: AIのテストと評価を自動化する必須ツール！</li>
-            </ul>
-        </div>
-        <div class="card">
-            <h2><span style="font-size:1.5rem">🔥</span> X Trends (Japan)</h2>
-            <ul>
-                <li><strong>カドック/モレーくん</strong>: FGOの熱狂が止まりませんね！</li>
-                <li><strong>ガソリン</strong>: 生活に直結するニュースも要チェックです！</li>
-                <li><strong>サイコハロ</strong>: 懐かしのユニットが話題に！</li>
-            </ul>
-        </div>
-        <div class="card">
-            <h2><span style="font-size:1.5rem">🎵</span> Music Trends</h2>
-            <ul>
-                <li><strong>#音楽MBTI</strong>: 感性のパーソナライズが加速中！</li>
-                <li><strong>AI学習の民主化</strong>: 理論をAIで学ぶのが当たり前の時代に！</li>
-                <li><strong>ヒット曲進行分析</strong>: サウンドの秘密を解き明かすのが楽しい！</li>
-            </ul>
-        </div>
+    <div id="ui-layer">
+        <h1>Star Chord Harmonizer</h1>
+        <p>2026.03.11 - Click empty space to create stars</p>
     </div>
-</div>
 
-<footer>
-    <p>© 2026 HAMAtoChord | <a href="https://x.com/HAMAtoChord">@HAMAtoChord</a> | <a href="index.html">Back to Gallery</a></p>
-</footer>
+    <div class="hint">Click stars to play chords! Drag to move them.</div>
 
-<script>
-    const predictions = {
-        whimsy: "【遊び心注入！】カドック君やモレー君のトレンドに、キラキラした『エモい』コード進行を組み合わせてみました！FGOのドラマチックな展開には、4級マイナーのスパイスが効いたメロディが最高に合いますよ！音楽と物語の融合、ワクワクしませんか！？",
-        reality: "【現実的分析！】GitHubで『agency-agents』が流行っているのは、AIを『個別の専門家』として扱うフェーズに入った証拠ですね。ちなみに、#音楽MBTI の流行も『個性をデータ化したい』という欲求の表れかも。今のヒット曲は、理論と感性の絶妙なバランスが重要です！",
-        frontend: "【魔法のUI！】今日のトレンドを『Outfit』フォントと『ピンクのグラデーション』で包み込んでみました！美しさと機能性の両立は、これからのAIツールに欠かせない要素です。ちなみに、MiroFishのような予測エンジンも、視覚的に見せることで『魔法』に変わります！"
-    };
+    <div id="controls">
+        <button class="btn" onclick="clearStars()">✨ Clear All</button>
+        <button class="btn" onclick="randomHarmony()">🎵 Random Harmony</button>
+    </div>
 
-    function predict(type) {
-        const box = document.getElementById('prediction-box');
-        const btns = document.querySelectorAll('.agent-btn');
-        
-        btns.forEach(btn => btn.classList.remove('active'));
-        event.target.classList.add('active');
+    <script>
+        let stars = [];
+        let synth;
+        let started = false;
 
-        box.style.opacity = 0;
-        setTimeout(() => {
-            box.innerText = predictions[type];
-            box.style.opacity = 1;
+        const CHORDS = [
+            { name: 'C Maj', notes: ['C4', 'E4', 'G4', 'C5'], color: '#FF69B4' },
+            { name: 'G Maj', notes: ['G3', 'B3', 'D4', 'G4'], color: '#FFB6C1' },
+            { name: 'A Min', notes: ['A3', 'C4', 'E4', 'A4'], color: '#E6E6FA' },
+            { name: 'F Maj', notes: ['F3', 'A3', 'C4', 'F4'], color: '#87CEEB' },
+            { name: 'D Min', notes: ['D3', 'F3', 'A3', 'D4'], color: '#98FB98' },
+            { name: 'E Min', notes: ['E3', 'G3', 'B3', 'E4'], color: '#FFD700' }
+        ];
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
             
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#FF69B4', '#FFB6C1', '#FF1493']
+            // Setup Synth
+            synth = new Tone.PolySynth(Tone.Synth).toDestination();
+            synth.set({
+                oscillator: { type: 'triangle' },
+                envelope: {
+                    attack: 0.1,
+                    decay: 0.2,
+                    sustain: 0.5,
+                    release: 0.8
+                }
             });
-        }, 200);
-    }
-</script>
+        }
 
+        function draw() {
+            background(26, 26, 46);
+            
+            // Background Twinkle
+            for(let i = 0; i < 50; i++) {
+                let x = noise(i, frameCount * 0.01) * width;
+                let y = noise(i + 100, frameCount * 0.01) * height;
+                let s = noise(i + 200, frameCount * 0.02) * 3;
+                fill(255, 255, 255, 100);
+                noStroke();
+                ellipse(x, y, s);
+            }
+
+            // Draw Stars
+            stars.forEach(star => {
+                star.update();
+                star.display();
+            });
+        }
+
+        class Star {
+            constructor(x, y, chord) {
+                this.x = x;
+                this.y = y;
+                this.chord = chord;
+                this.size = 20;
+                this.targetSize = 20;
+                this.pulse = 0;
+                this.hue = chord.color;
+                this.dragging = false;
+            }
+
+            update() {
+                this.size = lerp(this.size, this.targetSize, 0.1);
+                this.pulse += 0.05;
+                if (this.dragging) {
+                    this.x = mouseX;
+                    this.y = mouseY;
+                }
+            }
+
+            display() {
+                push();
+                translate(this.x, this.y);
+                
+                // Glow
+                let glowSize = this.size * 2 + sin(this.pulse) * 5;
+                fill(this.hue + '44'); // Add transparency
+                noStroke();
+                ellipse(0, 0, glowSize);
+                
+                // Star Body
+                fill(this.hue);
+                noStroke();
+                this.drawStar(0, 0, this.size / 2, this.size, 5);
+                
+                // Label
+                fill(255);
+                textAlign(CENTER);
+                textSize(12);
+                text(this.chord.name, 0, this.size + 15);
+                pop();
+            }
+
+            drawStar(x, y, radius1, radius2, npoints) {
+                let angle = TWO_PI / npoints;
+                let halfAngle = angle / 2.0;
+                beginShape();
+                for (let a = 0; a < TWO_PI; a += angle) {
+                    let sx = x + cos(a) * radius2;
+                    let sy = y + sin(a) * radius2;
+                    vertex(sx, sy);
+                    sx = x + cos(a + halfAngle) * radius1;
+                    sy = y + sin(a + halfAngle) * radius1;
+                    vertex(sx, sy);
+                }
+                endShape(CLOSE);
+            }
+
+            play() {
+                if (Tone.context.state !== 'running') return;
+                this.targetSize = 40;
+                setTimeout(() => this.targetSize = 20, 200);
+                synth.triggerAttackRelease(this.chord.notes, '2n');
+            }
+
+            isClicked(mx, my) {
+                let d = dist(mx, my, this.x, this.y);
+                return d < this.size * 1.5;
+            }
+        }
+
+        function mousePressed() {
+            if (!started) return;
+            if (mouseY > height - 80) return; // Controls area
+
+            let clickedStar = null;
+            for (let star of stars) {
+                if (star.isClicked(mouseX, mouseY)) {
+                    clickedStar = star;
+                    break;
+                }
+            }
+
+            if (clickedStar) {
+                clickedStar.play();
+                clickedStar.dragging = true;
+            } else {
+                let chord = random(CHORDS);
+                let newStar = new Star(mouseX, mouseY, chord);
+                stars.push(newStar);
+                newStar.play();
+            }
+        }
+
+        function mouseReleased() {
+            stars.forEach(s => s.dragging = false);
+        }
+
+        function startApp() {
+            Tone.start();
+            document.getElementById('start-overlay').style.display = 'none';
+            started = true;
+        }
+
+        function clearStars() {
+            stars = [];
+        }
+
+        function randomHarmony() {
+            if (!started) return;
+            for(let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    let chord = random(CHORDS);
+                    let star = new Star(random(width), random(height), chord);
+                    stars.push(star);
+                    star.play();
+                }, i * 300);
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
 </body>
 </html>
