@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Holographic Palette Architect | OShama Utility</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 50%, #f9a8d4 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(255, 105, 180, 0.15);
+        }
+        .color-card {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .color-card:hover {
+            transform: translateY(-8px);
+        }
+        .locked-border {
+            border: 3px solid #db2777 !important;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .floating-bg {
+            position: fixed;
+            z-index: -1;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: float 15s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 flex flex-col items-center">
+    <div class="floating-bg w-96 h-96 bg-pink-400 top-10 left-10"></div>
+    <div class="floating-bg w-80 h-80 bg-purple-300 bottom-10 right-10" style="animation-delay: -5s;"></div>
+
+    <header class="w-full max-w-5xl mb-8">
+        <div class="glass rounded-3xl p-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-pink-600 flex items-center gap-2">
+                    <i data-lucide="palette"></i> Holographic Palette Architect
+                </h1>
+                <p class="text-pink-500 font-medium">Precision Color Theory for Modern Interfaces</p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="generatePalette()" class="bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-pink-200">
+                    <i data-lucide="refresh-cw"></i> Randomize
+                </button>
+                <button onclick="copyToClipboard()" class="bg-white hover:bg-pink-50 text-pink-500 px-6 py-3 rounded-2xl font-bold flex items-center gap-2 transition-all active:scale-95 border border-pink-200">
+                    <i data-lucide="copy"></i> Copy Tailwind
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-5 gap-4 mb-8" id="palette-container">
+        <!-- Color cards will be injected here -->
+    </main>
+
+    <section class="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="glass rounded-3xl p-6 lg:col-span-2">
+            <h2 class="text-xl font-bold text-pink-600 mb-4 flex items-center gap-2">
+                <i data-lucide="layout"></i> Interface Preview
+            </h2>
+            <div class="rounded-2xl p-8 border border-white/40 bg-white/20" id="preview-area">
+                <div class="max-w-md mx-auto rounded-3xl overflow-hidden shadow-2xl transition-all duration-500" id="preview-card">
+                    <div class="h-32 p-6 flex items-end" id="preview-header">
+                        <h3 class="text-white text-2xl font-bold drop-shadow-md">Design System</h3>
+                    </div>
+                    <div class="bg-white p-6">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-12 h-12 rounded-full" id="preview-avatar"></div>
+                            <div class="flex-1">
+                                <div class="h-4 bg-gray-100 rounded-full w-3/4 mb-2"></div>
+                                <div class="h-3 bg-gray-50 rounded-full w-1/2"></div>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-6 leading-relaxed">
+                            This preview demonstrates how your selected palette interacts in a real-world component layout.
+                        </p>
+                        <button class="w-full py-3 rounded-xl font-bold text-white transition-all hover:brightness-110" id="preview-button">
+                            Get Started
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass rounded-3xl p-6 flex flex-col">
+            <h2 class="text-xl font-bold text-pink-600 mb-4 flex items-center gap-2">
+                <i data-lucide="code"></i> Export Formats
+            </h2>
+            <div class="space-y-4 flex-1">
+                <div class="bg-white/40 p-4 rounded-2xl border border-white/60">
+                    <p class="text-xs font-bold text-pink-400 mb-2 uppercase tracking-widest">CSS Variables</p>
+                    <pre class="text-xs text-pink-900 overflow-x-auto" id="css-export"></pre>
+                </div>
+                <div class="bg-white/40 p-4 rounded-2xl border border-white/60">
+                    <p class="text-xs font-bold text-pink-400 mb-2 uppercase tracking-widest">Tailwind Config</p>
+                    <pre class="text-xs text-pink-900 overflow-x-auto" id="tailwind-export"></pre>
+                </div>
+            </div>
+            <button onclick="exportJSON()" class="mt-4 w-full bg-pink-100 hover:bg-pink-200 text-pink-600 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2">
+                <i data-lucide="download"></i> Download JSON
+            </button>
+        </div>
+    </section>
+
+    <footer class="mt-12 text-pink-500/80 font-medium text-center">
+        <p>© 2026 OShama Utility | Crafted with Precision</p>
+    </footer>
+
+    <script>
+        let palette = [];
+        let locked = [false, false, false, false, false];
+
+        function generateColor() {
+            return '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+        }
+
+        function generatePalette() {
+            const newPalette = [];
+            for (let i = 0; i < 5; i++) {
+                if (locked[i] && palette[i]) {
+                    newPalette.push(palette[i]);
+                } else {
+                    newPalette.push(generateColor());
+                }
+            }
+            palette = newPalette;
+            render();
+        }
+
+        function toggleLock(index) {
+            locked[index] = !locked[index];
+            render();
+        }
+
+        function render() {
+            const container = document.getElementById('palette-container');
+            container.innerHTML = '';
+
+            palette.forEach((color, i) => {
+                const card = document.createElement('div');
+                card.className = `color-card glass rounded-3xl p-4 flex flex-col items-center gap-4 cursor-pointer ${locked[i] ? 'locked-border' : ''}`;
+                card.innerHTML = `
+                    <div class="w-full aspect-[3/4] rounded-2xl shadow-inner mb-2" style="background-color: ${color}"></div>
+                    <div class="text-center">
+                        <p class="font-bold text-pink-800 uppercase tracking-tighter text-lg">${color}</p>
+                        <p class="text-xs text-pink-500 font-medium">${locked[i] ? 'LOCKED' : 'CLICK TO LOCK'}</p>
+                    </div>
+                    <div class="mt-auto">
+                        <i data-lucide="${locked[i] ? 'lock' : 'unlock'}" class="w-5 h-5 ${locked[i] ? 'text-pink-600' : 'text-pink-300'}"></i>
+                    </div>
+                `;
+                card.onclick = () => toggleLock(i);
+                container.appendChild(card);
+            });
+
+            // Update Preview
+            document.getElementById('preview-header').style.backgroundColor = palette[0];
+            document.getElementById('preview-avatar').style.backgroundColor = palette[1];
+            document.getElementById('preview-button').style.backgroundColor = palette[0];
+            document.getElementById('preview-card').style.borderColor = palette[2];
+            
+            // Update Exports
+            updateExports();
+            lucide.createIcons();
+        }
+
+        function updateExports() {
+            const css = `:root {\n${palette.map((c, i) => `  --color-${i + 1}: ${c};`).join('\n')}\n}`;
+            document.getElementById('css-export').textContent = css;
+
+            const tw = `colors: {\n${palette.map((c, i) => `  brand${i + 1}: '${c}',`).join('\n')}\n}`;
+            document.getElementById('tailwind-export').textContent = tw;
+        }
+
+        async function copyToClipboard() {
+            const tw = document.getElementById('tailwind-export').textContent;
+            await navigator.clipboard.writeText(tw);
+            alert('Tailwind config copied!');
+        }
+
+        function exportJSON() {
+            const data = {
+                name: "Holographic Palette",
+                colors: palette,
+                timestamp: new Date().toISOString()
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `palette-${Date.now()}.json`;
+            a.click();
+        }
+
+        // Initialize
+        generatePalette();
+        lucide.createIcons();
+    </script>
+</body>
+</html>
