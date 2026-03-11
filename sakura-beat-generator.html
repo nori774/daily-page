@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sakura Beat: Lo-Fi Harmony Generator | HAMAtoChord</title>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sakura-pink: #FFD1DC;
+            --sakura-deep: #FFB7C5;
+            --glass: rgba(255, 255, 255, 0.4);
+            --neo-shadow: 8px 8px 16px #e0b8c1, -8px -8px 16px #ffe8f7;
+            --neo-inset: inset 4px 4px 8px #e0b8c1, inset -4px -4px 8px #ffe8f7;
+        }
+
+        body {
+            font-family: 'Outfit', 'Noto Sans JP', sans-serif;
+            background: #FFE4E1;
+            overflow: hidden;
+            height: 100vh;
+            color: #5d4a4e;
+        }
+
+        .neo-button {
+            background: #FFE4E1;
+            box-shadow: var(--neo-shadow);
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .neo-button:active, .neo-button.active {
+            box-shadow: var(--neo-inset);
+            transform: scale(0.98);
+        }
+
+        .neo-card {
+            background: #FFE4E1;
+            box-shadow: var(--neo-shadow);
+            border-radius: 24px;
+        }
+
+        .glass-panel {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        #petal-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .knob-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+
+        .knob {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #FFE4E1;
+            box-shadow: var(--neo-shadow);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .knob::after {
+            content: '';
+            position: absolute;
+            top: 15%;
+            width: 4px;
+            height: 10px;
+            background: #FF69B4;
+            border-radius: 2px;
+            transform-origin: 50% 350%;
+        }
+
+        .slider-thumb::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #FF69B4;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center">
+    <canvas id="petal-canvas"></canvas>
+
+    <div class="relative z-10 w-full max-w-4xl p-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <!-- Left Panel: Blossom Engine -->
+            <div class="neo-card p-6 flex flex-col items-center space-y-6">
+                <div class="text-center">
+                    <h2 class="text-xl font-bold flex items-center justify-center gap-2">
+                        <i data-lucide="sparkles" class="w-5 h-5 text-pink-400"></i>
+                        Blossom Engine
+                    </h2>
+                    <p class="text-sm opacity-70">Organic Harmony Generator</p>
+                </div>
+
+                <button id="start-btn" class="neo-button w-full py-4 flex items-center justify-center gap-2 font-bold text-pink-500">
+                    <i data-lucide="play" class="w-5 h-5"></i>
+                    START BLOOM
+                </button>
+
+                <div class="w-full space-y-4">
+                    <div class="flex justify-between text-xs font-bold uppercase tracking-wider">
+                        <span>Vibe Density</span>
+                        <span id="density-val">50%</span>
+                    </div>
+                    <input type="range" id="density-slider" class="w-full h-2 bg-pink-100 rounded-lg appearance-none cursor-pointer slider-thumb" value="50">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 w-full">
+                    <button class="neo-button p-3 text-xs active" data-vibe="chill">CHILL</button>
+                    <button class="neo-button p-3 text-xs" data-vibe="melancholy">SAD</button>
+                    <button class="neo-button p-3 text-xs" data-vibe="hope">HOPE</button>
+                    <button class="neo-button p-3 text-xs" data-vibe="cosmic">ZEN</button>
+                </div>
+            </div>
+
+            <!-- Middle: Main Display -->
+            <div class="md:col-span-2 space-y-6">
+                <div class="neo-card p-8 text-center relative overflow-hidden">
+                    <div class="absolute top-4 right-4 text-[10px] font-bold tracking-widest text-pink-300 opacity-50 uppercase">2026 Interactive Micro-App</div>
+                    <h1 class="text-4xl font-bold text-pink-500 mb-2">Sakura Beat</h1>
+                    <p class="italic opacity-60">"Where every falling petal finds its perfect chord."</p>
+                    
+                    <div id="visualizer" class="h-32 w-full mt-8 flex items-end justify-center gap-1">
+                        <!-- Bars added by JS -->
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Petal-Soft Saturation -->
+                    <div class="neo-card p-6 flex flex-col space-y-4">
+                        <h3 class="font-bold flex items-center gap-2">
+                            <i data-lucide="layers" class="w-4 h-4 text-pink-400"></i>
+                            Soft Saturation
+                        </h3>
+                        <div class="flex items-center gap-4">
+                            <button id="noise-toggle" class="neo-button flex-1 py-3 text-xs flex items-center justify-center gap-2">
+                                <i data-lucide="radio" class="w-3 h-3"></i> TAPE NOISE
+                            </button>
+                            <button id="reverb-toggle" class="neo-button flex-1 py-3 text-xs flex items-center justify-center gap-2">
+                                <i data-lucide="wind" class="w-3 h-3"></i> BLOOM VERB
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- HAMA's One-Knob Master -->
+                    <div class="neo-card p-6 flex flex-col items-center justify-between">
+                        <h3 class="font-bold flex items-center gap-2 mb-2">
+                            <i data-lucide="zap" class="w-4 h-4 text-yellow-400"></i>
+                            HAMA's One-Knob
+                        </h3>
+                        <div class="knob-container">
+                            <div id="master-knob" class="knob">
+                                <span class="text-[10px] font-bold tracking-widest opacity-40">LIMITER</span>
+                            </div>
+                        </div>
+                        <p class="text-[10px] mt-2 opacity-50">Powered by HAMAtoLimiter Tech</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-12 text-center text-xs opacity-40 flex items-center justify-center gap-6">
+            <span class="flex items-center gap-1"><i data-lucide="cpu" class="w-3 h-3"></i> Tone.js Engine</span>
+            <span class="flex items-center gap-1"><i data-lucide="palette" class="w-3 h-3"></i> Neumorphism 2.0</span>
+            <span class="flex items-center gap-1"><i data-lucide="github" class="w-3 h-3"></i> @HAMAtoChord</span>
+        </div>
+    </div>
+
+    <script>
+        // --- Petal Animation ---
+        const canvas = document.getElementById('petal-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, petals = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Petal {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * width;
+                this.y = -20;
+                this.size = Math.random() * 5 + 5;
+                this.speed = Math.random() * 1 + 0.5;
+                this.angle = Math.random() * Math.PI * 2;
+                this.rotSpeed = (Math.random() - 0.5) * 0.02;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.y += this.speed;
+                this.x += Math.sin(this.angle) * 0.5;
+                this.angle += this.rotSpeed;
+                if (this.y > height + 20) this.reset();
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = '#FFB7C5';
+                ctx.beginPath();
+                ctx.ellipse(0, 0, this.size, this.size/2, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        for (let i = 0; i < 50; i++) petals.push(new Petal());
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            petals.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // --- Tone.js Engine ---
+        let isStarted = false;
+        const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+        const noise = new Tone.Noise("pink").start();
+        const noiseFilter = new Tone.Filter(1000, "lowpass").toDestination();
+        noise.connect(noiseFilter);
+        noise.volume.value = -Infinity;
+
+        const reverb = new Tone.Reverb(3).toDestination();
+        synth.connect(reverb);
+        reverb.wet.value = 0.5;
+
+        const limiter = new Tone.Limiter(-6).toDestination();
+        Tone.Destination.connect(limiter);
+
+        const chords = {
+            chill: [["C4", "E4", "G4", "B4"], ["A3", "C4", "E4", "G4"], ["F3", "A3", "C4", "E4"], ["G3", "B3", "D4", "F4"]],
+            melancholy: [["A3", "C4", "E4"], ["E3", "G3", "B3"], ["F3", "A3", "C4"], ["D3", "F3", "A3"]],
+            hope: [["F3", "A3", "C4"], ["G3", "B3", "D4"], ["E3", "G3", "B3"], ["A3", "C4", "E4"]],
+            cosmic: [["C4", "G4", "D5"], ["F3", "C4", "G4"], ["G3", "D4", "A4"], ["A3", "E4", "B4"]]
+        };
+
+        let currentVibe = "chill";
+        let loopId = null;
+
+        function startEngine() {
+            if (!isStarted) {
+                Tone.start();
+                isStarted = true;
+                document.getElementById('start-btn').innerHTML = '<i data-lucide="square" class="w-5 h-5"></i> STOP FLOW';
+                lucide.createIcons();
+                
+                let step = 0;
+                loopId = Tone.Transport.scheduleRepeat((time) => {
+                    const chord = chords[currentVibe][step % 4];
+                    synth.triggerAttackRelease(chord, "2n", time);
+                    
+                    // Visualizer activity
+                    const bars = document.querySelectorAll('.vis-bar');
+                    bars.forEach(bar => {
+                        bar.style.height = Math.random() * 80 + 20 + '%';
+                        setTimeout(() => bar.style.height = '10%', 400);
+                    });
+
+                    step++;
+                }, "2n");
+                Tone.Transport.start();
+            } else {
+                stopEngine();
+            }
+        }
+
+        function stopEngine() {
+            isStarted = false;
+            Tone.Transport.stop();
+            Tone.Transport.clear(loopId);
+            synth.releaseAll();
+            document.getElementById('start-btn').innerHTML = '<i data-lucide="play" class="w-5 h-5"></i> START BLOOM';
+            lucide.createIcons();
+        }
+
+        // --- UI Interactions ---
+        lucide.createIcons();
+
+        const visContainer = document.getElementById('visualizer');
+        for (let i = 0; i < 20; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'vis-bar w-2 bg-pink-300 rounded-full transition-all duration-300';
+            bar.style.height = '10%';
+            visContainer.appendChild(bar);
+        }
+
+        document.getElementById('start-btn').addEventListener('click', startEngine);
+
+        document.querySelectorAll('[data-vibe]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('[data-vibe]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentVibe = btn.dataset.vibe;
+            });
+        });
+
+        document.getElementById('noise-toggle').addEventListener('click', function() {
+            this.classList.toggle('active');
+            noise.volume.value = this.classList.contains('active') ? -35 : -Infinity;
+        });
+
+        document.getElementById('reverb-toggle').addEventListener('click', function() {
+            this.classList.toggle('active');
+            reverb.wet.value = this.classList.contains('active') ? 0.8 : 0.2;
+        });
+
+        // Knob Logic
+        const knob = document.getElementById('master-knob');
+        let rotation = 0;
+        let isDragging = false;
+
+        knob.addEventListener('mousedown', () => isDragging = true);
+        window.addEventListener('mouseup', () => isDragging = false);
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                rotation += e.movementX;
+                rotation = Math.max(0, Math.min(rotation, 270));
+                knob.style.transform = `rotate(${rotation}deg)`;
+                
+                // Limiter / Volume logic
+                const val = (rotation / 270) * 12 - 6; // -6 to +6
+                limiter.threshold.value = -6 - (rotation/270)*20;
+                Tone.Destination.volume.value = val;
+            }
+        });
+
+        const densitySlider = document.getElementById('density-slider');
+        densitySlider.addEventListener('input', (e) => {
+            document.getElementById('density-val').innerText = e.target.value + '%';
+            // Update petal count/speed
+            const count = Math.floor(e.target.value);
+            petals = [];
+            for (let i = 0; i < count; i++) petals.push(new Petal());
+        });
+
+    </script>
+</body>
+</html>
