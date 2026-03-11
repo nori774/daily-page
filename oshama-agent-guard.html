@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OShama Agent Guard | おしゃま・エージェント・ガード</title>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Outfit:wght@600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --accent-pink: #FF69B4;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --border-glass: rgba(255, 255, 255, 0.1);
+            --emergency-red: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            transition: all 0.5s ease;
+        }
+
+        body.safety-locked {
+            background-color: #2d0a0a;
+            animation: blinkBg 2s infinite;
+        }
+
+        @keyframes blinkBg {
+            0%, 100% { background-color: #2d0a0a; }
+            50% { background-color: #450a0a; }
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: var(--accent-pink);
+            text-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-auto-rows: minmax(200px, auto);
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-glass);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body.safety-locked .card {
+            opacity: 0.6;
+            filter: grayscale(0.5);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-pink);
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.1);
+        }
+
+        .card h2 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent-pink);
+        }
+
+        .card-large {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        .log-container {
+            height: 350px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 1rem;
+            color: var(--text-main);
+            line-height: 1.6;
+            padding-right: 0.5rem;
+        }
+
+        .log-entry {
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #10b981;
+            display: inline-block;
+            box-shadow: 0 0 10px #10b981;
+        }
+
+        .status-dot.active {
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); opacity: 0.5; }
+            to { transform: scale(1.5); opacity: 1; }
+        }
+
+        .switch-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .emergency-btn {
+            background-color: var(--emergency-red);
+            color: white;
+            border: none;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            z-index: 10;
+        }
+
+        .emergency-btn:active {
+            transform: scale(0.9);
+            box-shadow: 0 0 50px rgba(239, 68, 68, 0.8);
+        }
+
+        .emergency-btn.locked {
+            background-color: #4b5563;
+            box-shadow: none;
+        }
+
+        .indicator {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .btn-small {
+            background: transparent;
+            border: 1px solid var(--border-glass);
+            color: var(--text-dim);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-small:hover {
+            border-color: var(--accent-pink);
+            color: var(--text-main);
+        }
+
+        /* Scrollbar */
+        .log-container::-webkit-scrollbar { width: 4px; }
+        .log-container::-webkit-scrollbar-thumb { background: var(--border-glass); border-radius: 2px; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard { grid-template-columns: 1fr; }
+            .card-large { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+    <h1>OShama Agent Guard</h1>
+
+    <div class="dashboard">
+        <div class="card card-large">
+            <h2><span class="status-dot active"></span> LIVE THOUGHT STREAM</h2>
+            <div id="log" class="log-container">
+                <div class="log-entry">[SYSTEM] 初始化完了。エージェント・コア接続中...</div>
+            </div>
+        </div>
+
+        <div class="card switch-container">
+            <span class="indicator">Safety Status: SECURE</span>
+            <button id="safetyBtn" class="emergency-btn">KILL SWITCH</button>
+            <span id="statusText" style="font-size: 0.8rem; color: #10b981;">RUNNING</span>
+        </div>
+
+        <div class="card">
+            <h2>NETWORK</h2>
+            <p style="font-size: 2rem; font-weight: bold;">12.4 <span style="font-size: 1rem; color: var(--text-dim);">Mbps</span></p>
+            <p style="color: var(--text-dim); font-size: 0.8rem; margin-top: 10px;">Encrypted: Yes (AES-256)</p>
+        </div>
+
+        <div class="card">
+            <h2>HISTORY</h2>
+            <div id="historyCount" style="font-size: 3rem; font-weight: bold; color: var(--accent-pink);">0</div>
+            <p style="color: var(--text-dim); font-size: 0.8rem;">Saved Actions</p>
+            <button id="downloadBtn" class="btn-small">DOWNLOAD LOGS (.TXT)</button>
+        </div>
+    </div>
+
+    <script>
+        const logContainer = document.getElementById('log');
+        const historyCountEl = document.getElementById('historyCount');
+        const safetyBtn = document.getElementById('safetyBtn');
+        const statusText = document.getElementById('statusText');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const body = document.body;
+
+        const thoughts = [
+            "リサーチ結果を分析中...",
+            "市場トレンドをクロールしています...",
+            "不自然なアクティビティを検出しました (無視可能)",
+            "ユーザーの嗜好に合わせてコンテンツを最適化中",
+            "外部サーバーへの接続要求を承認しました",
+            "新しいメモリエントリを作成しました",
+            "タスク完了: 日次分析レポートの作成",
+            "次のアクションを計画中: マーケット予測の実行",
+            "APIリミットを確認しています...",
+            "自律モードを継続します"
+        ];
+
+        let historyCount = parseInt(localStorage.getItem('oshama_history_count') || '0');
+        historyCountEl.innerText = historyCount;
+
+        function addLog() {
+            if (body.classList.contains('safety-locked')) return;
+
+            const thought = thoughts[Math.floor(Math.random() * thoughts.length)];
+            const div = document.createElement('div');
+            div.className = 'log-entry';
+            div.innerText = `[${new Date().toLocaleTimeString()}] ${thought}`;
+            logContainer.prepend(div);
+
+            historyCount++;
+            historyCountEl.innerText = historyCount;
+            localStorage.setItem('oshama_history_count', historyCount);
+
+            if (logContainer.children.length > 50) logContainer.removeChild(logContainer.lastChild);
+        }
+
+        let logInterval = setInterval(addLog, 3000);
+
+        safetyBtn.addEventListener('click', () => {
+            if (!body.classList.contains('safety-locked')) {
+                body.classList.add('safety-locked');
+                safetyBtn.innerText = 'UNLOCK';
+                safetyBtn.classList.add('locked');
+                statusText.innerText = 'LOCKED';
+                statusText.style.color = '#ef4444';
+                gtag('event', 'safety_kill_activated');
+                
+                const div = document.createElement('div');
+                div.className = 'log-entry';
+                div.style.color = '#ef4444';
+                div.style.fontWeight = 'bold';
+                div.innerText = `[${new Date().toLocaleTimeString()}] !!! EMERGENCY STOP !!! 全プロセスを強制終了しました。システムロック中。`;
+                logContainer.prepend(div);
+            } else {
+                body.classList.remove('safety-locked');
+                safetyBtn.innerText = 'KILL SWITCH';
+                safetyBtn.classList.remove('locked');
+                statusText.innerText = 'RUNNING';
+                statusText.style.color = '#10b981';
+                gtag('event', 'safety_unlock');
+            }
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            const logs = Array.from(logContainer.children).map(c => c.innerText).join('\n');
+            const blob = new Blob([logs], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `oshama_agent_log_${new Date().toISOString().slice(0,10)}.txt`;
+            a.click();
+            gtag('event', 'log_downloaded');
+        });
+
+        for(let i=0; i<3; i++) addLog();
+    </script>
+</body>
+</html>
