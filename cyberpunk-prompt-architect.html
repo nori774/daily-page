@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyberpunk Prompt Architect | HAMAtoChord</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-pink: #FF1493;
+            --hot-pink: #FF69B4;
+            --glass-bg: rgba(255, 20, 147, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+        body {
+            background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f1b 100%);
+            font-family: 'Rajdhani', sans-serif;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .pink-glass {
+            background: rgba(255, 20, 147, 0.1);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 20, 147, 0.3);
+        }
+        .neon-text {
+            text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink);
+        }
+        .neon-border {
+            box-shadow: 0 0 5px var(--neon-pink), inset 0 0 5px var(--neon-pink);
+        }
+        .tag-active {
+            background: var(--neon-pink);
+            box-shadow: 0 0 15px var(--neon-pink);
+            color: white;
+            border-color: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: var(--neon-pink);
+            border-radius: 10px;
+        }
+        h1, h2, h3 {
+            font-family: 'Orbitron', sans-serif;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-6xl mx-auto space-y-8">
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="text-center md:text-left">
+                <h1 class="text-3xl md:text-5xl font-bold neon-text text-pink-500 uppercase tracking-tighter">Prompt Architect</h1>
+                <p class="text-pink-300 opacity-80 mt-2 text-lg">Master the art of AI generation with precision.</p>
+            </div>
+            <div class="flex gap-4">
+                <button id="btn-export" class="glass px-4 py-2 rounded-full flex items-center gap-2 hover:bg-pink-900/20 transition-all border-pink-500/30">
+                    <i data-lucide="download" class="w-4 h-4"></i> Export
+                </button>
+                <button id="btn-reset" class="glass px-4 py-2 rounded-full flex items-center gap-2 hover:bg-red-900/20 transition-all border-red-500/30">
+                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Reset
+                </button>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left: Modifiers -->
+            <div class="lg:col-span-2 space-y-6">
+                <div id="category-container" class="space-y-6">
+                    <!-- Dynamic categories will be injected here -->
+                </div>
+            </div>
+
+            <!-- Right: Output & History -->
+            <div class="space-y-6">
+                <!-- Live Output -->
+                <div class="pink-glass p-6 rounded-3xl sticky top-8 border-2">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2 text-pink-400">
+                        <i data-lucide="terminal" class="w-5 h-5"></i> PROMPT CANVAS
+                    </h3>
+                    <div id="prompt-output" class="bg-black/40 p-4 rounded-xl min-h-[120px] text-lg leading-relaxed font-mono border border-pink-500/30 break-words" contenteditable="true">
+                        Cyberpunk girl, neon city...
+                    </div>
+                    <div class="mt-6 flex flex-col gap-3">
+                        <button id="btn-copy" class="w-full py-4 bg-pink-600 hover:bg-pink-500 text-white rounded-xl font-bold text-xl transition-all flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(255,20,147,0.4)]">
+                            <i data-lucide="copy" class="w-6 h-6"></i> COPY TO CLIPBOARD
+                        </button>
+                        <button id="btn-save" class="w-full py-2 glass rounded-xl font-semibold hover:bg-white/10 transition-all flex items-center justify-center gap-2 text-pink-200">
+                            <i data-lucide="bookmark" class="w-4 h-4"></i> SAVE TO LOG
+                        </button>
+                    </div>
+                </div>
+
+                <!-- History -->
+                <div class="glass p-6 rounded-3xl border-white/10">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2 opacity-70">
+                        <i data-lucide="history" class="w-4 h-4"></i> SESSION HISTORY
+                    </h3>
+                    <div id="history-list" class="space-y-3 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">
+                        <!-- History items here -->
+                        <p class="text-center text-white/30 py-8">No saved prompts yet.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 glass px-6 py-3 rounded-full text-pink-400 font-bold opacity-0 transition-opacity pointer-events-none z-50 flex items-center gap-2">
+        <i data-lucide="check-circle" class="w-5 h-5"></i> COPIED SUCCESSFULLY
+    </div>
+
+    <script>
+        const categories = {
+            "Subject": ["Cyberpunk Girl", "Neon Samurai", "Ghost in the Machine", "Urban Shaman", "Data Wraith", "Chrome Android"],
+            "Medium": ["Digital Painting", "3D Render", "Vector Art", "Oil Painting", "Concept Art", "Voxel Art"],
+            "Style": ["Ukiyo-e", "Futurism", "Vaporwave", "Synthwave", "Cyber-noir", "Glitch Art", "Biopunk"],
+            "Lighting": ["Neon Glow", "Volumetric Lighting", "Cinematic Lighting", "Bioluminescence", "Rim Light", "Golden Hour"],
+            "Camera": ["Wide Angle", "Macro View", "Eye Level", "Low Angle", "Fish Eye", "Aerial View"],
+            "Artist": ["Syd Mead", "Moebius", "Katsuhiro Otomo", "Ilya Kuvshinov", "Beeple", "Simon Stålenhag"],
+            "Detail": ["Highly Detailed", "Intricate Patterns", "Hyperrealistic", "8k Resolution", "Unreal Engine 5", "Masterpiece"]
+        };
+
+        const activeTags = new Set(["Cyberpunk Girl", "Neon City"]);
+        const promptOutput = document.getElementById('prompt-output');
+        const categoryContainer = document.getElementById('category-container');
+        const historyList = document.getElementById('history-list');
+
+        function init() {
+            lucide.createIcons();
+            renderCategories();
+            updatePrompt();
+            loadHistory();
+        }
+
+        function renderCategories() {
+            categoryContainer.innerHTML = '';
+            for (const [cat, tags] of Object.entries(categories)) {
+                const section = document.createElement('div');
+                section.className = 'glass p-6 rounded-3xl border-white/5';
+                section.innerHTML = `
+                    <h3 class="text-sm font-bold text-pink-500/80 mb-4 tracking-[0.2em] uppercase flex items-center gap-2">
+                        <span class="w-2 h-2 bg-pink-500 rounded-full animate-pulse"></span> ${cat}
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                        ${tags.map(tag => `
+                            <button class="tag-btn px-4 py-2 rounded-full glass border-white/10 hover:border-pink-500/50 transition-all text-sm font-medium ${activeTags.has(tag) ? 'tag-active' : ''}" data-tag="${tag}">
+                                ${tag}
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+                categoryContainer.appendChild(section);
+            }
+
+            document.querySelectorAll('.tag-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tag = btn.dataset.tag;
+                    if (activeTags.has(tag)) {
+                        activeTags.delete(tag);
+                        btn.classList.remove('tag-active');
+                    } else {
+                        activeTags.add(tag);
+                        btn.classList.add('tag-active');
+                    }
+                    updatePrompt();
+                });
+            });
+        }
+
+        function updatePrompt() {
+            promptOutput.innerText = Array.from(activeTags).join(', ');
+        }
+
+        function savePrompt() {
+            const prompt = promptOutput.innerText;
+            if (!prompt) return;
+
+            let history = JSON.parse(localStorage.getItem('prompt_history') || '[]');
+            history.unshift({ prompt, date: new Date().toLocaleTimeString() });
+            history = history.slice(0, 10);
+            localStorage.setItem('prompt_history', JSON.stringify(history));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const history = JSON.parse(localStorage.getItem('prompt_history') || '[]');
+            if (history.length === 0) return;
+
+            historyList.innerHTML = history.map(item => `
+                <div class="glass p-3 rounded-xl border-white/5 text-sm group relative">
+                    <p class="opacity-80 break-words">${item.prompt}</p>
+                    <span class="text-[10px] text-pink-500 mt-1 block">${item.date}</span>
+                    <button class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity" onclick="copyText('${item.prompt.replace(/'/g, "\\'")}')">
+                        <i data-lucide="copy" class="w-3 h-3 text-pink-300"></i>
+                    </button>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function loadHistory() {
+            renderHistory();
+        }
+
+        async function copyText(text) {
+            await navigator.clipboard.writeText(text);
+            const toast = document.getElementById('toast');
+            toast.style.opacity = '1';
+            setTimeout(() => toast.style.opacity = '0', 2000);
+        }
+
+        document.getElementById('btn-copy').addEventListener('click', () => {
+            copyText(promptOutput.innerText);
+        });
+
+        document.getElementById('btn-save').addEventListener('click', () => {
+            savePrompt();
+            const toast = document.getElementById('toast');
+            toast.innerHTML = '<i data-lucide="check-circle" class="w-5 h-5"></i> SAVED TO SESSION LOG';
+            toast.style.opacity = '1';
+            lucide.createIcons();
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.innerHTML = '<i data-lucide="check-circle" class="w-5 h-5"></i> COPIED SUCCESSFULLY';
+                lucide.createIcons();
+            }, 2000);
+        });
+
+        document.getElementById('btn-reset').addEventListener('click', () => {
+            activeTags.clear();
+            renderCategories();
+            updatePrompt();
+        });
+
+        document.getElementById('btn-export').addEventListener('click', () => {
+            const history = JSON.parse(localStorage.getItem('prompt_history') || '[]');
+            const content = history.map(h => `[${h.date}] ${h.prompt}`).join('\n');
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `prompts-${new Date().toISOString().split('T')[0]}.txt`;
+            a.click();
+        });
+
+        init();
+    </script>
+</body>
+</html>
