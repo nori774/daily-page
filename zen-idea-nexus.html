@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zen Idea Nexus - Intelligent Idea Mapping</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top left, #0f172a, #020617);
+            color: #f8fafc;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .node {
+            cursor: move;
+            transition: transform 0.2s, box-shadow 0.2s;
+            user-select: none;
+        }
+
+        .node:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+        }
+
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+
+        .connector {
+            stroke: rgba(56, 189, 248, 0.2);
+            stroke-width: 2;
+            fill: none;
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <svg id="canvas"></svg>
+
+    <div id="nodes-container" class="absolute inset-0 pointer-events-none"></div>
+
+    <div class="fixed top-6 left-6 z-10 glass rounded-2xl p-4 flex flex-col gap-2">
+        <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-emerald-400">Zen Idea Nexus</h1>
+        <p class="text-xs text-slate-400">Click to add ideas. Drag to move. Double-click to link.</p>
+    </div>
+
+    <div class="controls flex gap-4">
+        <button onclick="addNode()" class="glass rounded-full p-4 hover:bg-white/10 transition-colors group">
+            <i data-lucide="plus" class="text-sky-400 group-hover:scale-110 transition-transform"></i>
+        </button>
+        <button onclick="clearCanvas()" class="glass rounded-full p-4 hover:bg-red-500/10 transition-colors group">
+            <i data-lucide="trash-2" class="text-slate-400 group-hover:text-red-400"></i>
+        </button>
+        <button onclick="downloadState()" class="glass rounded-full p-4 hover:bg-emerald-500/10 transition-colors group">
+            <i data-lucide="download" class="text-emerald-400"></i>
+        </button>
+    </div>
+
+    <script>
+        // Tone.js Setup
+        const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+        synth.set({
+            oscillator: { type: "sine" },
+            envelope: { attack: 0.05, release: 0.5 }
+        });
+
+        const playTone = (freq = "C4") => {
+            if (Tone.context.state !== 'running') Tone.start();
+            synth.triggerAttackRelease(freq, "16n");
+        };
+
+        const canvas = document.getElementById('canvas');
+        const nodesContainer = document.getElementById('nodes-container');
+        let nodes = [];
+        let links = [];
+        let selectedNodeId = null;
+        let isDragging = false;
+        let draggedNode = null;
+        let offset = { x: 0, y: 0 };
+
+        function addNode(x = window.innerWidth / 2, y = window.innerHeight / 2, label = "New Idea") {
+            const id = Date.now();
+            const node = { id, x, y, label };
+            nodes.push(node);
+            renderNode(node);
+            playTone("G4");
+            saveState();
+        }
+
+        function renderNode(node) {
+            const div = document.createElement('div');
+            div.id = `node-${node.id}`;
+            div.className = 'node glass absolute p-4 rounded-xl min-w-[120px] pointer-events-auto flex items-center justify-between gap-3';
+            div.style.left = `${node.x}px`;
+            div.style.top = `${node.y}px`;
+            
+            const input = document.createElement('input');
+            input.value = node.label;
+            input.className = 'bg-transparent border-none outline-none text-sm w-full font-medium text-slate-200';
+            input.onchange = (e) => {
+                node.label = e.target.value;
+                saveState();
+            };
+
+            const dragHandle = document.createElement('div');
+            dragHandle.innerHTML = '<i data-lucide="move" class="w-4 h-4 text-slate-500"></i>';
+            
+            div.appendChild(input);
+            div.appendChild(dragHandle);
+            nodesContainer.appendChild(div);
+            lucide.createIcons();
+
+            div.onmousedown = (e) => {
+                if (e.target.tagName === 'INPUT') return;
+                isDragging = true;
+                draggedNode = node;
+                offset.x = e.clientX - node.x;
+                offset.y = e.clientY - node.y;
+                div.style.zIndex = 1000;
+                playTone("C4");
+            };
+
+            div.ondblclick = () => {
+                if (selectedNodeId === null) {
+                    selectedNodeId = node.id;
+                    div.classList.add('ring-2', 'ring-sky-400');
+                    playTone("E4");
+                } else if (selectedNodeId !== node.id) {
+                    addLink(selectedNodeId, node.id);
+                    document.getElementById(`node-${selectedNodeId}`).classList.remove('ring-2', 'ring-sky-400');
+                    selectedNodeId = null;
+                    playTone("B4");
+                } else {
+                    div.classList.remove('ring-2', 'ring-sky-400');
+                    selectedNodeId = null;
+                }
+            };
+        }
+
+        function addLink(sourceId, targetId) {
+            if (links.some(l => (l.source === sourceId && l.target === targetId) || (l.source === targetId && l.target === sourceId))) return;
+            links.push({ source: sourceId, target: targetId });
+            renderLinks();
+            saveState();
+        }
+
+        function renderLinks() {
+            canvas.innerHTML = '';
+            links.forEach(link => {
+                const source = nodes.find(n => n.id === link.source);
+                const target = nodes.find(n => n.id === link.target);
+                if (source && target) {
+                    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    line.setAttribute("x1", source.x + 60);
+                    line.setAttribute("y1", source.y + 25);
+                    line.setAttribute("x2", target.x + 60);
+                    line.setAttribute("y2", target.y + 25);
+                    line.className.baseVal = "connector";
+                    canvas.appendChild(line);
+                }
+            });
+        }
+
+        window.onmousemove = (e) => {
+            if (isDragging && draggedNode) {
+                draggedNode.x = e.clientX - offset.x;
+                draggedNode.y = e.clientY - offset.y;
+                const div = document.getElementById(`node-${draggedNode.id}`);
+                div.style.left = `${draggedNode.x}px`;
+                div.style.top = `${draggedNode.y}px`;
+                renderLinks();
+            }
+        };
+
+        window.onmouseup = () => {
+            if (isDragging) {
+                isDragging = false;
+                draggedNode = null;
+                saveState();
+            }
+        };
+
+        function clearCanvas() {
+            nodes = [];
+            links = [];
+            nodesContainer.innerHTML = '';
+            canvas.innerHTML = '';
+            localStorage.removeItem('nexus_state');
+            playTone("G3");
+        }
+
+        function saveState() {
+            localStorage.setItem('nexus_state', JSON.stringify({ nodes, links }));
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('nexus_state');
+            if (saved) {
+                const { nodes: sNodes, links: sLinks } = JSON.parse(saved);
+                sNodes.forEach(n => {
+                    nodes.push(n);
+                    renderNode(n);
+                });
+                links = sLinks;
+                renderLinks();
+            } else {
+                addNode(window.innerWidth / 2 - 60, window.innerHeight / 2 - 25, "My Project");
+            }
+        }
+
+        function downloadState() {
+            const data = JSON.stringify({ nodes, links }, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'idea-nexus.json';
+            a.click();
+            playTone("C5");
+        }
+
+        lucide.createIcons();
+        loadState();
+    </script>
+</body>
+</html>
