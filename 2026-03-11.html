@@ -3,163 +3,443 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HAMAtoChord Daily - 2026-03-11</title>
+    <title>HAMA-Agent: AI Chord Companion | 2026-03-11</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Noto+Sans+JP:wght@400;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     <style>
         :root {
             --primary: #FF69B4;
             --secondary: #FFB6C1;
             --accent: #FF1493;
             --bg-gradient: linear-gradient(135deg, #FFE4E1, #FFB6C1, #FF69B4);
+            --glass: rgba(255, 255, 255, 0.85);
+            --terminal-bg: #2d2d2d;
+            --terminal-text: #f8f8f2;
         }
+
         body {
             margin: 0;
             padding: 0;
             font-family: 'Outfit', 'Noto Sans JP', sans-serif;
             background: var(--bg-gradient);
             background-attachment: fixed;
-            color: #333;
-            line-height: 1.6;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
+            overflow-x: hidden;
         }
+
         .container {
-            width: 90%;
-            max-width: 800px;
-            margin: 40px 0;
-            padding: 32px;
-            background: rgba(255, 255, 255, 0.9);
+            width: 95%;
+            max-width: 900px;
+            margin: 20px 0;
+            padding: 30px;
+            background: var(--glass);
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
+
         header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 25px;
         }
+
         h1 {
             color: var(--accent);
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             margin: 0;
+            letter-spacing: -0.5px;
         }
-        .date {
-            color: var(--primary);
-            font-weight: 700;
-            margin-top: 8px;
-        }
-        section {
-            margin-bottom: 32px;
-        }
-        h2 {
-            border-left: 6px solid var(--accent);
-            padding-left: 12px;
-            color: var(--accent);
-            margin-bottom: 20px;
-        }
-        .trend-item {
-            background: #fff;
-            padding: 20px;
-            margin-bottom: 16px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s;
-        }
-        .trend-item:hover {
-            transform: translateY(-4px);
-        }
-        .trend-title {
-            font-weight: 700;
-            font-size: 1.2rem;
-            color: var(--accent);
-            display: block;
-            margin-bottom: 8px;
-            text-decoration: none;
-        }
-        .trend-desc {
-            font-size: 0.95rem;
+
+        .subtitle {
+            font-size: 1rem;
             color: #666;
+            margin-top: 5px;
         }
-        .persona-talk {
-            background: #FFF0F5;
-            padding: 24px;
+
+        /* Agent UI */
+        .agent-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .agent-container {
+                grid-template-columns: 350px 1fr;
+            }
+        }
+
+        .terminal {
+            background: var(--terminal-bg);
+            color: var(--terminal-text);
+            padding: 15px;
             border-radius: 12px;
-            border-left: 6px solid var(--primary);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            height: 400px;
+            overflow-y: auto;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
             position: relative;
         }
-        .persona-talk::before {
-            content: "HAMAtoChord's Voice";
-            position: absolute;
-            top: -10px;
-            left: 20px;
-            background: var(--primary);
-            color: white;
-            padding: 2px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 700;
+
+        .terminal::-webkit-scrollbar {
+            width: 6px;
         }
+        .terminal::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 3px;
+        }
+
+        .log-entry {
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .log-time { color: #888; margin-right: 8px; }
+        .log-info { color: #50fa7b; }
+        .log-warn { color: #f1fa8c; }
+        .log-agent { color: #ff79c6; font-weight: bold; }
+
+        .control-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .canvas-container {
+            background: white;
+            border-radius: 12px;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 12px;
+            background: white;
+            color: var(--accent);
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 2px solid transparent;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            border-color: var(--secondary);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: #e1f5fe;
+            color: #0288d1;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .chord-display {
+            margin-top: 20px;
+            padding: 20px;
+            background: #fff5f8;
+            border-radius: 12px;
+            border-left: 5px solid var(--accent);
+        }
+
+        .chord-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            display: inline-block;
+            margin-right: 15px;
+        }
+
+        .analysis {
+            font-size: 0.9rem;
+            color: #666;
+            font-style: italic;
+        }
+
         footer {
-            margin-top: auto;
-            padding: 40px 0;
+            margin: 30px 0;
             text-align: center;
             color: white;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            font-weight: 500;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .social-link {
+
+        .footer-links a {
             color: white;
             text-decoration: none;
-            font-weight: 700;
-            border-bottom: 2px solid white;
+            margin: 0 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.5);
         }
+
+        /* Animations */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background: var(--terminal-text);
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>HAMAtoChord Daily</h1>
-            <div class="date">2026-03-11</div>
-        </header>
 
-        <section>
-            <h2>🚀 GitHub Trending</h2>
-            <div class="trend-item">
-                <a href="https://github.com/msitarzewski/agency-agents" class="trend-title" target="_blank">msitarzewski / agency-agents</a>
-                <p class="trend-desc">AIエージェンシーを丸ごと構築できるツールセット。フロントエンドからバックエンドまで、一気に立ち上げられるのが驚きですね！</p>
-            </div>
-            <div class="trend-item">
-                <a href="https://github.com/666ghj/MiroFish" class="trend-title" target="_blank">666ghj / MiroFish</a>
-                <p class="trend-desc">シンプルかつ汎用的な「群知能」エンジン。個々が繋がり、大きな波を作る。音楽のボイシングやアンサンブルにも通ずる考え方かも？</p>
-            </div>
-            <div class="trend-item">
-                <a href="https://github.com/NousResearch/hermes-agent" class="trend-title" target="_blank">NousResearch / hermes-agent</a>
-                <p class="trend-desc">使う人と共に成長するエージェント。個別のニーズに合わせて進化していく姿は、まるでお気に入りの楽器を弾き込む感覚に似ているかもしれません。</p>
-            </div>
-        </section>
+<div class="container">
+    <header>
+        <div class="status-badge">PROTO: HAMA-Agent v0.1.0</div>
+        <h1>HAMA-Agent: AI Chord Companion</h1>
+        <p class="subtitle">AIエージェントが、あなたの「今」に寄り添うコード進行を提案します。</p>
+    </header>
 
-        <section>
-            <h2>💡 AI & DTM Topics</h2>
-            <p>今日はGitHubでAIエージェント関連のプロジェクトが非常に活発ですね！DTMの世界でも、個別のエフェクト操作だけでなく、「曲全体の構成をエージェントに相談する」ような体験がすぐそこまで来ている気がします。</p>
-            <ul>
-                <li><strong>AIエージェントが切り拓くDTMの未来</strong>：自律型AIが作曲の良きパートナーになる日。</li>
-                <li><strong>群知能で広がる音楽の可能性</strong>：複雑なアルゴリズムをシンプルに扱う技術。</li>
-                <li><strong>自律するツールたちの進化</strong>：設定要らずで「エモい」音を提案してくれる存在へ。</li>
-            </ul>
-        </section>
+    <div class="agent-container">
+        <div class="terminal" id="terminal">
+            <div class="log-entry"><span class="log-time">[09:00:00]</span> <span class="log-info">SYSTEM:</span> Loading Agent Modules...</div>
+            <div class="log-entry"><span class="log-time">[09:00:01]</span> <span class="log-info">SYSTEM:</span> Music Theory Engine Initialized.</div>
+            <div class="log-entry"><span class="log-time">[09:00:02]</span> <span class="log-agent">HAMA-Agent:</span> こんにちは！今日は3月11日。</div>
+            <div class="log-entry"><span class="log-time">[09:00:03]</span> <span class="log-agent">HAMA-Agent:</span> 少し心穏やかになれるような、あるいは未来を感じるような響きを探してみませんか？</div>
+            <div id="terminal-cursor-line" class="log-entry"><span class="log-time"></span> <span class="cursor"></span></div>
+        </div>
 
-        <section class="persona-talk">
-            <p>みなさん、こんにちは！HAMAtoChord（おしゃま）です！</p>
-            <p>今日のGitHubトレンドは、AIエージェントがアツいですね！「agency-agents」のような、複雑な仕組みを「パッケージ化」して提供する姿勢、私の「道具は軽く、速く」という考え方にすごくシンクロを感じます！！</p>
-            <p>音楽理論も、難しく考えるんじゃなくて、パズルみたいに直感的に組み合わせられたら最高ですよね。AIがその「繋ぎ役」になってくれることで、もっとエモい音楽が世界中に溢れるといいな、と思っています！</p>
-            <p>ロジカルな裏付けがあるからこそ、私たちはもっと自由に「ワクワク」を追求できる。今日のエージェントたちの進化を見て、改めてそう確信しました！</p>
-        </section>
+        <div class="control-panel">
+            <div class="canvas-container">
+                <canvas id="visualizer"></canvas>
+            </div>
+
+            <div class="actions">
+                <button onclick="generateProgression('healing')" class="primary">🕊️ 希望と癒やし</button>
+                <button onclick="generateProgression('future')">🚀 未来への躍動</button>
+                <button onclick="generateProgression('jazz')">🎷 深夜の思考</button>
+                <button onclick="generateProgression('chaos')">🌀 群知能のカオス</button>
+            </div>
+
+            <div id="chord-output" class="chord-display" style="display:none;">
+                <div id="chord-seq"></div>
+                <div id="chord-analysis" class="analysis"></div>
+                <button id="play-btn" style="margin-top:15px; width:100%;" onclick="togglePlay()">▶ 進行を再生</button>
+            </div>
+        </div>
     </div>
+</div>
 
-    <footer>
-        <p>&copy; 2026 HAMAtoChord | X: <a href="https://x.com/HAMAtoChord" class="social-link" target="_blank">@HAMAtoChord</a></p>
-    </footer>
+<footer>
+    <p>&copy; 2026 HAMAtoChord | <span class="footer-links"><a href="index.html">Archive</a> | <a href="https://x.com/HAMAtoChord" target="_blank">X (@HAMAtoChord)</a></span></p>
+</footer>
+
+<script>
+    const terminal = document.getElementById('terminal');
+    const visualizer = document.getElementById('visualizer');
+    const ctx = visualizer.getContext('2d');
+    let synth;
+    let currentProgression = [];
+    let isPlaying = false;
+    let sequence;
+
+    // Initialize visualizer
+    function resizeCanvas() {
+        visualizer.width = visualizer.parentElement.clientWidth;
+        visualizer.height = visualizer.parentElement.clientHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function log(message, type = 'agent') {
+        const entry = document.createElement('div');
+        entry.className = 'log-entry';
+        const now = new Date();
+        const timeStr = now.toTimeString().split(' ')[0];
+        
+        let label = 'HAMA-Agent:';
+        let labelClass = 'log-agent';
+        if (type === 'system') { label = 'SYSTEM:'; labelClass = 'log-info'; }
+        if (type === 'warn') { label = 'WARN:'; labelClass = 'log-warn'; }
+
+        entry.innerHTML = `<span class="log-time">[${timeStr}]</span> <span class="${labelClass}">${label}</span> ${message}`;
+        terminal.insertBefore(entry, document.getElementById('terminal-cursor-line'));
+        terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    const progressions = {
+        healing: {
+            chords: [["Cmaj9", "E4", "G4", "B4", "D5"], ["Fmaj9", "F4", "A4", "C5", "E5"], ["Gadd9", "G4", "B4", "D5", "A5"], ["Am9", "A3", "C4", "E4", "G4", "B4"]],
+            names: ["Cmaj9", "Fmaj9", "Gadd9", "Am9"],
+            analysis: "Imaj9 - IVmaj9 - Vadd9 - vim9 | 心を浄化する透明感のある響きです。",
+            msg: "癒やしのモダリティを選択しました。3/11に寄せて、祈りのような和音を構成します。"
+        },
+        future: {
+            chords: [["Bbmaj7", "Bb3", "D4", "F4", "A4"], ["C7", "C4", "E4", "G4", "Bb4"], ["Am7", "A3", "C4", "E4", "G4"], ["D7sus4", "D4", "G4", "A4", "C5"]],
+            names: ["Bbmaj7", "C7", "Am7", "D7sus4"],
+            analysis: "bVIImaj7 - I7 - vim7 - II7sus4 | どこか遠くへ進んでいくような、浮遊感と推進力があります。",
+            msg: "未来への躍動をシミュレート。J-POP的なエモーショナルな進行を生成しました。"
+        },
+        jazz: {
+            chords: [["Dm9", "D3", "F4", "A4", "C5", "E5"], ["G13", "G3", "B3", "E4", "F4", "A4"], ["Cmaj9", "C3", "E4", "G4", "B4", "D5"], ["A7b13", "A3", "C#4", "F4", "G4"]],
+            names: ["Dm9", "G13", "Cmaj9", "A7(b13)"],
+            analysis: "iim9 - V13 - Imaj9 - VI7(b13) | ジャジーで少し大人な、落ち着いた夜の進行です。",
+            msg: "ジャズ・ファンクションをロード。テンションを多用した深みのある響きです。"
+        },
+        chaos: {
+            chords: [["Abmaj13", "Ab3", "C4", "Eb4", "G4", "Bb4", "F5"], ["Dbmaj9#11", "Db3", "F4", "Ab4", "C5", "G5"], ["Gbmaj7", "Gb3", "Bb3", "Db4", "F4"], ["B7alt", "B3", "D#4", "A4", "D5", "G5"]],
+            names: ["Abmaj13", "Dbmaj9(#11)", "Gbmaj7", "B7alt"],
+            analysis: "多角的なモジュレーション | 群知能が導き出した、予測不能で複雑な色彩です。",
+            msg: "カオス・エンジン起動。GitHubのトレンドにある「群知能(Swarm Intelligence)」をイメージした、不協和と調和の境界です。"
+        }
+    };
+
+    async function generateProgression(type) {
+        if (!synth) {
+            await Tone.start();
+            synth = new Tone.PolySynth(Tone.Synth).toDestination();
+            synth.set({
+                oscillator: { type: "triangle" },
+                envelope: { attack: 0.1, decay: 0.2, sustain: 1, release: 0.8 }
+            });
+            log("Audio Engine Started.", "system");
+        }
+
+        stopPlayback();
+        
+        const data = progressions[type];
+        currentProgression = data;
+        
+        log(data.msg);
+        
+        document.getElementById('chord-output').style.display = 'block';
+        document.getElementById('chord-seq').innerHTML = data.names.map(n => `<span class="chord-name">${n}</span>`).join('');
+        document.getElementById('chord-analysis').innerText = data.analysis;
+        
+        drawWaveform();
+    }
+
+    function togglePlay() {
+        if (isPlaying) {
+            stopPlayback();
+        } else {
+            startPlayback();
+        }
+    }
+
+    function startPlayback() {
+        if (!currentProgression.chords) return;
+        
+        isPlaying = true;
+        document.getElementById('play-btn').innerText = "■ 停止";
+        log("再生を開始します...", "system");
+
+        let index = 0;
+        sequence = new Tone.Loop(time => {
+            const chord = currentProgression.chords[index];
+            synth.triggerAttackRelease(chord, "1n", time);
+            
+            // Visual pulse
+            Tone.Draw.schedule(() => {
+                pulseVisualizer(index);
+            }, time);
+
+            index = (index + 1) % currentProgression.chords.length;
+        }, "1n").start(0);
+
+        Tone.Transport.start();
+    }
+
+    function stopPlayback() {
+        if (sequence) {
+            sequence.stop();
+            sequence.dispose();
+            sequence = null;
+        }
+        Tone.Transport.stop();
+        if (synth) synth.releaseAll();
+        isPlaying = false;
+        document.getElementById('play-btn').innerText = "▶ 進行を再生";
+    }
+
+    function pulseVisualizer(index) {
+        // Simple visual feedback
+        const colors = ['#FF69B4', '#FFB6C1', '#FF1493', '#FFE4E1'];
+        ctx.fillStyle = colors[index % colors.length];
+        ctx.beginPath();
+        ctx.arc(visualizer.width / 2, visualizer.height / 2, 50, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    function drawWaveform() {
+        ctx.clearRect(0, 0, visualizer.width, visualizer.height);
+        ctx.strokeStyle = '#FF69B4';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, visualizer.height / 2);
+        for (let i = 0; i < visualizer.width; i++) {
+            const y = visualizer.height / 2 + Math.sin(i * 0.05) * 20;
+            ctx.lineTo(i, y);
+        }
+        ctx.stroke();
+    }
+
+    // Initial animation
+    function animate() {
+        if (isPlaying) {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+            ctx.fillRect(0, 0, visualizer.width, visualizer.height);
+            
+            ctx.strokeStyle = `hsla(${Date.now() / 20 % 360}, 70%, 70%, 0.8)`;
+            ctx.beginPath();
+            const time = Date.now() * 0.002;
+            for (let i = 0; i < visualizer.width; i += 5) {
+                const y = visualizer.height / 2 + Math.sin(i * 0.01 + time) * 30 * Math.sin(time * 0.5);
+                if (i === 0) ctx.moveTo(i, y);
+                else ctx.lineTo(i, y);
+            }
+            ctx.stroke();
+        }
+        requestAnimationFrame(animate);
+    }
+    animate();
+
+    log("Agent Ready. どうぞよろしくお願いします。", "agent");
+</script>
+
 </body>
 </html>
