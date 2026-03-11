@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hanami Harmony | Sakura & Pollen Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, #fff5f7 0%, #f0fdf4 100%);
+            min-height: 100vh;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 1.5rem;
+        }
+        .sakura-pink { color: #ffb7c5; }
+        .sakura-bg { background-color: #ffb7c5; }
+        .pollen-yellow { color: #d4d44d; }
+        .pollen-bg { background-color: #d4d44d; }
+        .harmony-gradient {
+            background: linear-gradient(90deg, #ffb7c5, #8fbc8f);
+        }
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .float-icon { animation: float 3s ease-in-out infinite; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-8">
+            <div class="flex items-center gap-3">
+                <div class="p-3 bg-white rounded-2xl shadow-sm float-icon">
+                    <i data-lucide="flower-2" class="sakura-pink w-8 h-8"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Hanami Harmony</h1>
+                    <p class="text-sm text-gray-500">Beauty vs. Pollen Balance</p>
+                </div>
+            </div>
+            <div id="date-display" class="text-right hidden md:block">
+                <p class="text-lg font-medium text-gray-700" id="current-date"></p>
+                <p class="text-xs text-gray-400">Tokyo, Japan</p>
+            </div>
+        </header>
+
+        <!-- Main Score -->
+        <section class="glass p-8 mb-8 text-center shadow-xl">
+            <h2 class="text-gray-600 mb-2 uppercase tracking-widest text-sm font-semibold">Today's Harmony Score</h2>
+            <div class="relative inline-block mb-4">
+                <svg class="w-48 h-48">
+                    <circle cx="96" cy="96" r="88" stroke="#e5e7eb" stroke-width="12" fill="none" />
+                    <circle id="score-circle" cx="96" cy="96" r="88" stroke="url(#gradient)" stroke-width="12" fill="none" 
+                            stroke-dasharray="552.92" stroke-dashoffset="552.92" stroke-linecap="round" 
+                            style="transition: stroke-dashoffset 1.5s ease-out;" />
+                    <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#ffb7c5;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#8fbc8f;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    <span id="score-value" class="text-5xl font-bold text-gray-800">0</span>
+                </div>
+            </div>
+            <p id="harmony-msg" class="text-gray-700 italic">Calculating the perfect moment...</p>
+        </section>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <!-- Sakura Progress -->
+            <section class="glass p-6 shadow-lg">
+                <div class="flex items-center gap-2 mb-6">
+                    <i data-lucide="info" class="w-5 h-5 text-pink-400"></i>
+                    <h3 class="font-bold text-gray-800">Sakura Status</h3>
+                </div>
+                <div class="space-y-6" id="city-stats">
+                    <!-- Cities will be injected here -->
+                </div>
+            </section>
+
+            <!-- Pollen Alert -->
+            <section class="glass p-6 shadow-lg">
+                <div class="flex items-center gap-2 mb-6">
+                    <i data-lucide="wind" class="w-5 h-5 text-yellow-500"></i>
+                    <h3 class="font-bold text-gray-800">Pollen Alert (杉/檜)</h3>
+                </div>
+                <div id="pollen-content" class="text-center py-4">
+                    <div class="text-6xl mb-4" id="pollen-icon">😷</div>
+                    <div id="pollen-level-text" class="text-2xl font-bold text-yellow-600 mb-2">Very High</div>
+                    <p class="text-sm text-gray-500 px-4">Cedar pollen is peaking today. Protective eyewear and masks are highly recommended.</p>
+                </div>
+            </section>
+        </div>
+
+        <!-- Favorites -->
+        <section class="glass p-6 shadow-lg mb-8">
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="heart" class="w-5 h-5 text-red-400"></i>
+                    <h3 class="font-bold text-gray-800">Your Favorite Spots</h3>
+                </div>
+                <button onclick="addCurrentSpot()" class="text-xs bg-pink-100 text-pink-600 px-3 py-1 rounded-full hover:bg-pink-200 transition">
+                    + Add New
+                </button>
+            </div>
+            <div id="favorites-list" class="flex flex-wrap gap-3">
+                <!-- Favorites injected here -->
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-400 text-xs py-4">
+            <p>© 2026 Hanami Harmony - Daily Web Prototype</p>
+            <p>Data simulated for March 12, 2026</p>
+        </footer>
+    </div>
+
+    <script>
+        // Data Simulation
+        const cities = [
+            { name: 'Tokyo', bloom: 35, pollen: 'Extremely High' },
+            { name: 'Kyoto', bloom: 20, pollen: 'High' },
+            { name: 'Osaka', bloom: 25, pollen: 'High' },
+            { name: 'Fukuoka', bloom: 45, pollen: 'Moderate' }
+        ];
+
+        const harmonyMessages = [
+            "Heavy pollen, but the buds are waking up. Mask up!",
+            "Perfect balance found in the early morning air.",
+            "Sakura are calling, but your nose might disagree.",
+            "Visual bliss, respiratory challenge. Worth it?"
+        ];
+
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Date Display
+        const dateOptions = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', dateOptions);
+
+        // Favorites Logic
+        let favorites = JSON.parse(localStorage.getItem('hanami_favorites')) || ['Shinjuku Gyoen', 'Ueno Park'];
+
+        function renderFavorites() {
+            const list = document.getElementById('favorites-list');
+            list.innerHTML = favorites.map(f => `
+                <div class="bg-white px-4 py-2 rounded-xl shadow-sm border border-pink-50 flex items-center gap-2 group">
+                    <span class="text-sm text-gray-700">${f}</span>
+                    <button onclick="removeFavorite('${f}')" class="text-gray-300 hover:text-red-400 opacity-0 group-hover:opacity-100 transition">
+                        <i data-lucide="x" class="w-3 h-3"></i>
+                    </button>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function addCurrentSpot() {
+            const spot = prompt("Enter a spot name:");
+            if (spot && !favorites.includes(spot)) {
+                favorites.push(spot);
+                localStorage.setItem('hanami_favorites', JSON.stringify(favorites));
+                renderFavorites();
+            }
+        }
+
+        function removeFavorite(name) {
+            favorites = favorites.filter(f => f !== name);
+            localStorage.setItem('hanami_favorites', JSON.stringify(favorites));
+            renderFavorites();
+        }
+
+        // Stats Animation
+        function initApp() {
+            const score = 68;
+            const circle = document.getElementById('score-circle');
+            const scoreVal = document.getElementById('score-value');
+            const msg = document.getElementById('harmony-msg');
+            const cityContainer = document.getElementById('city-stats');
+
+            // Animate Score
+            const offset = 552.92 - (552.92 * score / 100);
+            circle.style.strokeDashoffset = offset;
+            
+            let count = 0;
+            const interval = setInterval(() => {
+                if (count >= score) clearInterval(interval);
+                scoreVal.textContent = count;
+                count++;
+            }, 20);
+
+            msg.textContent = harmonyMessages[Math.floor(Math.random() * harmonyMessages.length)];
+
+            // Render Cities
+            cityContainer.innerHTML = cities.map(c => `
+                <div>
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="font-medium text-gray-700">${c.name}</span>
+                        <span class="text-pink-500 font-bold">${c.bloom}% Bloom</span>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-2">
+                        <div class="bg-pink-300 h-2 rounded-full transition-all duration-1000" style="width: ${c.bloom}%"></div>
+                    </div>
+                    <div class="text-[10px] text-gray-400 mt-1 flex justify-between">
+                        <span>Status: Buds swelling</span>
+                        <span class="text-yellow-600">Pollen: ${c.pollen}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            renderFavorites();
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>
