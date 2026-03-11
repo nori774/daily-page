@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HAMAtoChord Daily Page Archive</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF69B4;
+            --secondary: #FFB6C1;
+            --accent: #FF1493;
+            --bg-gradient: linear-gradient(135deg, #FFE4E1, #FFB6C1, #FF69B4);
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', 'Noto Sans JP', sans-serif;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 40px 0;
+            padding: 32px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(8px);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        h1 {
+            color: var(--accent);
+            font-size: 2.2rem;
+            margin: 0;
+        }
+        .archive-list {
+            list-style: none;
+            padding: 0;
+        }
+        .archive-item {
+            margin-bottom: 12px;
+            padding: 16px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+        .archive-item:hover {
+            transform: translateX(8px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .archive-item a {
+            text-decoration: none;
+            color: var(--accent);
+            font-weight: 700;
+            display: block;
+        }
+        footer {
+            margin-top: auto;
+            padding: 40px 0;
+            text-align: center;
+            color: white;
+        }
+        .social-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>HAMAtoChord Daily Archive</h1>
+            <p>毎日のトレンドと、私のちょっとした独り言を集めています！</p>
+        </header>
+
+        <ul class="archive-list">
+            <li class="archive-item">
+                <a href="2026-03-11.html">2026-03-11: AIエージェントと群知能の進化</a>
+            </li>
+        </ul>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 HAMAtoChord | X: <a href="https://x.com/HAMAtoChord" class="social-link" target="_blank">@HAMAtoChord</a></p>
+    </footer>
+</body>
+</html>
