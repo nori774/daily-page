@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumina Persona Architect - Discover Your Creative Soul</title>
+    <script src="https://cdn.tailwindcss.org"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+JP:wght@300;500;700&display=swap');
+
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --pop-pink: #ff007a;
+            --pop-blue: #00f0ff;
+            --pop-purple: #bc00ff;
+        }
+
+        body {
+            background: #050505;
+            color: #ffffff;
+            font-family: 'Noto Sans JP', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .orbitron { font-family: 'Orbitron', sans-serif; }
+
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+        }
+
+        .pink-glow {
+            box-shadow: 0 0 20px rgba(255, 0, 122, 0.4);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 10px rgba(255, 0, 122, 0.8);
+        }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 20% 30%, rgba(255, 0, 122, 0.15), transparent 40%),
+                        radial-gradient(circle at 80% 70%, rgba(0, 240, 255, 0.1), transparent 40%);
+            animation: bgShift 20s infinite alternate;
+        }
+
+        @keyframes bgShift {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        .persona-card {
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .persona-card:hover {
+            transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+        }
+
+        .fade-in { animation: fadeIn 0.8s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-pop {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .btn-pop::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-pop:active::after {
+            width: 300px;
+            height: 300px;
+            opacity: 0;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+
+        input[type="range"]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: var(--pop-pink);
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 0 10px var(--pop-pink);
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center p-4 md:p-8">
+    <div class="animated-bg"></div>
+
+    <!-- Header -->
+    <header class="w-full max-w-4xl flex justify-between items-center mb-12 fade-in">
+        <div class="flex items-center space-x-3">
+            <div class="p-2 bg-pink-600 rounded-lg pink-glow">
+                <i data-lucide="sparkles" class="text-white w-6 h-6"></i>
+            </div>
+            <h1 class="orbitron text-2xl font-bold tracking-tighter text-glow">LUMINA <span class="text-pink-500">ARCHITECT</span></h1>
+        </div>
+        <div class="flex space-x-4">
+            <button id="historyBtn" class="p-2 glass rounded-full hover:bg-white/10 transition-colors">
+                <i data-lucide="history" class="w-5 h-5 text-slate-300"></i>
+            </button>
+            <button id="infoBtn" class="p-2 glass rounded-full hover:bg-white/10 transition-colors">
+                <i data-lucide="info" class="w-5 h-5 text-slate-300"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="app" class="w-full max-w-2xl relative">
+        <!-- Start Screen -->
+        <div id="startScreen" class="glass rounded-3xl p-8 md:p-12 text-center fade-in">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6 orbitron leading-tight">DEFINE YOUR<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">CREATIVE GENOME</span></h2>
+            <p class="text-slate-400 mb-10 leading-relaxed">深い自己分析により、あなたのクリエイティブな適性を精密にシミュレートします。10の深層質問に答えて、あなたの「ペルソナ・マトリクス」を構築しましょう。</p>
+            <button id="startTest" class="btn-pop bg-pink-600 hover:bg-pink-500 text-white px-10 py-4 rounded-full text-lg font-bold orbitron pink-glow transition-all">
+                INITIATE SCAN
+            </button>
+        </div>
+
+        <!-- Question Screen -->
+        <div id="questionScreen" class="hidden glass rounded-3xl p-8 md:p-12 fade-in">
+            <div class="flex justify-between items-center mb-8">
+                <span id="questionCount" class="orbitron text-sm text-pink-500 font-bold">Q 01 / 10</span>
+                <div class="w-32 h-1 bg-white/10 rounded-full overflow-hidden">
+                    <div id="progressBar" class="h-full bg-pink-600 transition-all duration-500" style="width: 10%"></div>
+                </div>
+            </div>
+            <h3 id="questionText" class="text-xl md:text-2xl font-medium mb-10 min-h-[4rem]">あなたのインスピレーションはどこから生まれますか？</h3>
+            
+            <div id="options" class="space-y-4">
+                <!-- Options will be injected here -->
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="resultScreen" class="hidden w-full max-w-4xl fade-in">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                <!-- Persona Card -->
+                <div id="personaCard" class="persona-card glass rounded-3xl p-8 relative overflow-hidden border-pink-500/30">
+                    <div class="absolute top-0 right-0 p-6 opacity-20">
+                        <i data-lucide="fingerprint" class="w-24 h-24 text-pink-500"></i>
+                    </div>
+                    <div class="mb-8">
+                        <span class="orbitron text-xs text-pink-500 font-bold tracking-widest uppercase mb-2 block">Certified Persona</span>
+                        <h2 id="resultRole" class="text-4xl font-bold orbitron mb-1">CYBER WEAVER</h2>
+                        <p id="resultTitle" class="text-slate-400 italic">"秩序ある混沌の設計者"</p>
+                    </div>
+                    
+                    <div class="space-y-4 mb-8">
+                        <div id="resultDescription" class="text-sm text-slate-300 leading-relaxed">
+                            あなたは直感と論理を高次元で融合させる、稀有なバランス感覚の持ち主です。
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-white/5 rounded-xl p-4 border border-white/10">
+                            <span class="text-xs text-slate-500 block mb-1">Aura Level</span>
+                            <span id="auraStat" class="orbitron text-xl font-bold text-pink-500">SS</span>
+                        </div>
+                        <div class="bg-white/5 rounded-xl p-4 border border-white/10">
+                            <span class="text-xs text-slate-500 block mb-1">Harmony</span>
+                            <span id="harmonyStat" class="orbitron text-xl font-bold text-blue-400">92%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analysis & Tools -->
+                <div class="space-y-8">
+                    <div class="glass rounded-3xl p-8">
+                        <h4 class="orbitron text-sm font-bold mb-6 text-slate-400 uppercase tracking-widest">Dimension Analysis</h4>
+                        <div class="w-full h-64">
+                            <canvas id="radarChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button id="shareBtn" class="flex-1 btn-pop bg-pink-600 hover:bg-pink-500 text-white px-6 py-4 rounded-2xl font-bold orbitron flex items-center justify-center space-x-2 transition-all">
+                            <i data-lucide="copy" class="w-5 h-5"></i>
+                            <span>COPY RESULT</span>
+                        </button>
+                        <button id="resetBtn" class="sm:w-16 h-16 glass rounded-2xl flex items-center justify-center hover:bg-white/10 transition-all">
+                            <i data-lucide="refresh-cw" class="w-6 h-6 text-slate-300"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- History Overlay -->
+    <div id="historyOverlay" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass w-full max-w-lg rounded-3xl p-8 max-h-[80vh] overflow-hidden flex flex-col">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="orbitron text-xl font-bold">HISTORY</h3>
+                <button id="closeHistory" class="text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div id="historyList" class="space-y-4 overflow-y-auto pr-2">
+                <!-- History items injected here -->
+                <div class="text-center text-slate-500 py-12">履歴がありません</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Data ---
+        const questions = [
+            {
+                text: "真っ白なキャンバスを前にしたとき、あなたの最初のアクションは？",
+                options: [
+                    { text: "完成図を完全にイメージしてから筆を置く", weights: { logic: 10, intuition: 2, chaos: 1, order: 8 } },
+                    { text: "感情の赴くままに一線を引いてみる", weights: { logic: 2, intuition: 10, chaos: 8, order: 1 } },
+                    { text: "他者の既存の作品を分析・参照する", weights: { logic: 8, intuition: 2, chaos: 1, order: 9 } },
+                    { text: "まずは道具を完璧に整える", weights: { logic: 5, intuition: 1, chaos: 1, order: 10 } }
+                ]
+            },
+            {
+                text: "解決不可能な技術的バグに直面しました。どうする？",
+                options: [
+                    { text: "ソースコードを一行ずつ徹底的に見直す", weights: { logic: 10, focus: 8, chaos: 1, order: 8 } },
+                    { text: "一旦寝るか散歩してインスピレーションを待つ", weights: { intuition: 10, focus: 4, chaos: 5, order: 2 } },
+                    { text: "バグを利用して新しい表現ができないか考える", weights: { intuition: 8, chaos: 10, focus: 5, order: 1 } },
+                    { text: "AIやコミュニティに助けを求める", weights: { logic: 5, empathy: 8, intuition: 3, order: 5 } }
+                ]
+            },
+            {
+                text: "あなたの作品における「完璧」の定義は？",
+                options: [
+                    { text: "数理的に破綻のない構造であること", weights: { logic: 10, order: 10, intuition: 1, chaos: 0 } },
+                    { text: "誰かの心を激しく揺さぶること", weights: { empathy: 10, intuition: 8, logic: 2, chaos: 5 } },
+                    { text: "誰も見たことがない新しさを提示すること", weights: { chaos: 8, intuition: 10, order: 2, logic: 5 } },
+                    { text: "永続的に機能し続けること", weights: { order: 8, logic: 8, focus: 10, chaos: 1 } }
+                ]
+            },
+            {
+                text: "他者からの辛辣な批評を受けました。内なる声は？",
+                options: [
+                    { text: "「彼らには理解できない先を行きすぎたのだ」", weights: { intuition: 8, chaos: 5, focus: 8, empathy: 1 } },
+                    { text: "「論理的な欠陥があるのか分析しよう」", weights: { logic: 10, order: 8, empathy: 2, focus: 5 } },
+                    { text: "「もっと寄り添う表現が必要だったかもしれない」", weights: { empathy: 10, intuition: 5, logic: 3, order: 5 } },
+                    { text: "「次で黙らせる最高傑作を作る」", weights: { focus: 10, chaos: 5, logic: 5, order: 5 } }
+                ]
+            },
+            {
+                text: "理想の作業環境は？",
+                options: [
+                    { text: "整理整頓されたミニマルな空間", weights: { order: 10, logic: 5, focus: 8, chaos: 0 } },
+                    { text: "物に溢れ、常に刺激があるカオスな部屋", weights: { chaos: 10, intuition: 10, order: 0, logic: 2 } },
+                    { text: "自然に囲まれた静寂な場所", weights: { intuition: 8, empathy: 8, order: 5, focus: 8 } },
+                    { text: "最新鋭のガジェットに囲まれたラボ", weights: { logic: 8, order: 5, focus: 10, chaos: 3 } }
+                ]
+            },
+            {
+                text: "締め切りまであと1時間。まだ納得がいきません。",
+                options: [
+                    { text: "最後まで微細なピクセル調整にこだわる", weights: { focus: 10, order: 8, intuition: 2, logic: 5 } },
+                    { text: "思い切って大胆なフィルターをかけて変貌させる", weights: { chaos: 10, intuition: 8, order: 1, logic: 3 } },
+                    { text: "優先順位をつけて主要機能の安定性を取る", weights: { logic: 10, order: 10, focus: 5, chaos: 1 } },
+                    { text: "祈る", weights: { intuition: 5, chaos: 8, empathy: 5, focus: 1 } }
+                ]
+            },
+            {
+                text: "AIについてどう感じていますか？",
+                options: [
+                    { text: "自身の思考を拡張する最強の義体", weights: { logic: 10, focus: 8, order: 5, intuition: 5 } },
+                    { text: "人間の魂を模倣する不気味な鏡", weights: { empathy: 8, intuition: 10, logic: 2, chaos: 5 } },
+                    { text: "偶然性を生み出すカオスエンジン", weights: { chaos: 10, intuition: 8, order: 1, logic: 5 } },
+                    { text: "効率化のためのただの道具", weights: { order: 10, logic: 8, focus: 5, empathy: 1 } }
+                ]
+            },
+            {
+                text: "100年後の人々に自分の作品がどう語られたい？",
+                options: [
+                    { text: "「時代の転換点を作った革命家」", weights: { chaos: 10, focus: 8, intuition: 8, order: 1 } },
+                    { text: "「普遍的な美しさを体現した聖典」", weights: { order: 10, empathy: 8, logic: 5, intuition: 5 } },
+                    { text: "「圧倒的な精度で構築された至宝」", weights: { logic: 10, order: 8, focus: 10, chaos: 0 } },
+                    { text: "「人々の記憶に静かに残り続ける光」", weights: { empathy: 10, intuition: 10, logic: 1, chaos: 2 } }
+                ]
+            },
+            {
+                text: "創作のモチベーションの源泉は？",
+                options: [
+                    { text: "知的好奇心の充足", weights: { logic: 10, focus: 8, intuition: 5, chaos: 2 } },
+                    { text: "承認と共感", weights: { empathy: 10, intuition: 5, logic: 2, order: 5 } },
+                    { text: "破壊と再生の衝動", weights: { chaos: 10, intuition: 8, order: 1, focus: 5 } },
+                    { text: "生活の規律とルーチン", weights: { order: 10, focus: 10, logic: 5, chaos: 0 } }
+                ]
+            },
+            {
+                text: "最後に、あなたを象徴する「色」は？",
+                options: [
+                    { text: "鮮烈な蛍光色", weights: { chaos: 10, intuition: 8, focus: 5, order: 2 } },
+                    { text: "純白、または透明", weights: { order: 10, logic: 8, empathy: 5, focus: 5 } },
+                    { text: "漆黒の深い闇", weights: { focus: 10, logic: 5, intuition: 8, chaos: 5 } },
+                    { text: "温かみのあるアースカラー", weights: { empathy: 10, intuition: 5, order: 8, logic: 2 } }
+                ]
+            }
+        ];
+
+        const personas = [
+            {
+                id: "logic_master",
+                name: "ARCHITECT",
+                title: "論理の聖域を築く者",
+                desc: "あなたの思考は数学的な美しさを持ち、細部まで計算され尽くした構造を好みます。堅実さと信頼性こそが最大の武器です。",
+                condition: stats => stats.logic > stats.intuition && stats.order > stats.chaos
+            },
+            {
+                id: "chaos_weaver",
+                name: "GLITCH ARTIST",
+                title: "バグと偶然の支配者",
+                desc: "あなたは予測不可能性を愛し、秩序の隙間に潜む美しさを見出します。あなたの破壊的創造は、世界に新しい視点をもたらします。",
+                condition: stats => stats.chaos > stats.order && stats.intuition > stats.logic
+            },
+            {
+                id: "empath_soul",
+                name: "ECHO RESONATOR",
+                title: "心に響く共鳴者",
+                desc: "あなたの作品は人の感情に深く語りかけます。技術よりも物語を、論理よりも共感を重視し、世界に彩りを与えます。",
+                condition: stats => stats.empathy > 7 && stats.intuition > 6
+            },
+            {
+                id: "focused_monolith",
+                name: "CORE ENGINE",
+                title: "不屈の集中点",
+                desc: "一度決めた道を貫く圧倒的な集中力を持っています。余計なものを削ぎ落とし、本質だけを抽出するミニマリズムの極致です。",
+                condition: stats => stats.focus > 8
+            },
+            {
+                id: "hybrid_phantom",
+                name: "SYNAPSE DANCER",
+                title: "境界線を越える思考体",
+                desc: "論理と直感、秩序と混沌。相反する要素を軽やかに操り、それらを高次元で統合できる万能のクリエイターです。",
+                condition: stats => true // Fallback
+            }
+        ];
+
+        // --- State ---
+        let currentStep = 0;
+        let userStats = {
+            logic: 0,
+            intuition: 0,
+            chaos: 0,
+            order: 0,
+            empathy: 0,
+            focus: 0
+        };
+        let chartInstance = null;
+
+        // --- DOM Elements ---
+        const startScreen = document.getElementById('startScreen');
+        const questionScreen = document.getElementById('questionScreen');
+        const resultScreen = document.getElementById('resultScreen');
+        const startBtn = document.getElementById('startTest');
+        const optionsContainer = document.getElementById('options');
+        const questionText = document.getElementById('questionText');
+        const questionCount = document.getElementById('questionCount');
+        const progressBar = document.getElementById('progressBar');
+        const shareBtn = document.getElementById('shareBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const historyBtn = document.getElementById('historyBtn');
+        const historyOverlay = document.getElementById('historyOverlay');
+        const closeHistory = document.getElementById('closeHistory');
+        const historyList = document.getElementById('historyList');
+
+        // --- Core Functions ---
+        function init() {
+            lucide.createIcons();
+            startBtn.addEventListener('click', startTest);
+            resetBtn.addEventListener('click', resetApp);
+            shareBtn.addEventListener('click', copyResult);
+            historyBtn.addEventListener('click', showHistory);
+            closeHistory.addEventListener('click', () => historyOverlay.classList.add('hidden'));
+        }
+
+        function startTest() {
+            startScreen.classList.add('hidden');
+            questionScreen.classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentStep];
+            questionText.innerText = q.text;
+            questionCount.innerText = `Q ${String(currentStep + 1).padStart(2, '0')} / 10`;
+            progressBar.style.width = `${((currentStep + 1) / 10) * 100}%`;
+
+            optionsContainer.innerHTML = '';
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full glass hover:bg-white/10 p-5 rounded-2xl text-left transition-all border-white/5 hover:border-pink-500/50 flex items-center space-x-4 group';
+                btn.innerHTML = `
+                    <span class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-xs orbitron group-hover:bg-pink-600 transition-colors">${idx + 1}</span>
+                    <span class="flex-1">${opt.text}</span>
+                `;
+                btn.onclick = () => handleOption(opt.weights);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function handleOption(weights) {
+            for (let key in weights) {
+                userStats[key] += weights[key];
+            }
+
+            currentStep++;
+            if (currentStep < questions.length) {
+                questionScreen.classList.add('hidden');
+                setTimeout(() => {
+                    showQuestion();
+                    questionScreen.classList.remove('hidden');
+                }, 50);
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            questionScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+
+            // Normalize stats (0-10)
+            const normalized = {};
+            for (let k in userStats) {
+                normalized[k] = Math.min(10, Math.round(userStats[k] / 5));
+            }
+
+            const persona = personas.find(p => p.condition(normalized)) || personas[personas.length - 1];
+
+            document.getElementById('resultRole').innerText = persona.name;
+            document.getElementById('resultTitle').innerText = `"${persona.title}"`;
+            document.getElementById('resultDescription').innerText = persona.desc;
+            
+            // Random stats for flavor
+            const aura = normalized.focus > 7 ? 'SS' : (normalized.intuition > 7 ? 'S+' : 'A');
+            const harmony = 70 + Math.floor(Math.random() * 29);
+            document.getElementById('auraStat').innerText = aura;
+            document.getElementById('harmonyStat').innerText = `${harmony}%`;
+
+            renderChart(normalized);
+            saveToHistory(persona, aura, harmony);
+        }
+
+        function renderChart(stats) {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+
+            chartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Logic', 'Intuition', 'Chaos', 'Order', 'Empathy', 'Focus'],
+                    datasets: [{
+                        label: 'Persona Profile',
+                        data: [stats.logic, stats.intuition, stats.chaos, stats.order, stats.empathy, stats.focus],
+                        backgroundColor: 'rgba(255, 0, 122, 0.2)',
+                        borderColor: '#ff007a',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#ff007a',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#ff007a'
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            pointLabels: { color: '#94a3b8', font: { family: 'Orbitron', size: 10 } },
+                            ticks: { display: false, stepSize: 2 },
+                            suggestedMin: 0,
+                            suggestedMax: 10
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function copyResult() {
+            const role = document.getElementById('resultRole').innerText;
+            const title = document.getElementById('resultTitle').innerText;
+            const aura = document.getElementById('auraStat').innerText;
+            const text = `【Lumina Persona Architect】\n私のクリエイティブ・ペルソナは…\n\n◆ Role: ${role}\n◆ Title: ${title}\n◆ Aura: ${aura}\n\nあなたの才能を精密スキャンしよう。 #DailyApp #LuminaArchitect\nhttps://tlpt-telepath.github.io/daily-page/lumina-persona-architect.html`;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = shareBtn.innerHTML;
+                shareBtn.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i><span>COPIED!</span>';
+                lucide.createIcons();
+                setTimeout(() => {
+                    shareBtn.innerHTML = originalText;
+                    lucide.createIcons();
+                }, 2000);
+            });
+        }
+
+        function saveToHistory(persona, aura, harmony) {
+            const history = JSON.parse(localStorage.getItem('lumina_history') || '[]');
+            history.unshift({
+                name: persona.name,
+                title: persona.title,
+                aura,
+                harmony,
+                date: new Date().toLocaleDateString()
+            });
+            localStorage.setItem('lumina_history', JSON.stringify(history.slice(0, 10)));
+        }
+
+        function showHistory() {
+            const history = JSON.parse(localStorage.getItem('lumina_history') || '[]');
+            historyOverlay.classList.remove('hidden');
+            
+            if (history.length === 0) {
+                historyList.innerHTML = '<div class="text-center text-slate-500 py-12">履歴がありません</div>';
+                return;
+            }
+
+            historyList.innerHTML = history.map(item => `
+                <div class="glass p-4 rounded-2xl flex justify-between items-center">
+                    <div>
+                        <div class="orbitron text-sm font-bold text-pink-500">${item.name}</div>
+                        <div class="text-xs text-slate-400">${item.date}</div>
+                    </div>
+                    <div class="orbitron text-lg font-bold">${item.aura}</div>
+                </div>
+            `).join('');
+        }
+
+        function resetApp() {
+            currentStep = 0;
+            userStats = { logic: 0, intuition: 0, chaos: 0, order: 0, empathy: 0, focus: 0 };
+            resultScreen.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+        }
+
+        init();
+    </script>
+</body>
+</html>
