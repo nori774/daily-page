@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Rhythm Generator | HAMAtoChord</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.26/Tone.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #0a0a0a;
+            font-family: 'Outfit', 'Noto Sans JP', sans-serif;
+            color: white;
+        }
+        #ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            background: rgba(0,0,0,0.5);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 105, 180, 0.3);
+            pointer-events: none;
+        }
+        h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #FF1493;
+            text-shadow: 0 0 10px #FF1493;
+        }
+        p {
+            margin: 5px 0 0;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        #start-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            cursor: pointer;
+        }
+        #start-button {
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            background: transparent;
+            color: #FF69B4;
+            border: 2px solid #FF69B4;
+            border-radius: 50px;
+            box-shadow: 0 0 20px #FF69B4;
+            transition: all 0.3s;
+            font-family: 'Outfit', sans-serif;
+            font-weight: bold;
+        }
+        #start-button:hover {
+            background: #FF69B4;
+            color: white;
+            box-shadow: 0 0 40px #FF69B4;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<div id="ui">
+    <h1>Neon Rhythm Generator</h1>
+    <p>Tap anywhere to create neon pulses and beats. 🌈🥁</p>
+</div>
+
+<div id="start-overlay" onclick="startApp()">
+    <button id="start-button">START SESSION</button>
+</div>
+
+<script>
+    let circles = [];
+    let synth, drum;
+    let started = false;
+
+    function setup() {
+        createCanvas(windowWidth, windowHeight);
+        
+        // Initialize Audio
+        synth = new Tone.PolySynth(Tone.Synth).toDestination();
+        synth.set({
+            oscillator: { type: "triangle" },
+            envelope: { attack: 0.01, decay: 0.1, sustain: 0.1, release: 0.8 }
+        });
+
+        drum = new Tone.MembraneSynth().toDestination();
+    }
+
+    function draw() {
+        background(10, 10, 10, 30); // Fade effect
+        
+        for (let i = circles.length - 1; i >= 0; i--) {
+            circles[i].update();
+            circles[i].display();
+            if (circles[i].isFinished()) {
+                circles.splice(i, 1);
+            }
+        }
+    }
+
+    function mousePressed() {
+        if (!started) return;
+        
+        const x = mouseX;
+        const y = mouseY;
+        
+        // Play Sound
+        const notes = ["C4", "E4", "G4", "B4", "C5"];
+        const note = notes[floor(random(notes.length))];
+        synth.triggerAttackRelease(note, "8n");
+        drum.triggerAttackRelease("C1", "16n", undefined, 0.5);
+
+        // Create Visual
+        const colors = ["#FF69B4", "#FFB6C1", "#FF1493", "#00CED1", "#9400D3"];
+        const color = colors[floor(random(colors.length))];
+        circles.push(new NeonCircle(x, y, color));
+    }
+
+    function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+    }
+
+    function startApp() {
+        Tone.start();
+        started = true;
+        document.getElementById('start-overlay').style.display = 'none';
+    }
+
+    class NeonCircle {
+        constructor(x, y, color) {
+            this.x = x;
+            this.y = y;
+            this.r = 10;
+            this.maxR = random(100, 300);
+            this.color = color;
+            this.opacity = 255;
+            this.speed = random(2, 5);
+        }
+
+        update() {
+            this.r += this.speed;
+            this.opacity -= (255 / (this.maxR / this.speed));
+        }
+
+        display() {
+            noFill();
+            strokeWeight(4);
+            let c = color(this.color);
+            c.setAlpha(this.opacity);
+            stroke(c);
+            
+            // Glow effect
+            drawingContext.shadowBlur = 15;
+            drawingContext.shadowColor = this.color;
+            
+            ellipse(this.x, this.y, this.r);
+            
+            drawingContext.shadowBlur = 0;
+        }
+
+        isFinished() {
+            return this.opacity <= 0;
+        }
+    }
+</script>
+
+</body>
+</html>
