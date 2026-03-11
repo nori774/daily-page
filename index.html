@@ -4,139 +4,96 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HAMAtoChord Daily App Gallery</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --pink-light: #FFE4E1;
-            --pink-medium: #FFB6C1;
-            --pink-deep: #FF69B4;
-            --pink-vivid: #FF1493;
-            --white: #FFFFFF;
+            --primary: #FF69B4;
+            --secondary: #FFB6C1;
+            --accent: #FF1493;
+            --bg: linear-gradient(135deg, #FFE4E1, #FFB6C1, #FF69B4);
         }
-
         body {
             font-family: 'Outfit', 'Noto Sans JP', sans-serif;
-            background: #fafafa;
+            background: var(--bg);
+            background-attachment: fixed;
             margin: 0;
-            padding: 0;
+            padding: 40px 20px;
             color: #333;
+            min-height: 100vh;
         }
-
-        header {
-            background: linear-gradient(135deg, var(--pink-deep), var(--pink-vivid));
-            color: white;
-            padding: 4rem 2rem;
-            text-align: center;
-            clip-path: ellipse(150% 100% at 50% 0%);
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin: 0;
-        }
-
-        .subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin-top: 0.5rem;
-        }
-
         .container {
-            max-width: 1000px;
-            margin: -2rem auto 4rem;
-            padding: 0 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
-
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .card {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            text-decoration: none;
-            color: inherit;
-            border: 1px solid #eee;
-        }
-
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(255, 20, 147, 0.15);
-        }
-
-        .card-img {
-            height: 180px;
-            background: linear-gradient(135deg, var(--pink-light), var(--pink-medium));
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 4rem;
-        }
-
-        .card-content {
-            padding: 1.5rem;
-        }
-
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: var(--pink-vivid);
-        }
-
-        .card-date {
-            font-size: 0.85rem;
-            color: #888;
-            margin-bottom: 1rem;
-        }
-
-        .card-desc {
-            font-size: 0.95rem;
-            line-height: 1.5;
-            color: #555;
-        }
-
-        footer {
+        h1 {
+            color: var(--accent);
             text-align: center;
-            padding: 4rem 0;
-            color: #aaa;
-            font-size: 0.9rem;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
         }
-
-        footer a {
-            color: var(--pink-deep);
+        .app-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .app-card {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
             text-decoration: none;
+            color: #333;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 2px solid var(--secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .app-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
+            border-color: var(--primary);
+        }
+        .app-date {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 8px;
+        }
+        .app-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+        }
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>HAMAtoChord Daily App Gallery</h1>
-        <p class="subtitle">AIと音楽が交差する、日々の実験的Webアプリたち</p>
-    </header>
-
     <div class="container">
-        <div class="gallery">
-            <!-- App Card -->
-            <a href="chord-personality.html" class="card">
-                <div class="card-img">🎵</div>
-                <div class="card-content">
-                    <div class="card-title">AI 性格診断×音楽コード</div>
-                    <div class="card-date">2026.03.11</div>
-                    <p class="card-desc">あなたの性格や気分にぴったりの「パーソナル・コード」をAIが特定。Web Audioによる演奏機能付き。</p>
-                </div>
+        <h1>💖 HAMAtoChord Daily App Gallery</h1>
+        <div class="app-list" id="app-list">
+            <!-- New apps will be added here -->
+            <a href="nap-swarm-agency.html" class="app-card">
+                <div class="app-date">2026-03-11</div>
+                <div class="app-name">ひるねエージェント・スウォーム</div>
             </a>
-            <!-- More cards will be added here -->
+        </div>
+        <div class="footer">
+            <p>Created by <a href="https://x.com/HAMAtoChord" target="_blank">@HAMAtoChord</a></p>
         </div>
     </div>
-
-    <footer>
-        <p>© 2026 <a href="https://x.com/HAMAtoChord" target="_blank">@HAMAtoChord</a></p>
-    </footer>
 </body>
 </html>
