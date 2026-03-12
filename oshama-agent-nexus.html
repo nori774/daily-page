@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OShama Agent Nexus | 自律型エージェント司令塔</title>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    
+    <!-- Scripts & Styles -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        nexus: {
+                            black: '#020617',
+                            card: 'rgba(15, 23, 42, 0.6)',
+                            accent: '#38bdf8',
+                            purple: '#818cf8',
+                            pink: '#f472b6',
+                            border: 'rgba(255, 255, 255, 0.1)',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #020617;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 0% 100%, rgba(129, 140, 248, 0.1) 0%, transparent 50%),
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+            color: #f8fafc;
+        }
+
+        .glass {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .bento-item {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .bento-item:hover {
+            border-color: rgba(56, 189, 248, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .glow-text {
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
+
+        .scroll-hide::-webkit-scrollbar { display: none; }
+        .scroll-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.05); }
+        }
+        .animate-pulse-slow { animation: pulse-slow 4s infinite ease-in-out; }
+
+        .line-connection {
+            stroke-dasharray: 10;
+            animation: dash 20s linear infinite;
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: 1000; }
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8 font-sans">
+
+    <!-- Header -->
+    <header class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-gradient-to-br from-nexus-accent to-nexus-purple rounded-xl flex items-center justify-center shadow-lg shadow-nexus-accent/20">
+                <i data-lucide="layout-grid" class="text-nexus-black w-6 h-6"></i>
+            </div>
+            <div>
+                <h1 class="text-3xl font-extrabold tracking-tight glow-text">OShama Agent Nexus</h1>
+                <p class="text-nexus-accent text-xs font-mono tracking-widest uppercase">Autonomous Orchestrator v2026.3</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-6 glass rounded-2xl px-6 py-3 border border-nexus-border">
+            <div class="text-center">
+                <span class="block text-[10px] text-slate-500 uppercase tracking-tighter">Active Agents</span>
+                <span class="block text-xl font-bold text-nexus-accent">09</span>
+            </div>
+            <div class="w-[1px] h-8 bg-nexus-border"></div>
+            <div class="text-center">
+                <span class="block text-[10px] text-slate-500 uppercase tracking-tighter">Tasks/Hr</span>
+                <span class="block text-xl font-bold text-nexus-purple">142</span>
+            </div>
+            <div class="w-[1px] h-8 bg-nexus-border"></div>
+            <div class="text-center">
+                <span class="block text-[10px] text-slate-500 uppercase tracking-tighter">Trust Score</span>
+                <span class="block text-xl font-bold text-nexus-pink">98.4%</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Grid -->
+    <main class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 grid-rows-auto gap-6 h-auto">
+        
+        <!-- Nexus Canvas (Visual Flow) -->
+        <div class="md:col-span-3 md:row-span-2 glass rounded-3xl p-6 relative overflow-hidden bento-item group min-h-[400px]">
+            <div class="flex justify-between items-center mb-6 relative z-10">
+                <h2 class="flex items-center gap-2 text-xl font-bold">
+                    <i data-lucide="share-2" class="text-nexus-accent w-5 h-5"></i>
+                    Nexus Canvas
+                </h2>
+                <div class="flex gap-2">
+                    <span class="px-3 py-1 bg-nexus-accent/10 border border-nexus-accent/20 rounded-full text-[10px] text-nexus-accent font-mono">LIVE OPTIMIZING</span>
+                    <button class="p-1 hover:bg-white/5 rounded-md transition-colors"><i data-lucide="maximize" class="w-4 h-4 text-slate-400"></i></button>
+                </div>
+            </div>
+            
+            <!-- SVG Flow Simulation -->
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40">
+                <svg width="100%" height="100%" viewBox="0 0 800 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M100 200 Q 250 100, 400 200" stroke="url(#grad1)" stroke-width="2" class="line-connection" />
+                    <path d="M400 200 Q 550 300, 700 200" stroke="url(#grad2)" stroke-width="2" class="line-connection" />
+                    <path d="M100 200 Q 400 350, 700 200" stroke="url(#grad3)" stroke-width="1" class="line-connection" opacity="0.3" />
+                    <defs>
+                        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#38bdf8" />
+                            <stop offset="100%" stop-color="#818cf8" />
+                        </linearGradient>
+                        <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#818cf8" />
+                            <stop offset="100%" stop-color="#f472b6" />
+                        </linearGradient>
+                        <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#38bdf8" />
+                            <stop offset="100%" stop-color="#f472b6" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+
+            <!-- Agent Nodes -->
+            <div class="relative z-10 grid grid-cols-3 gap-12 h-full items-center">
+                <div class="flex flex-col items-center gap-3">
+                    <div class="w-16 h-16 rounded-2xl bg-nexus-accent/20 border border-nexus-accent/40 flex items-center justify-center animate-pulse-slow">
+                        <i data-lucide="search" class="text-nexus-accent w-8 h-8"></i>
+                    </div>
+                    <div class="text-center">
+                        <span class="block font-bold">Trend_Agent</span>
+                        <span class="text-[10px] text-slate-500 font-mono uppercase tracking-tighter">Searching...</span>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center gap-3">
+                    <div class="w-20 h-20 rounded-3xl bg-nexus-purple/20 border border-nexus-purple/40 flex items-center justify-center shadow-xl shadow-nexus-purple/10">
+                        <i data-lucide="cpu" class="text-nexus-purple w-10 h-10"></i>
+                    </div>
+                    <div class="text-center">
+                        <span class="block font-bold text-lg">Nexus_Core</span>
+                        <span class="text-[10px] text-nexus-purple font-mono uppercase tracking-tighter">Orchestrating</span>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center gap-3">
+                    <div class="w-16 h-16 rounded-2xl bg-nexus-pink/20 border border-nexus-pink/40 flex items-center justify-center">
+                        <i data-lucide="pen-tool" class="text-nexus-pink w-8 h-8"></i>
+                    </div>
+                    <div class="text-center">
+                        <span class="block font-bold">Content_Agent</span>
+                        <span class="text-[10px] text-slate-500 font-mono uppercase tracking-tighter">Drafting</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reasoning Stream (Real-time Log) -->
+        <div class="md:col-span-1 md:row-span-3 glass rounded-3xl p-6 bento-item flex flex-col min-h-[500px]">
+            <h2 class="flex items-center gap-2 text-xl font-bold mb-4">
+                <i data-lucide="terminal" class="text-nexus-pink w-5 h-5"></i>
+                Reasoning Stream
+            </h2>
+            <div id="stream" class="flex-1 font-mono text-xs space-y-3 overflow-y-auto scroll-hide">
+                <div class="text-nexus-accent opacity-60">[09:21:04] Initializing Nexus...</div>
+                <div class="text-nexus-purple">[09:21:05] Nexus_Core: Scanning available models</div>
+                <div class="text-slate-400">[09:21:06] system: GPT-4o linked successfully</div>
+                <div class="text-nexus-accent">[09:21:08] Trend_Agent: Starting global trend analysis</div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-nexus-border">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-[10px] text-slate-500 uppercase">Self-Verification</span>
+                    <span class="text-[10px] text-emerald-400">ACTIVE</span>
+                </div>
+                <div class="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-full bg-emerald-500 w-4/5 animate-pulse"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Verification Metrics -->
+        <div class="md:col-span-1 glass rounded-3xl p-6 bento-item">
+            <h3 class="text-xs font-mono text-slate-500 uppercase tracking-widest mb-4">Hallucination Risk</h3>
+            <div class="relative h-32 flex items-center justify-center">
+                <svg class="w-24 h-24 transform -rotate-90">
+                    <circle cx="48" cy="48" r="40" stroke="currentColor" stroke-width="8" fill="transparent" class="text-white/5" />
+                    <circle cx="48" cy="48" r="40" stroke="currentColor" stroke-width="8" fill="transparent" stroke-dasharray="251.2" stroke-dashoffset="230" class="text-nexus-accent transition-all duration-1000" />
+                </svg>
+                <span class="absolute text-2xl font-bold">0.8%</span>
+            </div>
+            <p class="text-[10px] text-slate-400 text-center mt-2">Verified via Multi-Agent Consensus</p>
+        </div>
+
+        <!-- Specialized Agents -->
+        <div class="md:col-span-2 glass rounded-3xl p-6 bento-item flex flex-col justify-between">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="font-bold text-lg mb-1">Specialized Workforce</h3>
+                    <p class="text-xs text-slate-500">Managing 09 autonomous specialists</p>
+                </div>
+                <button class="p-2 bg-nexus-accent/10 rounded-xl hover:bg-nexus-accent/20 transition-colors"><i data-lucide="plus" class="w-4 h-4 text-nexus-accent"></i></button>
+            </div>
+            <div class="flex gap-4 mt-6">
+                <div class="flex-1 p-3 bg-white/5 rounded-2xl border border-nexus-border">
+                    <i data-lucide="code" class="w-4 h-4 text-nexus-purple mb-2"></i>
+                    <span class="block text-xs font-bold">Kaito_Dev</span>
+                    <span class="text-[10px] text-emerald-400">Coding</span>
+                </div>
+                <div class="flex-1 p-3 bg-white/5 rounded-2xl border border-nexus-border">
+                    <i data-lucide="palette" class="w-4 h-4 text-nexus-pink mb-2"></i>
+                    <span class="block text-xs font-bold">Mio_Designer</span>
+                    <span class="text-[10px] text-nexus-purple">Ideating</span>
+                </div>
+                <div class="flex-1 p-3 bg-white/5 rounded-2xl border border-nexus-border">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-nexus-accent mb-2"></i>
+                    <span class="block text-xs font-bold">Sara_QA</span>
+                    <span class="text-[10px] text-slate-500">Standby</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Privacy Vault Status -->
+        <div class="md:col-span-1 glass rounded-3xl p-6 bento-item bg-gradient-to-br from-nexus-card to-nexus-purple/10">
+            <div class="flex items-center gap-2 mb-4">
+                <i data-lucide="lock" class="text-nexus-purple w-4 h-4"></i>
+                <h3 class="text-xs font-mono text-slate-300 uppercase tracking-widest">Privacy Vault</h3>
+            </div>
+            <div class="text-2xl font-bold mb-2">ENABLED</div>
+            <p class="text-[10px] text-slate-400 leading-tight">All agent memory stored via Confidential Computing protocols. Local mode active.</p>
+        </div>
+
+        <!-- Call to Action / Global Sync -->
+        <div class="md:col-span-3 glass rounded-3xl p-8 bento-item flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative">
+            <div class="absolute inset-0 bg-gradient-to-r from-nexus-accent/10 to-transparent pointer-events-none"></div>
+            <div class="relative z-10">
+                <h2 class="text-2xl font-bold mb-2">Deploy New Workflow</h2>
+                <p class="text-sm text-slate-400">Describe your goal in natural language and the Nexus will orchestrate the team.</p>
+            </div>
+            <div class="relative z-10 w-full md:w-auto flex flex-col sm:flex-row gap-3">
+                <input type="text" placeholder="例: 今週のAIトレンドを要約してブログ化して" class="bg-nexus-black/50 border border-nexus-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-nexus-accent min-w-[300px]">
+                <button onclick="triggerSync()" class="bg-nexus-accent text-nexus-black px-6 py-3 rounded-xl font-bold hover:bg-white transition-all active:scale-95 whitespace-nowrap">
+                    EXECUTE NEXUS
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-7xl mx-auto mt-12 pt-8 border-t border-nexus-border flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-mono text-slate-500 uppercase tracking-widest">
+        <div>&copy; 2026 OShama Squad / Agency Agents Platform</div>
+        <div class="flex gap-8">
+            <a href="https://x.com/oshama_vibe" target="_blank" class="hover:text-nexus-accent transition-colors flex items-center gap-2">
+                <i data-lucide="twitter" class="w-3 h-3"></i>
+                X / Twitter
+            </a>
+            <a href="#" class="hover:text-nexus-purple transition-colors flex items-center gap-2">
+                <i data-lucide="github" class="w-3 h-3"></i>
+                GitHub
+            </a>
+            <div class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                System: Optimal
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Lucide Icons
+        lucide.createIcons();
+
+        // Stream Simulation
+        const stream = document.getElementById('stream');
+        const logs = [
+            { text: "[Nexus_Core] New objective received: Social Media Automation", color: "nexus-purple" },
+            { text: "[Trend_Agent] Fetching latest keywords from X API...", color: "nexus-accent" },
+            { text: "[Trend_Agent] Found high interest in 'Agentic Workflows'", color: "nexus-accent" },
+            { text: "[Nexus_Core] Delegating draft task to Content_Agent", color: "nexus-purple" },
+            { text: "[Content_Agent] Analyzing target audience 'DevOps Engineers'", color: "nexus-pink" },
+            { text: "[Content_Agent] Writing draft: 'The Rise of Autonomous Orchestrators'", color: "nexus-pink" },
+            { text: "[Sara_QA] Verifying content for technical accuracy...", color: "slate-400" },
+            { text: "[Sara_QA] Pass: 99% accuracy confirmed", color: "emerald-400" },
+            { text: "[Nexus_Core] Workflow completed in 14.2 seconds", color: "nexus-purple" },
+            { text: "[System] Waiting for next instruction...", color: "nexus-accent" }
+        ];
+
+        let logIdx = 0;
+        function addLog() {
+            const log = logs[logIdx];
+            const div = document.createElement('div');
+            div.className = `text-${log.color} opacity-0 transition-opacity duration-500`;
+            div.innerText = `[${new Date().toLocaleTimeString()}] ${log.text}`;
+            stream.appendChild(div);
+            
+            // Scroll to bottom
+            stream.scrollTop = stream.scrollHeight;
+            
+            // Fade in
+            setTimeout(() => div.classList.replace('opacity-0', 'opacity-100'), 10);
+
+            logIdx = (logIdx + 1) % logs.length;
+            
+            // LocalStorage history
+            let history = JSON.parse(localStorage.getItem('nexus_logs') || '[]');
+            history.push({ time: new Date().toLocaleTimeString(), text: log.text });
+            if (history.length > 100) history.shift();
+            localStorage.setItem('nexus_logs', JSON.stringify(history));
+        }
+
+        setInterval(addLog, 4000);
+
+        function triggerSync() {
+            const btn = event.currentTarget;
+            const originalText = btn.innerText;
+            btn.innerText = "ORCHESTRATING...";
+            btn.disabled = true;
+            
+            // Simulation
+            setTimeout(() => {
+                btn.innerText = "SUCCESS";
+                btn.classList.replace('bg-nexus-accent', 'bg-emerald-500');
+                
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.classList.replace('bg-emerald-500', 'bg-nexus-accent');
+                    btn.disabled = false;
+                }, 2000);
+            }, 1500);
+
+            gtag('event', 'nexus_execute', {
+                'event_category': 'interaction',
+                'event_label': 'Nexus Command Center'
+            });
+        }
+    </script>
+</body>
+</html>
