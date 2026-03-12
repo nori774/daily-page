@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>サンドイッチ・ハーモニー占い | Sandwich Harmony Fortune</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <style>
+        body {
+            font-family: 'Zen Maru Gothic', sans-serif;
+            background-color: #fff9f0;
+            color: #5d4037;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 2px solid #eddfd0;
+            border-radius: 2rem;
+        }
+        .bread-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .bread-btn:hover {
+            transform: scale(1.05);
+            background-color: #ffe0b2;
+        }
+        .bread-btn.active {
+            background-color: #ffb74d;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 183, 77, 0.4);
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full">
+        <header class="text-center mb-8">
+            <div class="inline-block p-4 bg-orange-100 rounded-full mb-4 animate-float">
+                <i data-lucide="sandwich" class="w-12 h-12 text-orange-500"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-orange-800">サンドイッチ・ハーモニー占い</h1>
+            <p class="text-sm text-orange-600">3月13日はサンドイッチデー！今日の運勢を挟み込もう</p>
+        </header>
+
+        <main class="card p-6 shadow-xl">
+            <div id="step-container">
+                <!-- Step 1: Bread -->
+                <div id="step-1" class="space-y-4">
+                    <h2 class="text-lg font-bold flex items-center gap-2">
+                        <i data-lucide="chef-hat" class="w-5 h-5"></i>
+                        STEP 1: パンを選んでね
+                    </h2>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="selectOption('bread', '食パン', this)" class="bread-btn p-4 border-2 border-orange-100 rounded-xl flex flex-col items-center gap-2">
+                            <i data-lucide="square" class="w-8 h-8"></i>
+                            <span>ふわふわ食パン</span>
+                        </button>
+                        <button onclick="selectOption('bread', 'バゲット', this)" class="bread-btn p-4 border-2 border-orange-100 rounded-xl flex flex-col items-center gap-2">
+                            <i data-lucide="spline" class="w-8 h-8"></i>
+                            <span>パリパリバゲット</span>
+                        </button>
+                        <button onclick="selectOption('bread', 'クロワッサン', this)" class="bread-btn p-4 border-2 border-orange-100 rounded-xl flex flex-col items-center gap-2">
+                            <i data-lucide="moon" class="w-8 h-8"></i>
+                            <span>サクサククロワッサン</span>
+                        </button>
+                        <button onclick="selectOption('bread', 'ベーグル', this)" class="bread-btn p-4 border-2 border-orange-100 rounded-xl flex flex-col items-center gap-2">
+                            <i data-lucide="circle" class="w-8 h-8"></i>
+                            <span>もちもちベーグル</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Main -->
+                <div id="step-2" class="space-y-4 hidden">
+                    <h2 class="text-lg font-bold flex items-center gap-2">
+                        <i data-lucide="utensils" class="w-5 h-5"></i>
+                        STEP 2: 中身を挟もう
+                    </h2>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="selectOption('main', 'たまご', this)" class="bread-btn p-4 border-2 border-orange-100 rounded-xl flex flex-col items-center gap-2">
+                            <i data-lucide="egg" class="w-8 h-8"></i>
+                            <span>濃厚たまご</span>
+                        </button>
+                        <button onclick="selectOption('main', 'ハムチーズ', this)" class="bread-btn p-4 border-2 border-orange-100 rounded-xl flex flex-col items-center gap-2">
+                            <i data-lucide="layers" class="w-8 h-8"></i>
+                            <span>王道ハムチーズ</span>
+                        </button>
+                        <button onclick="selectOption('main', 'アボカドエビ', this)" class="bread-btn p-4 border-2 border-orange-100 rounded-xl flex flex-col items-center gap-2">
+                            <i data-lucide="shrub" class="w-8 h-8"></i>
+                            <span>贅沢アボカドエビ</span>
+                        </button>
+                        <button onclick="selectOption('main', 'フルーツ', this)" class="bread-btn p-4 border-2 border-orange-100 rounded-xl flex flex-col items-center gap-2">
+                            <i data-lucide="strawberry" class="w-8 h-8"></i>
+                            <span>幸せフルーツ</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Sauce -->
+                <div id="step-3" class="space-y-4 hidden">
+                    <h2 class="text-lg font-bold flex items-center gap-2">
+                        <i data-lucide="droplet" class="w-5 h-5"></i>
+                        STEP 3: 隠し味は？
+                    </h2>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="selectOption('sauce', 'マヨネーズ', this)" class="bread-btn p-4 border-2 border-orange-100 rounded-xl flex flex-col items-center gap-2">
+                            <i data-lucide="sparkles" class="w-8 h-8"></i>
+                            <span>マヨネーズ</span>
+                        </button>
+                        <button onclick="selectOption('sauce', 'マスタード', this)" class="bread-btn p-4 border-2 border-orange-100 rounded-xl flex flex-col items-center gap-2">
+                            <i data-lucide="zap" class="w-8 h-8"></i>
+                            <span>マスタード</span>
+                        </button>
+                        <button onclick="selectOption('sauce', 'ハチミツ', this)" class="bread-btn p-4 border-2 border-orange-100 rounded-xl flex flex-col items-center gap-2">
+                            <i data-lucide="sun" class="w-8 h-8"></i>
+                            <span>ハチミツ</span>
+                        </button>
+                        <button onclick="selectOption('sauce', 'バジル', this)" class="bread-btn p-4 border-2 border-orange-100 rounded-xl flex flex-col items-center gap-2">
+                            <i data-lucide="leaf" class="w-8 h-8"></i>
+                            <span>バジル</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Result -->
+                <div id="result" class="space-y-6 hidden text-center">
+                    <div class="p-6 bg-orange-50 rounded-2xl border-2 border-orange-200">
+                        <p class="text-sm text-orange-500 mb-2">あなたのハーモニーは...</p>
+                        <h3 id="harmony-title" class="text-xl font-bold text-orange-800 mb-4"></h3>
+                        <div id="fortune-text" class="text-md leading-relaxed"></div>
+                    </div>
+                    <button onclick="reset()" class="w-full py-3 bg-orange-500 text-white rounded-xl font-bold shadow-lg hover:bg-orange-600 transition-colors flex items-center justify-center gap-2">
+                        <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                        もう一度占う
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <footer class="mt-8 text-center text-xs text-orange-400 space-y-2">
+            <p>© 2026 OShama Daily App | #SandwichDay</p>
+            <div id="last-fortune" class="hidden italic">
+                前回: <span id="last-fortune-val"></span>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const selections = {
+            bread: '',
+            main: '',
+            sauce: ''
+        };
+
+        const fortunes = {
+            '食パン-たまご-マヨネーズ': { title: '究極の安心感サンド', text: '今日は穏やかで幸せな一日になりそう。いつものルーティンに小さな発見があるかも。' },
+            'バゲット-ハムチーズ-マスタード': { title: '情熱のパリジャンサンド', text: '新しいことに挑戦するチャンス！あなたの行動力が周りに活気を与えます。' },
+            'クロワッサン-フルーツ-ハチミツ': { title: '至福のデザートサンド', text: '素敵な出会いや、嬉しい知らせが届く予感。自分へのご褒美を忘れずに。' },
+            'ベーグル-アボカドエビ-バジル': { title: '都会のオアシスサンド', text: '集中力が高まっている時。クリエイティブな作業がはかどります。' },
+            // Default fortunes for other combinations
+            'default': { title: 'きまぐれミックスサンド', text: '意外な組み合わせが幸運を運んできます。固定概念を捨てて、自由な発想を大切に！' }
+        };
+
+        function selectOption(step, value, el) {
+            selections[step] = value;
+            
+            // UI Update
+            const btns = el.parentElement.querySelectorAll('.bread-btn');
+            btns.forEach(btn => btn.classList.remove('active'));
+            el.classList.add('active');
+
+            setTimeout(() => {
+                if (step === 'bread') {
+                    document.getElementById('step-1').classList.add('hidden');
+                    document.getElementById('step-2').classList.remove('hidden');
+                } else if (step === 'main') {
+                    document.getElementById('step-2').classList.add('hidden');
+                    document.getElementById('step-3').classList.remove('hidden');
+                } else if (step === 'sauce') {
+                    showResult();
+                }
+            }, 400);
+        }
+
+        function showResult() {
+            document.getElementById('step-3').classList.add('hidden');
+            const resultDiv = document.getElementById('result');
+            resultDiv.classList.remove('hidden');
+
+            const key = `${selections.bread}-${selections.main}-${selections.sauce}`;
+            const fortune = fortunes[key] || fortunes['default'];
+
+            document.getElementById('harmony-title').innerText = fortune.title;
+            document.getElementById('fortune-text').innerText = fortune.text;
+
+            // Save to LocalStorage
+            localStorage.setItem('oshama_last_sandwich', fortune.title);
+            updateLastFortune();
+        }
+
+        function updateLastFortune() {
+            const last = localStorage.getItem('oshama_last_sandwich');
+            if (last) {
+                document.getElementById('last-fortune').classList.remove('hidden');
+                document.getElementById('last-fortune-val').innerText = last;
+            }
+        }
+
+        function reset() {
+            selections.bread = '';
+            selections.main = '';
+            selections.sauce = '';
+            
+            document.getElementById('result').classList.add('hidden');
+            document.getElementById('step-1').classList.remove('hidden');
+            
+            const btns = document.querySelectorAll('.bread-btn');
+            btns.forEach(btn => btn.classList.remove('active'));
+        }
+
+        // Initialize Lucide Icons
+        lucide.createIcons();
+        updateLastFortune();
+    </script>
+</body>
+</html>
