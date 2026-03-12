@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自分専用・領域展開メーカー | OShama</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <style>
+        body {
+            font-family: 'Outfit', 'Inter', 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, #fce7f3 0%, #fae8ff 100%);
+            min-height: 100vh;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .pop-pink { color: #db2777; }
+        .bg-pop-pink { background-color: #db2777; }
+        .domain-card {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4">
+    <div class="max-w-md w-full glass rounded-3xl p-8 shadow-xl relative overflow-hidden">
+        <!-- Decoration -->
+        <div class="absolute -top-10 -right-10 w-32 h-32 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float"></div>
+        <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float" style="animation-delay: 2s;"></div>
+
+        <div class="relative">
+            <header class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-white rounded-2xl shadow-sm mb-4">
+                    <i data-lucide="sparkles" class="w-8 h-8 pop-pink"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">自分専用・領域展開メーカー</h1>
+                <p class="text-sm text-gray-500">あなたの今の「気分」に合わせて、<br>最強の領域を診断しましょう！</p>
+            </header>
+
+            <main class="space-y-6">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">お名前（ニックネーム可）</label>
+                    <input type="text" id="nameInput" placeholder="例：おしゃま" class="w-full px-4 py-3 rounded-xl border-none focus:ring-2 focus:ring-pink-400 bg-white/60 placeholder-gray-400">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">今の気分</label>
+                    <select id="moodSelect" class="w-full px-4 py-3 rounded-xl border-none focus:ring-2 focus:ring-pink-400 bg-white/60">
+                        <option value="hungry">お腹が空いた</option>
+                        <option value="sleepy">眠い・まったり</option>
+                        <option value="happy">最高にハッピー！</option>
+                        <option value="tired">ちょっとお疲れ</option>
+                        <option value="work">仕事・勉強モード</option>
+                        <option value="chill">のんびりしたい</option>
+                    </select>
+                </div>
+
+                <button onclick="generateDomain()" class="w-full py-4 bg-pop-pink hover:bg-pink-700 text-white font-bold rounded-2xl shadow-lg transform transition active:scale-95 hover:scale-[1.02]">
+                    領域を展開する！
+                </button>
+
+                <div id="resultArea" class="hidden domain-card mt-8 p-6 bg-white/80 rounded-2xl border-t-4 border-pink-500 shadow-inner">
+                    <div class="flex items-center space-x-2 mb-3">
+                        <span class="text-xs font-bold uppercase tracking-wider bg-pink-100 text-pink-600 px-2 py-1 rounded">領域名</span>
+                    </div>
+                    <h2 id="domainName" class="text-3xl font-bold text-gray-900 mb-4 leading-tight"></h2>
+                    
+                    <div class="flex items-center space-x-2 mb-3">
+                        <span class="text-xs font-bold uppercase tracking-wider bg-purple-100 text-purple-600 px-2 py-1 rounded">効果・能力</span>
+                    </div>
+                    <p id="domainEffect" class="text-gray-700 leading-relaxed"></p>
+
+                    <div class="mt-6 pt-6 border-t border-gray-100 flex justify-between items-center">
+                        <div class="flex space-x-4">
+                            <i data-lucide="zap" class="w-5 h-5 text-yellow-400"></i>
+                            <i data-lucide="shield" class="w-5 h-5 text-blue-400"></i>
+                            <i data-lucide="heart" class="w-5 h-5 text-pink-400"></i>
+                        </div>
+                        <span class="text-xs text-gray-400 italic">Created by OShama</span>
+                    </div>
+                </div>
+            </main>
+
+            <footer class="mt-12 text-center text-xs text-gray-400">
+                &copy; 2026 OShama. 毎日をちょっとだけ面白く。
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const prefixes = {
+            hungry: ["満腹", "美食", "甘味", "大盛", "至高"],
+            sleepy: ["微睡", "夢路", "静寂", "羊群", "月夜"],
+            happy: ["歓喜", "虹彩", "祝福", "笑顔", "絶頂"],
+            tired: ["癒癒", "休息", "森林", "温浴", "雲海"],
+            work: ["集中", "叡智", "加速", "論理", "突破"],
+            chill: ["悠々", "薫風", "琥珀", "凪海", "落陽"]
+        };
+
+        const suffixes = ["無辺", "地獄", "天国", "境界", "檻", "城", "園", "淵", "鏡", "宮"];
+
+        const effects = {
+            hungry: "領域内ではあらゆる食料が最高級の味に変化し、空腹が満たされるまで出られない。デザートは別腹。",
+            sleepy: "強制的に深い眠りに誘われ、5分寝るだけで8時間分の睡眠効果が得られる。ただし、夢の中ではお茶会に参加必須。",
+            happy: "領域内にいる間、全ての負の感情がキラキラしたマカロンに変換される。食べるとさらに幸せ度がアップする。",
+            tired: "蓄積された疲れが目に見える「綿埃」となり、それを掃除することで心身ともにリフレッシュされる。",
+            work: "1秒が1時間に感じられるほど思考が加速し、山積みのタスクが魔法のように片付いていく。コーヒーが常に適温。",
+            chill: "時間が完全に止まったかのような静寂に包まれ、誰にも邪魔されずに好きなだけボーッとできる至高の時間。"
+        };
+
+        function generateDomain() {
+            const name = document.getElementById('nameInput').value || "名無し";
+            const mood = document.getElementById('moodSelect').value;
+            
+            const prefix = prefixes[mood][Math.floor(Math.random() * prefixes[mood].length)];
+            const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
+            
+            const domainName = `『${prefix}${suffix}・${name}の居場所』`;
+            const domainEffect = effects[mood];
+
+            const resultArea = document.getElementById('resultArea');
+            resultArea.classList.remove('hidden');
+            resultArea.classList.add('animate-in', 'fade-in', 'slide-in-from-bottom-4', 'duration-700');
+            
+            document.getElementById('domainName').innerText = domainName;
+            document.getElementById('domainEffect').innerText = domainEffect;
+            
+            // Scroll to result
+            resultArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+</html>
