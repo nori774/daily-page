@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V-Soul Mirror (V-魂の鏡) - Discover Your Virtual Soul</title>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <script src="https://cdn.tailwindcss.org"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&family=Noto+Sans+JP:wght@300;500;700&display=swap');
+
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --v-pink: #ff85b3;
+            --v-blue: #74ebd5;
+            --v-purple: #acb6e5;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #ffffff;
+            font-family: 'Noto Sans JP', 'Outfit', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .outfit { font-family: 'Outfit', sans-serif; }
+
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .pink-glow {
+            box-shadow: 0 0 20px rgba(255, 133, 179, 0.4);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 10px rgba(255, 133, 179, 0.6);
+        }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 10% 20%, rgba(255, 133, 179, 0.1), transparent 40%),
+                        radial-gradient(circle at 90% 80%, rgba(116, 235, 213, 0.1), transparent 40%);
+            animation: bgShift 15s infinite alternate ease-in-out;
+        }
+
+        @keyframes bgShift {
+            0% { transform: scale(1) translate(0, 0); }
+            100% { transform: scale(1.1) translate(2%, 2%); }
+        }
+
+        .v-card {
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .v-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--v-pink);
+        }
+
+        .fade-in { animation: fadeIn 0.8s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-v {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .btn-v:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+
+        .btn-v:active {
+            transform: scale(0.95);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-inner {
+            height: 100%;
+            background: linear-gradient(90deg, var(--v-pink), var(--v-purple));
+            transition: width 0.4s ease;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center p-4 md:p-8">
+    <div class="animated-bg"></div>
+
+    <!-- Header -->
+    <header class="w-full max-w-4xl flex justify-between items-center mb-12 fade-in">
+        <div class="flex items-center space-x-3">
+            <div class="p-2 bg-gradient-to-br from-pink-400 to-purple-500 rounded-xl pink-glow">
+                <i data-lucide="sparkles" class="text-white w-6 h-6"></i>
+            </div>
+            <div>
+                <h1 class="outfit text-2xl font-bold tracking-tight text-glow">V-SOUL <span class="text-pink-300">MIRROR</span></h1>
+                <p class="text-[10px] text-pink-300 uppercase tracking-widest font-bold">Virtual Soul Analysis System</p>
+            </div>
+        </div>
+        <div class="flex space-x-3">
+            <button id="historyBtn" class="p-2 glass rounded-xl hover:bg-white/10 transition-colors">
+                <i data-lucide="history" class="w-5 h-5 text-slate-300"></i>
+            </button>
+            <button id="resetBtn" class="p-2 glass rounded-xl hover:bg-white/10 transition-colors">
+                <i data-lucide="refresh-cw" class="w-5 h-5 text-slate-300"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="app" class="w-full max-w-xl relative">
+        <!-- Start Screen -->
+        <div id="startScreen" class="glass rounded-[2rem] p-8 md:p-12 text-center fade-in">
+            <div class="mb-8 flex justify-center">
+                <div class="relative">
+                    <div class="absolute inset-0 bg-pink-500/20 blur-3xl rounded-full"></div>
+                    <i data-lucide="users" class="w-20 h-20 text-pink-300 relative z-10"></i>
+                </div>
+            </div>
+            <h2 class="text-3xl md:text-4xl font-bold mb-6 leading-tight">あなたの魂を、<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-300 to-purple-400">Vの姿に。</span></h2>
+            <p class="text-slate-400 mb-10 leading-relaxed text-sm">
+                あなたの深層心理を精密にスキャン。2026年のメタバース時代、あなたが放つべき「Vの輝き」を特定します。最適なVtuberタイプ、ファンネーム、推しマークを導き出しましょう。
+            </p>
+            <button id="startTest" class="btn-v bg-gradient-to-r from-pink-500 to-purple-600 text-white px-10 py-4 rounded-2xl text-lg font-bold pink-glow transition-all">
+                鏡をのぞき込む
+            </button>
+        </div>
+
+        <!-- Question Screen -->
+        <div id="questionScreen" class="hidden glass rounded-[2rem] p-8 md:p-12 fade-in">
+            <div class="mb-10">
+                <div class="flex justify-between items-end mb-3">
+                    <span id="questionCount" class="outfit text-xs text-pink-300 font-bold tracking-widest uppercase">Probe 01 / 04</span>
+                    <span class="text-[10px] text-slate-500">Scanning Soul Data...</span>
+                </div>
+                <div class="progress-bar">
+                    <div id="progressBar" class="progress-inner" style="width: 25%"></div>
+                </div>
+            </div>
+            <h3 id="questionText" class="text-xl md:text-2xl font-bold mb-10 min-h-[4rem] text-slate-100">配信の第一声、なんて言う？</h3>
+            
+            <div id="options" class="grid gap-4">
+                <!-- Options will be injected here -->
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="resultScreen" class="hidden fade-in">
+            <div class="glass rounded-[2rem] p-8 md:p-10 relative overflow-hidden border-pink-400/20 v-card">
+                <div class="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
+                    <i id="resultIconBig" data-lucide="star" class="w-40 h-40 text-pink-300"></i>
+                </div>
+                
+                <div class="mb-10 text-center">
+                    <span class="outfit text-xs text-pink-300 font-bold tracking-[0.3em] uppercase mb-4 block">Identity Identified</span>
+                    <h2 id="resultRole" class="text-4xl font-bold mb-2">CELESTIAL IDOL</h2>
+                    <p id="resultTitle" class="text-pink-300 font-medium italic mb-6">「銀河一のキラキラを、あなたに！」</p>
+                    <div class="w-20 h-1 bg-gradient-to-r from-pink-500 to-purple-500 mx-auto rounded-full"></div>
+                </div>
+                
+                <div class="bg-white/5 rounded-3xl p-6 mb-8 border border-white/5">
+                    <p id="resultDescription" class="text-sm text-slate-300 leading-relaxed text-center">
+                        あなたは太陽のように明るく、周囲を照らす天性のアイドル。あなたの歌声は次元を超えて響きます。
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="bg-white/5 rounded-2xl p-4 border border-white/5 text-center">
+                        <span class="text-[10px] text-slate-500 block mb-1 uppercase tracking-wider">Fan Name</span>
+                        <span id="fanName" class="font-bold text-slate-100">スター・オーケストラ</span>
+                    </div>
+                    <div class="bg-white/5 rounded-2xl p-4 border border-white/5 text-center">
+                        <span class="text-[10px] text-slate-500 block mb-1 uppercase tracking-wider">Signature Emoji</span>
+                        <span id="signatureEmoji" class="text-xl">✨🌟💖</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-4">
+                    <button id="shareBtn" class="w-full btn-v bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-4 rounded-2xl font-bold flex items-center justify-center space-x-3 pink-glow">
+                        <i data-lucide="share-2" class="w-5 h-5"></i>
+                        <span>結果をシェアする</span>
+                    </button>
+                    <button id="resetBtnResult" class="w-full py-3 text-sm text-slate-400 hover:text-white transition-colors">
+                        もう一度診断する
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- History Overlay -->
+    <div id="historyOverlay" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass w-full max-w-sm rounded-[2rem] p-8 max-h-[80vh] overflow-hidden flex flex-col">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="outfit text-xl font-bold tracking-tight">ANALYSIS LOG</h3>
+                <button id="closeHistory" class="text-slate-400 hover:text-white transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div id="historyList" class="space-y-4 overflow-y-auto pr-2 custom-scrollbar">
+                <!-- History items injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-12 text-slate-500 text-[10px] tracking-widest uppercase font-bold fade-in text-center">
+        &copy; 2026 OSHAMA AGENT NETWORK <br>
+        <span class="text-slate-600 mt-2 block">Project: Daily Web Page #20260313</span>
+    </footer>
+
+    <script>
+        // --- Data ---
+        const questions = [
+            {
+                text: "配信の第一声、なんて言う？",
+                options: [
+                    { text: "「こんおしゃ！元気してた？」", type: "A" },
+                    { text: "「…お待たせ。始めるよ。」", type: "D" },
+                    { text: "「わこつ！今日も最高の冒険へ！」", type: "C" },
+                    { text: "「ハロー、世界の観測者たち。」", type: "B" }
+                ]
+            },
+            {
+                text: "得意な配信ジャンルは？",
+                options: [
+                    { text: "歌とダンス（アイドル全開！）", type: "A" },
+                    { text: "最新AIツール紹介（最先端！）", type: "B" },
+                    { text: "自然の中でサバイバル（ワイルド！）", type: "C" },
+                    { text: "深夜の哲学・創作雑談（ディープ！）", type: "D" }
+                ]
+            },
+            {
+                text: "衣装にひとつだけ足すなら？",
+                options: [
+                    { text: "キラキラの星型ブローチ", type: "A" },
+                    { text: "浮遊するホログラムモニター", type: "B" },
+                    { text: "魔法の薬草がつまった小瓶", type: "C" },
+                    { text: "誰にも見せない秘密の仮面", type: "D" }
+                ]
+            },
+            {
+                text: "リスナーに届けたいものは？",
+                options: [
+                    { text: "笑顔と明日への活力", type: "A" },
+                    { text: "驚きと知的な発見", type: "B" },
+                    { text: "安らぎと自然の癒やし", type: "C" },
+                    { text: "震撼と魂の震え", type: "D" }
+                ]
+            }
+        ];
+
+        const types = {
+            A: {
+                name: "CELESTIAL IDOL",
+                title: "銀河一のキラキラを、あなたに！",
+                desc: "あなたは太陽のように明るく、周囲を照らす天性のアイドル。あなたの歌声は次元を超えて響きます。",
+                fanName: "スター・オーケストラ",
+                emoji: "✨🌟💖",
+                icon: "star"
+            },
+            B: {
+                name: "CYBER SCHOLAR",
+                title: "データの海に、真実を求めて。",
+                desc: "冷静沈着で知的好奇心旺盛なあなたは、最先端技術を操るナビゲーター。あなたの解説は世界を鮮やかに解き明かします。",
+                fanName: "観測データ班",
+                emoji: "🌐🧬🧠",
+                icon: "cpu"
+            },
+            C: {
+                name: "FOREST GUARDIAN",
+                title: "深呼吸して、森の吐息を感じて。",
+                desc: "自然を愛し、全てを包み込む優しさを持つあなたは、デジタル世界のオアシス。あなたの存在自体が究極の癒やしです。",
+                fanName: "こだまの会",
+                emoji: "🌿🦌🌸",
+                icon: "leaf"
+            },
+            D: {
+                name: "PHANTOM ARTIST",
+                title: "仮面の下の、本当の私を暴いて。",
+                desc: "孤独を愛し、独自の美学を追求するあなたは、ミステリアスな表現者。あなたの作品は観る者の魂を震わせます。",
+                fanName: "影の目撃者",
+                emoji: "🎭🖤🥀",
+                icon: "palette"
+            }
+        };
+
+        // --- State ---
+        let currentStep = 0;
+        let scores = { A: 0, B: 0, C: 0, D: 0 };
+
+        // --- DOM ---
+        const startScreen = document.getElementById('startScreen');
+        const questionScreen = document.getElementById('questionScreen');
+        const resultScreen = document.getElementById('resultScreen');
+        const optionsContainer = document.getElementById('options');
+        const questionText = document.getElementById('questionText');
+        const questionCount = document.getElementById('questionCount');
+        const progressBar = document.getElementById('progressBar');
+        const resultRole = document.getElementById('resultRole');
+        const resultTitle = document.getElementById('resultTitle');
+        const resultDescription = document.getElementById('resultDescription');
+        const fanName = document.getElementById('fanName');
+        const signatureEmoji = document.getElementById('signatureEmoji');
+        const resultIconBig = document.getElementById('resultIconBig');
+
+        // --- Handlers ---
+        function init() {
+            lucide.createIcons();
+            document.getElementById('startTest').onclick = startTest;
+            document.getElementById('resetBtn').onclick = resetApp;
+            document.getElementById('resetBtnResult').onclick = resetApp;
+            document.getElementById('historyBtn').onclick = showHistory;
+            document.getElementById('closeHistory').onclick = () => document.getElementById('historyOverlay').classList.add('hidden');
+            document.getElementById('shareBtn').onclick = shareResult;
+        }
+
+        function startTest() {
+            startScreen.classList.add('hidden');
+            questionScreen.classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentStep];
+            questionText.innerText = q.text;
+            questionCount.innerText = `Probe ${String(currentStep + 1).padStart(2, '0')} / 04`;
+            progressBar.style.width = `${((currentStep + 1) / 4) * 100}%`;
+
+            optionsContainer.innerHTML = '';
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full glass hover:bg-white/10 p-5 rounded-2xl text-left transition-all border-white/5 hover:border-pink-500/30 flex items-center space-x-4 group';
+                btn.innerHTML = `
+                    <span class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-[10px] outfit font-bold group-hover:bg-pink-500/50 transition-colors">${idx + 1}</span>
+                    <span class="text-sm font-medium">${opt.text}</span>
+                `;
+                btn.onclick = () => selectOption(opt.type);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(type) {
+            scores[type]++;
+            currentStep++;
+            if (currentStep < questions.length) {
+                showQuestion();
+            } else {
+                calculateResult();
+            }
+        }
+
+        function calculateResult() {
+            const winner = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+            const result = types[winner];
+
+            resultRole.innerText = result.name;
+            resultTitle.innerText = `「${result.title}」`;
+            resultDescription.innerText = result.desc;
+            fanName.innerText = result.fanName;
+            signatureEmoji.innerText = result.emoji;
+            resultIconBig.setAttribute('data-lucide', result.icon);
+            
+            questionScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+            lucide.createIcons();
+
+            saveHistory(result);
+        }
+
+        function saveHistory(result) {
+            const history = JSON.parse(localStorage.getItem('v_soul_history') || '[]');
+            history.unshift({
+                name: result.name,
+                date: new Date().toLocaleDateString(),
+                emoji: result.emoji
+            });
+            localStorage.setItem('v_soul_history', JSON.stringify(history.slice(0, 10)));
+        }
+
+        function showHistory() {
+            const history = JSON.parse(localStorage.getItem('v_soul_history') || '[]');
+            const list = document.getElementById('historyList');
+            document.getElementById('historyOverlay').classList.remove('hidden');
+
+            if (history.length === 0) {
+                list.innerHTML = '<p class="text-center text-slate-500 py-12 text-sm">解析ログはありません</p>';
+                return;
+            }
+
+            list.innerHTML = history.map(item => `
+                <div class="glass p-4 rounded-2xl flex justify-between items-center border-white/5">
+                    <div>
+                        <p class="font-bold text-slate-100 text-sm">${item.name}</p>
+                        <p class="text-[10px] text-slate-500">${item.date}</p>
+                    </div>
+                    <div class="text-xl">${item.emoji}</div>
+                </div>
+            `).join('');
+        }
+
+        function shareResult() {
+            const role = resultRole.innerText;
+            const emoji = signatureEmoji.innerText;
+            const text = `あなたの魂が放つ「Vの輝き」を精密スキャン！✨\n鏡に映るのはアイドル？それとも…？\n\n◆タイプ: ${role}\n◆推しマーク: ${emoji}\n\n#V魂の鏡 #DailyApp #20260313\nhttps://nori774.github.io/daily-page/v-soul-mirror-20260313.html`;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.getElementById('shareBtn');
+                const original = btn.innerHTML;
+                btn.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i><span>コピー完了！</span>';
+                lucide.createIcons();
+                setTimeout(() => {
+                    btn.innerHTML = original;
+                    lucide.createIcons();
+                }, 2000);
+            });
+        }
+
+        function resetApp() {
+            currentStep = 0;
+            scores = { A: 0, B: 0, C: 0, D: 0 };
+            startScreen.classList.remove('hidden');
+            questionScreen.classList.add('hidden');
+            resultScreen.classList.add('hidden');
+        }
+
+        init();
+    </script>
+</body>
+</html>
