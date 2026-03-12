@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transient Echo | Poetic Computing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <style>
+        :root {
+            --bg-deep: #020617;
+            --bg-ocean: #082f49;
+            --accent-teal: #2dd4bf;
+            --accent-neon: #a855f7;
+            --text-silver: #e2e8f0;
+        }
+
+        body {
+            background: linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-ocean) 100%);
+            color: var(--text-silver);
+            font-family: 'Outfit', 'Inter', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .neon-glow {
+            text-shadow: 0 0 10px var(--accent-teal), 0 0 20px var(--accent-teal);
+        }
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(45, 212, 191, 0.3);
+            transform: scale(0);
+            animation: ripple-animation 4s ease-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -50px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float-up 10s linear infinite;
+        }
+
+        @keyframes float-up {
+            from { transform: translateY(0) translateX(0); opacity: 0.5; }
+            to { transform: translateY(-110vh) translateX(20px); opacity: 0; }
+        }
+
+        .echo-item {
+            transition: all 0.5s ease;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-poetic {
+            background: linear-gradient(135deg, var(--accent-teal), var(--accent-neon));
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-poetic:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(45, 212, 191, 0.5);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center relative">
+    <div id="bubbles-container"></div>
+    
+    <main class="z-10 w-full max-w-2xl px-6">
+        <header class="text-center mb-12">
+            <h1 class="text-5xl font-light tracking-tighter mb-4 neon-glow opacity-90">Transient Echo</h1>
+            <p class="text-lg font-light text-slate-400 italic">"Deep in the digital ocean, memories resonate."</p>
+        </header>
+
+        <section class="glass rounded-3xl p-8 shadow-2xl">
+            <div class="mb-6">
+                <textarea id="echo-input" 
+                    class="w-full bg-transparent border-b border-white/20 focus:border-teal-400 outline-none py-4 text-xl font-light placeholder:text-white/20 resize-none transition-colors"
+                    placeholder="Whisper your thought to the current..." rows="2"></textarea>
+                <div class="flex justify-between items-center mt-4">
+                    <span class="text-xs text-white/30 uppercase tracking-widest">Transient Memory</span>
+                    <button id="send-btn" class="btn-poetic px-8 py-2 rounded-full text-sm font-semibold tracking-wide">RELEASE</button>
+                </div>
+            </div>
+
+            <div id="echo-list" class="space-y-4 max-h-[300px] overflow-y-auto pr-2 scrollbar-hide">
+                <!-- Echoes will appear here -->
+            </div>
+        </section>
+
+        <footer class="mt-12 text-center text-white/20 text-xs tracking-widest uppercase">
+            <p>A Poetic Ripple in the Code &copy; 2026</p>
+        </footer>
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        const echoInput = document.getElementById('echo-input');
+        const sendBtn = document.getElementById('send-btn');
+        const echoList = document.getElementById('echo-list');
+        const bubblesContainer = document.getElementById('bubbles-container');
+
+        // Create background bubbles
+        for (let i = 0; i < 20; i++) {
+            createBubble();
+        }
+
+        function createBubble() {
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            const size = Math.random() * 40 + 10;
+            bubble.style.width = `${size}px`;
+            bubble.style.height = `${size}px`;
+            bubble.style.left = `${Math.random() * 100}%`;
+            bubble.style.animationDuration = `${Math.random() * 10 + 5}s`;
+            bubble.style.animationDelay = `${Math.random() * 5}s`;
+            bubblesContainer.appendChild(bubble);
+        }
+
+        // Echo Logic
+        let echoes = JSON.parse(localStorage.getItem('transient_echoes') || '[]');
+
+        function renderEchoes() {
+            echoList.innerHTML = '';
+            echoes.forEach((echo, index) => {
+                const div = document.createElement('div');
+                div.className = 'echo-item glass rounded-2xl p-4 text-sm font-light border-white/5 flex justify-between items-center group';
+                div.innerHTML = `
+                    <span>${echo.text}</span>
+                    <span class="text-[10px] text-white/20 group-hover:text-teal-400 transition-colors">${new Date(echo.timestamp).toLocaleTimeString()}</span>
+                `;
+                echoList.appendChild(div);
+            });
+        }
+
+        sendBtn.addEventListener('click', () => {
+            const text = echoInput.value.trim();
+            if (text) {
+                const newEcho = {
+                    text: text,
+                    timestamp: Date.now()
+                };
+                echoes.unshift(newEcho);
+                if (echoes.length > 5) echoes.pop(); // Keep only 5
+                localStorage.setItem('transient_echoes', JSON.stringify(echoes));
+                echoInput.value = '';
+                renderEchoes();
+                
+                // Visual ripple
+                const ripple = document.createElement('div');
+                ripple.className = 'ripple';
+                ripple.style.left = '50%';
+                ripple.style.top = '50%';
+                ripple.style.width = '100px';
+                ripple.style.height = '100px';
+                document.body.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 4000);
+            }
+        });
+
+        renderEchoes();
+
+        // Random ripples
+        setInterval(() => {
+            if (Math.random() > 0.7) {
+                const ripple = document.createElement('div');
+                ripple.className = 'ripple';
+                ripple.style.left = `${Math.random() * 100}%`;
+                ripple.style.top = `${Math.random() * 100}%`;
+                ripple.style.width = '50px';
+                ripple.style.height = '50px';
+                document.body.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 4000);
+            }
+        }, 3000);
+    </script>
+</body>
+</html>
