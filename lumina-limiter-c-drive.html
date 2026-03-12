@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumina Limiter | C-Drive Space Reclaimer</title>
+    <meta name="description" content="その創造力に、空き容量を。Cドライブの肥大化したAIモデルやVSTプラグインをワンクリックで解放。">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top right, #0f172a, #020617);
+            color: #f1f5f9;
+            overflow-x: hidden;
+        }
+        .outfit { font-family: 'Outfit', sans-serif; }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-blue {
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+            border-color: rgba(56, 189, 248, 0.5);
+        }
+        .progress-glow {
+            filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.6));
+        }
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+        .animate-pulse-slow {
+            animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-6">
+    <!-- Nav -->
+    <nav class="w-full max-w-5xl flex justify-between items-center py-6">
+        <div class="flex items-center gap-3 group cursor-pointer" onclick="location.href='index.html'">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center shadow-lg shadow-sky-500/20">
+                <i data-lucide="hard-drive" class="w-5 h-5 text-white"></i>
+            </div>
+            <span class="text-2xl font-bold outfit tracking-tighter">Lumina <span class="text-sky-400">Limiter</span></span>
+        </div>
+        <div class="flex gap-4">
+            <span class="text-xs font-bold uppercase tracking-widest text-sky-500/60 bg-sky-500/10 px-3 py-1 rounded-full border border-sky-500/20">Movement 2026/03/12</span>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <main class="flex-1 flex flex-col items-center justify-center w-full max-w-4xl text-center mt-12 mb-20">
+        <div class="mb-6 inline-block glass px-4 py-1.5 rounded-full text-xs font-medium text-sky-300 border border-sky-400/30">
+            C-Drive Liberation Movement
+        </div>
+        <h1 class="text-6xl md:text-7xl font-bold outfit tracking-tighter leading-none mb-6">
+            その創造力に、<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-300 to-blue-500">空き容量を。</span>
+        </h1>
+        <p class="text-gray-400 text-lg md:text-xl font-light max-w-2xl mx-auto mb-12">
+            Cドライブの肥大化したAIモデルやVSTプラグインを、設定を変えずにDドライブへ「解放」。<br>
+            ストレージの限界が、あなたのインスピレーションを止めることはもうありません。
+        </p>
+
+        <!-- Visualization UI -->
+        <div class="w-full max-w-3xl glass rounded-3xl p-8 md:p-12 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-sky-500/10 rounded-full blur-[100px] animate-pulse-slow"></div>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <!-- Left: Scanner -->
+                <div class="space-y-8 text-left">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-end">
+                            <h3 class="text-sm font-bold uppercase tracking-widest text-gray-500">C-Drive Status</h3>
+                            <span class="text-red-400 text-xs font-mono">98% Full</span>
+                        </div>
+                        <div class="h-3 w-full bg-gray-800 rounded-full overflow-hidden p-0.5 border border-white/5">
+                            <div class="h-full w-[98%] bg-gradient-to-r from-red-500 to-orange-500 rounded-full"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h3 class="text-sm font-bold uppercase tracking-widest text-gray-500">Creative Bloat Detected</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between glass p-3 rounded-xl border-sky-500/20">
+                                <div class="flex items-center gap-3">
+                                    <i data-lucide="brain-circuit" class="w-5 h-5 text-sky-400"></i>
+                                    <div>
+                                        <p class="text-sm font-semibold">Stable Diffusion Models</p>
+                                        <p class="text-[10px] text-gray-500">C:\...\models\Stable-diffusion</p>
+                                    </div>
+                                </div>
+                                <span class="text-sm font-mono font-bold text-sky-300">42.8 GB</span>
+                            </div>
+                            <div class="flex items-center justify-between glass p-3 rounded-xl border-white/5">
+                                <div class="flex items-center gap-3">
+                                    <i data-lucide="music-4" class="w-5 h-5 text-purple-400"></i>
+                                    <div>
+                                        <p class="text-sm font-semibold">VST Plugin Content</p>
+                                        <p class="text-[10px] text-gray-500">C:\Program Files\Common Files\VST3</p>
+                                    </div>
+                                </div>
+                                <span class="text-sm font-mono font-bold">18.2 GB</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Action -->
+                <div class="flex flex-col items-center gap-6">
+                    <div class="w-32 h-32 rounded-full border-4 border-sky-500/30 flex items-center justify-center relative">
+                        <div class="absolute inset-2 rounded-full border border-sky-500/50 animate-ping opacity-20"></div>
+                        <i data-lucide="zap" class="w-12 h-12 text-sky-400 fill-sky-400/20"></i>
+                    </div>
+                    <button id="liberate-btn" class="w-full bg-sky-500 hover:bg-sky-400 text-white font-bold py-4 px-8 rounded-2xl transition-all shadow-xl shadow-sky-500/20 transform hover:scale-[1.02] active:scale-95">
+                        Liberate C-Drive
+                    </button>
+                    <p class="text-xs text-gray-500">Move & Symlink to: <span class="text-gray-300 font-mono" id="dest-path">D:\Lumina_Liberation\</span></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Features -->
+    <section class="w-full max-w-5xl grid md:grid-cols-3 gap-6 mb-20">
+        <div class="glass p-8 rounded-3xl border-white/5 space-y-4">
+            <div class="w-12 h-12 rounded-2xl bg-sky-500/10 flex items-center justify-center mb-6">
+                <i data-lucide="search" class="w-6 h-6 text-sky-400"></i>
+            </div>
+            <h3 class="text-xl font-bold outfit">Creative Scan</h3>
+            <p class="text-sm text-gray-400 leading-relaxed">
+                AIモデルやVSTプラグインを自動検知。肥大化した「制作の種」を瞬時にリストアップします。どこに容量が消えたか、もう探す必要はありません。
+            </p>
+        </div>
+        <div class="glass p-8 rounded-3xl border-white/5 space-y-4">
+            <div class="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-6">
+                <i data-lucide="link" class="w-6 h-6 text-blue-400"></i>
+            </div>
+            <h3 class="text-xl font-bold outfit">One-Click Symlink</h3>
+            <p class="text-sm text-gray-400 leading-relaxed">
+                ファイルをDドライブへ安全に退避。シンボリックリンクにより、アプリ設定を変えずに動作を維持します。再設定の手間は一切不要です。
+            </p>
+        </div>
+        <div class="glass p-8 rounded-3xl border-white/5 space-y-4">
+            <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center mb-6">
+                <i data-lucide="line-chart" class="w-6 h-6 text-indigo-400"></i>
+            </div>
+            <h3 class="text-xl font-bold outfit">Space Forecast</h3>
+            <p class="text-sm text-gray-400 leading-relaxed">
+                取り戻した「創造力の燃料（空き容量）」を可視化。次のプロジェクトに向けた余裕をシミュレーションし、創作への意欲を高めます。
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="w-full max-w-5xl flex flex-col md:flex-row justify-between items-center py-12 border-t border-white/5 gap-8">
+        <div class="text-center md:text-left">
+            <p class="text-sm font-bold outfit mb-1">OShama Worldview Integration</p>
+            <p class="text-xs text-gray-500">Removing barriers between creators and their tools.</p>
+        </div>
+        <div class="flex gap-6">
+            <a href="#" class="text-gray-400 hover:text-white transition-colors"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors"><i data-lucide="github" class="w-5 h-5"></i></a>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        const btn = document.getElementById('liberate-btn');
+        btn.addEventListener('click', () => {
+            btn.innerText = 'Liberating...';
+            btn.classList.add('animate-pulse');
+            setTimeout(() => {
+                btn.innerText = 'Successfully Liberated';
+                btn.classList.remove('animate-pulse');
+                btn.classList.replace('bg-sky-500', 'bg-green-500');
+                // Simple UI update simulation
+                document.querySelector('.h-full.w-\\[98\\%\\]').style.width = '35%';
+                document.querySelector('.h-full.w-\\[98\\%\\]').classList.replace('from-red-500', 'from-sky-400');
+                document.querySelector('.h-full.w-\\[98\\%\\]').classList.replace('to-orange-500', 'to-blue-500');
+                document.querySelector('.text-red-400').innerText = '35% Full';
+                document.querySelector('.text-red-400').classList.replace('text-red-400', 'text-sky-400');
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
