@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google Tag Manager (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <title>おしゃま探偵：遺失物解決ノート | OShama Detective</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', 'Noto Sans JP', sans-serif;
+            background: #fdf6e3; /* レトロな紙の色 */
+            color: #4b3621; /* セピア色の文字 */
+            min-height: 100vh;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(75, 54, 33, 0.1);
+        }
+        .accent-pink {
+            background-color: #ff3366; /* ポップピンク */
+        }
+        .accent-pink:hover {
+            background-color: #e62e5c;
+        }
+        .solved {
+            text-decoration: line-through;
+            opacity: 0.5;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .float-anim {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-2xl mx-auto">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-block p-3 rounded-full bg-white/50 mb-4 float-anim">
+                <i data-lucide="search" class="w-8 h-8 text-[#ff3366]"></i>
+            </div>
+            <h1 class="text-3xl font-bold tracking-tight mb-2">おしゃま探偵：遺失物解決ノート</h1>
+            <p class="text-sm opacity-70">家の中の「神隠し」を解決する、あなたのための捜査手帳。</p>
+        </header>
+
+        <!-- Input Section -->
+        <section class="glass rounded-3xl p-6 mb-8 shadow-sm">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold mb-1 opacity-60">捜査対象（探しもの）</label>
+                    <input type="text" id="itemInput" placeholder="例：自転車の予備鍵、診察券" class="w-full bg-white/50 border border-[#4b3621]/10 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ff3366]/30 transition-all">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1 opacity-60">最後に目撃した場所・ヒント</label>
+                    <input type="text" id="locationInput" placeholder="例：玄関の棚、白いジャケットのポケット" class="w-full bg-white/50 border border-[#4b3621]/10 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ff3366]/30 transition-all">
+                </div>
+                <button onclick="addCase()" class="w-full accent-pink text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-transform hover:scale-[1.02] active:scale-[0.98]">
+                    <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                    捜査を開始する
+                </button>
+            </div>
+        </section>
+
+        <!-- Case List -->
+        <section>
+            <div class="flex items-center justify-between mb-4 px-2">
+                <h2 class="text-lg font-bold flex items-center gap-2">
+                    <i data-lucide="folder-open" class="w-5 h-5"></i>
+                    未解決事件
+                </h2>
+                <span id="caseCount" class="text-xs font-semibold bg-white/50 px-3 py-1 rounded-full border border-[#4b3621]/10">0 件</span>
+            </div>
+            <div id="caseList" class="space-y-3">
+                <!-- Cases will be injected here -->
+            </div>
+
+            <div class="mt-12 opacity-40 text-center text-xs">
+                <p>© 2026 OShama Detective Agency - All Cases Recorded in LocalStorage</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="fixed bottom-8 left-1/2 -translate-x-1/2 glass px-6 py-3 rounded-full shadow-lg opacity-0 pointer-events-none transition-all duration-500 translate-y-4 flex items-center gap-2">
+        <i data-lucide="check-circle" class="text-green-500 w-5 h-5"></i>
+        <span id="notificationText">解決しました！</span>
+    </div>
+
+    <script>
+        let cases = [];
+
+        // Load data
+        window.onload = () => {
+            const saved = localStorage.getItem('oshama_cases');
+            if (saved) {
+                cases = JSON.parse(saved);
+                renderCases();
+            }
+            lucide.createIcons();
+        };
+
+        function addCase() {
+            const item = document.getElementById('itemInput').value;
+            const location = document.getElementById('locationInput').value;
+
+            if (!item) {
+                showNotification('捜査対象を入力してください！', true);
+                return;
+            }
+
+            const newCase = {
+                id: Date.now(),
+                item: item,
+                location: location || '不明',
+                status: 'investigating',
+                createdAt: new Date().toLocaleString('ja-JP')
+            };
+
+            cases.unshift(newCase);
+            save();
+            renderCases();
+
+            // Clear inputs
+            document.getElementById('itemInput').value = '';
+            document.getElementById('locationInput').value = '';
+            showNotification('新しい捜査を開始しました！');
+        }
+
+        function toggleStatus(id) {
+            cases = cases.map(c => {
+                if (c.id === id) {
+                    const newStatus = c.status === 'investigating' ? 'solved' : 'investigating';
+                    if (newStatus === 'solved') showNotification('事件解決！おめでとうございます！');
+                    return { ...c, status: newStatus };
+                }
+                return c;
+            });
+            save();
+            renderCases();
+        }
+
+        function deleteCase(id) {
+            if (confirm('この記録を削除しますか？')) {
+                cases = cases.filter(c => c.id !== id);
+                save();
+                renderCases();
+                showNotification('記録を削除しました。');
+            }
+        }
+
+        function save() {
+            localStorage.setItem('oshama_cases', JSON.stringify(cases));
+        }
+
+        function renderCases() {
+            const list = document.getElementById('caseList');
+            const count = document.getElementById('caseCount');
+            list.innerHTML = '';
+            
+            const activeCases = cases.filter(c => c.status === 'investigating');
+            count.innerText = `${activeCases.length} 件`;
+
+            if (cases.length === 0) {
+                list.innerHTML = `
+                    <div class="text-center py-12 opacity-30 italic">
+                        事件は発生していません。平和な一日です。
+                    </div>
+                `;
+                return;
+            }
+
+            cases.forEach(c => {
+                const isSolved = c.status === 'solved';
+                const div = document.createElement('div');
+                div.className = `glass rounded-2xl p-4 flex items-center justify-between transition-all ${isSolved ? 'bg-white/20' : 'hover:scale-[1.01]'}`;
+                div.innerHTML = `
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded ${isSolved ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'} uppercase tracking-wider">
+                                ${isSolved ? 'Solved' : 'Investigation'}
+                            </span>
+                            <span class="text-[10px] opacity-40 font-mono">${c.createdAt}</span>
+                        </div>
+                        <h3 class="font-bold text-lg ${isSolved ? 'solved' : ''}">${c.item}</h3>
+                        <p class="text-xs opacity-60 flex items-center gap-1">
+                            <i data-lucide="map-pin" class="w-3 h-3"></i>
+                            ${c.location}
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="toggleStatus(${c.id})" class="p-2 rounded-full ${isSolved ? 'bg-green-500 text-white' : 'bg-white border border-[#4b3621]/10'}" title="${isSolved ? '未解決に戻す' : '解決！'}">
+                            <i data-lucide="${isSolved ? 'rotate-ccw' : 'check'}" class="w-5 h-5"></i>
+                        </button>
+                        <button onclick="deleteCase(${c.id})" class="p-2 rounded-full hover:bg-red-50 text-red-400" title="削除">
+                            <i data-lucide="trash-2" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+            lucide.createIcons();
+        }
+
+        function showNotification(text, isError = false) {
+            const el = document.getElementById('notification');
+            const textEl = document.getElementById('notificationText');
+            textEl.innerText = text;
+            
+            el.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+            el.classList.add('opacity-100', 'translate-y-0');
+
+            setTimeout(() => {
+                el.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                el.classList.remove('opacity-100', 'translate-y-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
