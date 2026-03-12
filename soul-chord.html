@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soul-Chord | 魂の旋律生成機</title>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: radial-gradient(circle at top right, #1a1a2e, #16213e, #0f3460);
+            min-height: 100vh;
+            color: #e94560;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neo-border {
+            border: 1px solid rgba(233, 69, 96, 0.3);
+        }
+        .piano-roll {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+        .note {
+            position: absolute;
+            height: 12px;
+            background: linear-gradient(90deg, #e94560, #ff6b6b);
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
+            transition: all 0.3s ease;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .playing {
+            animation: pulse 0.5s infinite;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-2xl mx-auto space-y-8">
+        <!-- Header -->
+        <header class="text-center space-y-2">
+            <h1 class="text-4xl md:text-5xl font-semibold tracking-tight text-white">Soul-Chord</h1>
+            <p class="text-gray-400 font-light">あなたの「魂」を、4小節の旋律に変換する。</p>
+        </header>
+
+        <!-- Main Card -->
+        <main class="glass rounded-3xl p-6 md:p-8 space-y-8 neo-border">
+            <!-- Input Section -->
+            <div class="space-y-4">
+                <label class="block text-sm font-medium text-gray-300 ml-1">性格や今の気分を入力（例：内向的, クリエイティブ, 静か）</label>
+                <div class="relative">
+                    <input type="text" id="userInput" 
+                        class="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-[#e94560]/50 transition-all placeholder:text-gray-600"
+                        placeholder="Keywords, feelings, or traits...">
+                    <button id="generateBtn" 
+                        class="absolute right-2 top-2 bg-[#e94560] hover:bg-[#ff6b6b] text-white px-6 py-2.5 rounded-xl font-medium transition-all transform hover:scale-105 active:scale-95 flex items-center gap-2">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i>
+                        生成
+                    </button>
+                </div>
+            </div>
+
+            <!-- Visualizer -->
+            <div class="space-y-3">
+                <div class="flex justify-between items-center px-1">
+                    <span class="text-xs font-medium text-gray-500 uppercase tracking-widest">Melody Motif</span>
+                    <div id="playBtn" class="cursor-pointer text-[#e94560] hover:text-[#ff6b6b] transition-colors hidden">
+                        <i data-lucide="play-circle" class="w-8 h-8"></i>
+                    </div>
+                </div>
+                <div id="pianoRoll" class="piano-roll h-48 w-full border border-white/5">
+                    <!-- Notes will be injected here -->
+                    <div id="emptyState" class="absolute inset-0 flex items-center justify-center text-gray-700 italic text-sm">
+                        Waiting for your soul...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div id="actionPanel" class="hidden flex flex-col sm:flex-row gap-3 pt-4 border-t border-white/5">
+                <button id="shareX" class="flex-1 bg-white/5 hover:bg-white/10 text-white px-6 py-3 rounded-2xl font-medium transition-all flex items-center justify-center gap-2 border border-white/10">
+                    <i data-lucide="twitter" class="w-4 h-4 text-[#1DA1F2]"></i>
+                    Xでシェア
+                </button>
+                <button id="copyMidi" class="flex-1 bg-white/5 hover:bg-white/10 text-white px-6 py-3 rounded-2xl font-medium transition-all flex items-center justify-center gap-2 border border-white/10">
+                    <i data-lucide="copy" class="w-4 h-4"></i>
+                    モチーフをコピー
+                </button>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="text-center space-y-4">
+            <div class="inline-flex items-center gap-2 px-4 py-2 glass rounded-full text-xs text-gray-400 neo-border">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                AI Web Agent Nexus Protocol
+            </div>
+            <p class="text-[10px] text-gray-600 uppercase tracking-[0.2em]">OShama Creative Studio &copy; 2026</p>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Constants
+        const SCALES = {
+            major: [0, 2, 4, 5, 7, 9, 11],
+            minor: [0, 2, 3, 5, 7, 8, 10],
+            pentatonic: [0, 2, 4, 7, 9],
+            minorPentatonic: [0, 3, 5, 7, 10]
+        };
+
+        const KEYWORDS = {
+            active: { scale: 'major', tempo: 140, complexity: 0.8 },
+            calm: { scale: 'pentatonic', tempo: 80, complexity: 0.3 },
+            sad: { scale: 'minor', tempo: 65, complexity: 0.4 },
+            creative: { scale: 'minorPentatonic', tempo: 110, complexity: 0.9 },
+            bright: { scale: 'major', tempo: 125, complexity: 0.6 }
+        };
+
+        let currentMotif = [];
+        let synth = null;
+        let isPlaying = false;
+
+        // Simple hash function for seeding
+        function hashString(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                hash |= 0;
+            }
+            return Math.abs(hash);
+        }
+
+        // Logic to map keywords to parameters
+        function analyzeInput(text) {
+            let params = { scale: 'major', tempo: 100, complexity: 0.5 };
+            const lowerText = text.toLowerCase();
+            
+            Object.keys(KEYWORDS).forEach(key => {
+                if (lowerText.includes(key)) {
+                    params = { ...params, ...KEYWORDS[key] };
+                }
+            });
+            return params;
+        }
+
+        // Generate Motif
+        function generateMotif(seed, params) {
+            const motif = [];
+            const scale = SCALES[params.scale];
+            const baseNote = 60; // Middle C
+            
+            let random = seed;
+            function nextRandom() {
+                random = (random * 16807) % 2147483647;
+                return (random - 1) / 2147483646;
+            }
+
+            for (let i = 0; i < 8; i++) {
+                if (nextRandom() < params.complexity) {
+                    const step = scale[Math.floor(nextRandom() * scale.length)];
+                    const octave = Math.floor(nextRandom() * 2) * 12;
+                    motif.push({
+                        note: baseNote + step + octave,
+                        time: i * 0.5,
+                        duration: 0.4
+                    });
+                }
+            }
+            return motif;
+        }
+
+        // Draw Motif
+        function drawMotif(motif) {
+            const container = document.getElementById('pianoRoll');
+            container.innerHTML = '';
+            
+            const minNote = Math.min(...motif.map(n => n.note)) - 2;
+            const maxNote = Math.max(...motif.map(n => n.note)) + 2;
+            const range = maxNote - minNote;
+
+            motif.forEach(n => {
+                const noteEl = document.createElement('div');
+                noteEl.className = 'note';
+                noteEl.style.left = `${(n.time / 4) * 100}%`;
+                noteEl.style.bottom = `${((n.note - minNote) / range) * 100}%`;
+                noteEl.style.width = `${(n.duration / 4) * 100}%`;
+                container.appendChild(noteEl);
+            });
+        }
+
+        // Play Logic
+        async function playMotif() {
+            if (!synth) {
+                synth = new Tone.PolySynth(Tone.Synth).toDestination();
+                synth.set({
+                    envelope: { attack: 0.05, release: 1 },
+                    oscillator: { type: 'triangle' }
+                });
+            }
+
+            if (isPlaying) {
+                Tone.Transport.stop();
+                isPlaying = false;
+                document.getElementById('playBtn').innerHTML = '<i data-lucide="play-circle" class="w-8 h-8"></i>';
+                lucide.createIcons();
+                return;
+            }
+
+            await Tone.start();
+            Tone.Transport.cancel();
+            
+            currentMotif.forEach(n => {
+                Tone.Transport.schedule(time => {
+                    synth.triggerAttackRelease(Tone.Frequency(n.note, "midi"), n.duration, time);
+                }, n.time);
+            });
+
+            Tone.Transport.start();
+            isPlaying = true;
+            document.getElementById('playBtn').innerHTML = '<i data-lucide="stop-circle" class="w-8 h-8"></i>';
+            lucide.createIcons();
+            
+            Tone.Transport.scheduleOnce(() => {
+                isPlaying = false;
+                document.getElementById('playBtn').innerHTML = '<i data-lucide="play-circle" class="w-8 h-8"></i>';
+                lucide.createIcons();
+            }, 4);
+        }
+
+        // Event Listeners
+        document.getElementById('generateBtn').addEventListener('click', () => {
+            const input = document.getElementById('userInput').value;
+            if (!input) return;
+
+            const seed = hashString(input);
+            const params = analyzeInput(input);
+            currentMotif = generateMotif(seed, params);
+            
+            drawMotif(currentMotif);
+            document.getElementById('playBtn').classList.remove('hidden');
+            document.getElementById('actionPanel').classList.remove('hidden');
+            
+            // Interaction feedback
+            const btn = document.getElementById('generateBtn');
+            btn.innerHTML = 'Generated!';
+            setTimeout(() => {
+                btn.innerHTML = '<i data-lucide="sparkles" class="w-4 h-4"></i> 生成';
+                lucide.createIcons();
+            }, 2000);
+        });
+
+        document.getElementById('playBtn').addEventListener('click', playMotif);
+
+        document.getElementById('shareX').addEventListener('click', () => {
+            const text = encodeURIComponent(`Soul-Chordで自分の魂を旋律に変換しました！性格から生まれた独自の4小節モチーフ。 #SoulChord #AIWebエージェント #OShama\n\n`);
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+        });
+
+        document.getElementById('copyMidi').addEventListener('click', () => {
+            const midiData = currentMotif.map(n => `Note: ${n.note}, Time: ${n.time}`).join('\n');
+            navigator.clipboard.writeText(midiData);
+            alert('モチーフの構成データをコピーしました！DAW等での再現にご活用ください。');
+        });
+    </script>
+</body>
+</html>
