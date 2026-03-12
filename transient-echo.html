@@ -3,209 +3,300 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transient Echo | Poetic Computing</title>
+    <title>水底の演算、意識の残響。 — Transient Echo</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-PS2DX1HNVL');
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PS2DX1HNVL');
     </script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;700&display=swap');
+        
         :root {
-            --bg-deep: #020617;
-            --bg-ocean: #082f49;
-            --accent-teal: #2dd4bf;
-            --accent-neon: #a855f7;
-            --text-silver: #e2e8f0;
+            --deep-sea: #0a192f;
+            --ocean-blue: #112240;
+            --aqua: #64ffda;
+            --slate: #8892b0;
+            --light-slate: #ccd6f6;
         }
 
         body {
-            background: linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-ocean) 100%);
-            color: var(--text-silver);
-            font-family: 'Outfit', 'Inter', sans-serif;
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background: radial-gradient(circle at center, #112240 0%, #0a192f 100%);
+            color: var(--light-slate);
             overflow: hidden;
             height: 100vh;
+            margin: 0;
         }
 
-        .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .neon-glow {
-            text-shadow: 0 0 10px var(--accent-teal), 0 0 20px var(--accent-teal);
-        }
-
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(45, 212, 191, 0.3);
-            transform: scale(0);
-            animation: ripple-animation 4s ease-out infinite;
-            pointer-events: none;
-        }
-
-        @keyframes ripple-animation {
-            to {
-                transform: scale(4);
-                opacity: 0;
-            }
+        .underwater-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(180deg, rgba(10, 25, 47, 0) 0%, rgba(10, 25, 47, 0.8) 100%);
         }
 
         .bubble {
             position: absolute;
-            bottom: -50px;
-            background: rgba(255, 255, 255, 0.1);
+            bottom: -20px;
+            background: rgba(100, 255, 218, 0.1);
             border-radius: 50%;
-            animation: float-up 10s linear infinite;
+            animation: rise var(--duration) infinite ease-in;
+            filter: blur(2px);
         }
 
-        @keyframes float-up {
-            from { transform: translateY(0) translateX(0); opacity: 0.5; }
-            to { transform: translateY(-110vh) translateX(20px); opacity: 0; }
+        @keyframes rise {
+            0% { transform: translateY(0) scale(1); opacity: 0; }
+            20% { opacity: 0.3; }
+            100% { transform: translateY(-120vh) scale(1.5); opacity: 0; }
         }
 
-        .echo-item {
-            transition: all 0.5s ease;
-            animation: fadeIn 1s ease-out;
+        .glass {
+            background: rgba(17, 34, 64, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(100, 255, 218, 0.1);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .echo-card {
+            position: absolute;
+            transition: all 5s linear;
+            cursor: default;
+            user-select: none;
+            pointer-events: none;
         }
 
-        .btn-poetic {
-            background: linear-gradient(135deg, var(--accent-teal), var(--accent-neon));
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .ripple {
+            position: absolute;
+            border: 2px solid rgba(100, 255, 218, 0.3);
+            border-radius: 50%;
+            animation: ripple-effect 2s ease-out forwards;
         }
 
-        .btn-poetic:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(45, 212, 191, 0.5);
+        @keyframes ripple-effect {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(4); opacity: 0; }
+        }
+
+        .glow-text {
+            text-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
+        }
+
+        .floating {
+            animation: floating 6s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(100, 255, 218, 0.2);
+            border-radius: 10px;
         }
     </style>
 </head>
-<body class="flex items-center justify-center relative">
-    <div id="bubbles-container"></div>
-    
-    <main class="z-10 w-full max-w-2xl px-6">
-        <header class="text-center mb-12">
-            <h1 class="text-5xl font-light tracking-tighter mb-4 neon-glow opacity-90">Transient Echo</h1>
-            <p class="text-lg font-light text-slate-400 italic">"Deep in the digital ocean, memories resonate."</p>
+<body class="flex flex-col items-center justify-center p-4">
+    <div class="underwater-bg" id="bubble-container"></div>
+
+    <!-- Main Interface -->
+    <main class="z-10 w-full max-w-2xl text-center space-y-8">
+        <header class="space-y-4 floating">
+            <h1 class="text-4xl md:text-5xl font-bold glow-text tracking-tighter text-white">
+                水底の演算、意識の残響。<br>
+                <span class="text-2xl md:text-3xl text-[#64ffda] opacity-80">Transient Echo</span>
+            </h1>
+            <p class="text-lg md:text-xl text-[#8892b0] font-light">
+                静寂に溶け、思考は透明になる。
+            </p>
         </header>
 
-        <section class="glass rounded-3xl p-8 shadow-2xl">
-            <div class="mb-6">
-                <textarea id="echo-input" 
-                    class="w-full bg-transparent border-b border-white/20 focus:border-teal-400 outline-none py-4 text-xl font-light placeholder:text-white/20 resize-none transition-colors"
-                    placeholder="Whisper your thought to the current..." rows="2"></textarea>
-                <div class="flex justify-between items-center mt-4">
-                    <span class="text-xs text-white/30 uppercase tracking-widest">Transient Memory</span>
-                    <button id="send-btn" class="btn-poetic px-8 py-2 rounded-full text-sm font-semibold tracking-wide">RELEASE</button>
+        <section class="glass p-8 rounded-3xl shadow-2xl space-y-6 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#64ffda] to-transparent opacity-30"></div>
+            
+            <div class="space-y-4">
+                <div class="flex items-center space-x-2 text-[#64ffda]">
+                    <i data-lucide="waves" class="w-5 h-5"></i>
+                    <span class="text-sm uppercase tracking-widest font-semibold">Echo Input</span>
                 </div>
+                <textarea 
+                    id="echo-input"
+                    class="w-full bg-transparent border-none focus:ring-0 text-xl md:text-2xl text-white placeholder-[#495670] resize-none h-32 leading-relaxed"
+                    placeholder="あなたの深淵に、いま何が響いていますか？"
+                ></textarea>
             </div>
 
-            <div id="echo-list" class="space-y-4 max-h-[300px] overflow-y-auto pr-2 scrollbar-hide">
-                <!-- Echoes will appear here -->
+            <div class="flex justify-between items-center pt-4 border-t border-[#233554]">
+                <div class="flex space-x-4 text-[#8892b0]">
+                    <div class="flex items-center space-x-1 text-xs">
+                        <i data-lucide="info" class="w-3 h-3"></i>
+                        <span>LocalStorage Encryption Enabled</span>
+                    </div>
+                </div>
+                <button 
+                    id="send-echo"
+                    class="bg-[#64ffda] text-[#0a192f] px-6 py-2 rounded-full font-bold hover:bg-[#45ccaa] transition-colors flex items-center space-x-2 shadow-[0_0_15px_rgba(100,255,218,0.4)]"
+                >
+                    <span>残響を放つ</span>
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                </button>
             </div>
         </section>
 
-        <footer class="mt-12 text-center text-white/20 text-xs tracking-widest uppercase">
-            <p>A Poetic Ripple in the Code &copy; 2026</p>
+        <footer class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+            <div class="glass p-4 rounded-xl border border-[#233554] space-y-2">
+                <h3 class="text-[#64ffda] font-bold text-sm">刹那を刻む</h3>
+                <p class="text-xs text-[#8892b0] leading-relaxed">過ぎ去る思考の一片を、水面を揺らす繊細な波紋として捉え、デジタルな詩へと昇華させます。</p>
+            </div>
+            <div class="glass p-4 rounded-xl border border-[#233554] space-y-2">
+                <h3 class="text-[#64ffda] font-bold text-sm">深度ある静寂</h3>
+                <p class="text-xs text-[#8892b0] leading-relaxed">2026年の美学に基づいたアンビエントな水中空間が、あなたの内面と深く、静かに対話します。</p>
+            </div>
+            <div class="glass p-4 rounded-xl border border-[#233554] space-y-2">
+                <h3 class="text-[#64ffda] font-bold text-sm">記憶の再結晶化</h3>
+                <p class="text-xs text-[#8892b0] leading-relaxed">漂流する記憶を深海に沈め、時間が経つほどに美しく輝く「エコー」として再構成します。</p>
+            </div>
         </footer>
     </main>
 
+    <!-- Echo Container (Floating messages) -->
+    <div id="echo-container" class="fixed inset-0 pointer-events-none overflow-hidden"></div>
+
     <script>
+        // Initialize Lucide icons
         lucide.createIcons();
 
         const echoInput = document.getElementById('echo-input');
-        const sendBtn = document.getElementById('send-btn');
-        const echoList = document.getElementById('echo-list');
-        const bubblesContainer = document.getElementById('bubbles-container');
+        const sendBtn = document.getElementById('send-echo');
+        const echoContainer = document.getElementById('echo-container');
+        const bubbleContainer = document.getElementById('bubble-container');
 
         // Create background bubbles
-        for (let i = 0; i < 20; i++) {
-            createBubble();
+        function createBubbles() {
+            for (let i = 0; i < 20; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                const size = Math.random() * 40 + 10;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                bubble.style.left = `${Math.random() * 100}%`;
+                bubble.style.setProperty('--duration', `${Math.random() * 10 + 5}s`);
+                bubble.style.animationDelay = `${Math.random() * 5}s`;
+                bubbleContainer.appendChild(bubble);
+            }
         }
+        createBubbles();
 
-        function createBubble() {
-            const bubble = document.createElement('div');
-            bubble.className = 'bubble';
-            const size = Math.random() * 40 + 10;
-            bubble.style.width = `${size}px`;
-            bubble.style.height = `${size}px`;
-            bubble.style.left = `${Math.random() * 100}%`;
-            bubble.style.animationDuration = `${Math.random() * 10 + 5}s`;
-            bubble.style.animationDelay = `${Math.random() * 5}s`;
-            bubblesContainer.appendChild(bubble);
-        }
-
-        // Echo Logic
+        // Load existing echoes from LocalStorage
         let echoes = JSON.parse(localStorage.getItem('transient_echoes') || '[]');
-
-        function renderEchoes() {
-            echoList.innerHTML = '';
-            echoes.forEach((echo, index) => {
-                const div = document.createElement('div');
-                div.className = 'echo-item glass rounded-2xl p-4 text-sm font-light border-white/5 flex justify-between items-center group';
-                div.innerHTML = `
-                    <span>${echo.text}</span>
-                    <span class="text-[10px] text-white/20 group-hover:text-teal-400 transition-colors">${new Date(echo.timestamp).toLocaleTimeString()}</span>
-                `;
-                echoList.appendChild(div);
-            });
+        
+        function saveEchoes() {
+            localStorage.setItem('transient_echoes', JSON.stringify(echoes));
         }
 
-        sendBtn.addEventListener('click', () => {
+        function createRipple(x, y) {
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+            document.body.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 2000);
+        }
+
+        function spawnEchoCard(text, id, initial = false) {
+            const card = document.createElement('div');
+            card.className = 'echo-card glass p-4 rounded-lg max-w-xs text-xs md:text-sm text-[#8892b0] opacity-0';
+            card.innerText = text;
+            
+            // Random initial position
+            const startX = Math.random() * (window.innerWidth - 200);
+            const startY = Math.random() * (window.innerHeight - 200);
+            card.style.left = `${startX}px`;
+            card.style.top = `${startY}px`;
+            
+            echoContainer.appendChild(card);
+
+            // Fade in and start drifting
+            setTimeout(() => {
+                card.style.opacity = '0.6';
+                drift(card);
+            }, initial ? Math.random() * 2000 : 100);
+
+            // Auto removal after some time
+            setTimeout(() => {
+                card.style.opacity = '0';
+                setTimeout(() => {
+                    card.remove();
+                    echoes = echoes.filter(e => e.id !== id);
+                    saveEchoes();
+                }, 5000);
+            }, 30000 + Math.random() * 20000);
+        }
+
+        function drift(element) {
+            const targetX = Math.random() * (window.innerWidth - 200);
+            const targetY = Math.random() * (window.innerHeight - 200);
+            element.style.left = `${targetX}px`;
+            element.style.top = `${targetY}px`;
+            
+            // Re-drift after 5 seconds
+            setTimeout(() => {
+                if (document.body.contains(element)) drift(element);
+            }, 5000);
+        }
+
+        // Handle sending new echo
+        sendBtn.addEventListener('click', (e) => {
             const text = echoInput.value.trim();
-            if (text) {
-                const newEcho = {
-                    text: text,
-                    timestamp: Date.now()
-                };
-                echoes.unshift(newEcho);
-                if (echoes.length > 5) echoes.pop(); // Keep only 5
-                localStorage.setItem('transient_echoes', JSON.stringify(echoes));
-                echoInput.value = '';
-                renderEchoes();
-                
-                // Visual ripple
-                const ripple = document.createElement('div');
-                ripple.className = 'ripple';
-                ripple.style.left = '50%';
-                ripple.style.top = '50%';
-                ripple.style.width = '100px';
-                ripple.style.height = '100px';
-                document.body.appendChild(ripple);
-                setTimeout(() => ripple.remove(), 4000);
+            if (!text) return;
+
+            const newEcho = {
+                id: Date.now(),
+                text: text,
+                timestamp: new Date().toISOString()
+            };
+
+            echoes.push(newEcho);
+            if (echoes.length > 20) echoes.shift(); // Keep only last 20
+            saveEchoes();
+
+            createRipple(e.clientX, e.clientY);
+            spawnEchoCard(text, newEcho.id);
+            echoInput.value = '';
+
+            // Feedback sound or visual
+            gtag('event', 'send_echo', {
+                'event_category': 'interaction',
+                'event_label': 'new_echo'
+            });
+        });
+
+        // Initialize with existing echoes
+        echoes.forEach(e => spawnEchoCard(e.text, e.id, true));
+
+        // Keyboard support
+        echoInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                sendBtn.click();
             }
         });
 
-        renderEchoes();
-
-        // Random ripples
-        setInterval(() => {
-            if (Math.random() > 0.7) {
-                const ripple = document.createElement('div');
-                ripple.className = 'ripple';
-                ripple.style.left = `${Math.random() * 100}%`;
-                ripple.style.top = `${Math.random() * 100}%`;
-                ripple.style.width = '50px';
-                ripple.style.height = '50px';
-                document.body.appendChild(ripple);
-                setTimeout(() => ripple.remove(), 4000);
-            }
-        }, 3000);
     </script>
 </body>
 </html>
