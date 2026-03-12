@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OShama Luck Guard | 13日の金曜日・厄除けガード</title>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'oshama-dark': '#0f172a',
+                        'oshama-pink': '#FF69B4',
+                        'oshama-gray': '#94a3b8',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            line-height: 1.5;
+            letter-spacing: 0.01em;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .purify-animation {
+            animation: purify 1s ease-out forwards;
+        }
+        @keyframes purify {
+            0% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.1); filter: brightness(2) blur(4px); }
+            100% { transform: scale(0); opacity: 0; }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 3px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center py-12 px-4">
+    <header class="mb-12 text-center animate-float">
+        <div class="flex items-center justify-center gap-2 mb-2">
+            <i data-lucide="shield-check" class="text-oshama-pink w-8 h-8"></i>
+            <span class="font-outfit text-oshama-pink font-bold tracking-widest uppercase text-sm">OShama Edition</span>
+        </div>
+        <h1 class="font-outfit text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-oshama-gray">
+            Luck Guard
+        </h1>
+        <p class="text-oshama-gray max-w-md mx-auto">
+            13日の金曜日の不安を浄化し、<br>あなたの運気をプロテクトします。
+        </p>
+    </header>
+
+    <main class="w-full max-w-2xl space-y-8">
+        <!-- Input Section -->
+        <section class="glass rounded-3xl p-8 shadow-2xl">
+            <div class="flex items-center gap-3 mb-6">
+                <i data-lucide="sparkles" class="text-oshama-pink"></i>
+                <h2 class="text-xl font-bold font-outfit">厄落とし・浄化</h2>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="relative">
+                    <input type="text" id="worryInput" 
+                        placeholder="今、不安なことや厄落とししたいことを入力..." 
+                        class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:outline-none focus:border-oshama-pink transition-all text-lg placeholder:text-oshama-gray/50">
+                </div>
+                <button id="purifyBtn" 
+                    class="w-full bg-oshama-pink hover:bg-pink-500 text-white font-bold py-4 rounded-2xl transition-all active:scale-95 shadow-lg shadow-oshama-pink/20 flex items-center justify-center gap-2">
+                    <i data-lucide="flame" class="w-5 h-5"></i>
+                    浄化プロセスを開始する
+                </button>
+            </div>
+        </section>
+
+        <!-- Result Section (Hidden by default) -->
+        <div id="resultArea" class="hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <section class="glass rounded-3xl p-8 border-oshama-pink/30">
+                <div class="text-center space-y-6">
+                    <div class="inline-block p-4 bg-oshama-pink/10 rounded-full mb-2">
+                        <i data-lucide="gem" class="text-oshama-pink w-10 h-10"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold">浄化完了</h3>
+                    
+                    <div class="bg-white/5 rounded-2xl p-6 border border-white/5">
+                        <p class="text-oshama-gray text-sm mb-2 uppercase tracking-tighter">Today's Lucky Action</p>
+                        <p id="luckyAction" class="text-xl font-medium text-white"></p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-white/5 rounded-2xl p-4 border border-white/5">
+                            <p class="text-oshama-gray text-xs mb-1 uppercase">Luck Level</p>
+                            <p id="luckLevel" class="text-2xl font-bold text-oshama-pink">99%</p>
+                        </div>
+                        <div class="bg-white/5 rounded-2xl p-4 border border-white/5">
+                            <p class="text-oshama-gray text-xs mb-1 uppercase">Protection</p>
+                            <p class="text-2xl font-bold text-emerald-400 font-outfit">ACTIVE</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- History Section -->
+        <section class="glass rounded-3xl p-8">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="history" class="text-oshama-gray"></i>
+                    <h2 class="text-lg font-bold font-outfit">浄化履歴</h2>
+                </div>
+                <span id="historyCount" class="bg-white/5 text-oshama-gray px-3 py-1 rounded-full text-xs">0 items</span>
+            </div>
+            
+            <div id="historyList" class="space-y-3 max-h-60 overflow-y-auto pr-2">
+                <!-- History items will be injected here -->
+                <p id="emptyMessage" class="text-center text-oshama-gray/40 py-8 text-sm italic">履歴はまだありません</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="mt-16 text-center text-oshama-gray/40 text-xs">
+        <p>&copy; 2026 OShama Agent Project. Powered by Gemini CLI.</p>
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        const worryInput = document.getElementById('worryInput');
+        const purifyBtn = document.getElementById('purifyBtn');
+        const resultArea = document.getElementById('resultArea');
+        const luckyActionEl = document.getElementById('luckyAction');
+        const luckLevelEl = document.getElementById('luckLevel');
+        const historyList = document.getElementById('historyList');
+        const historyCountEl = document.getElementById('historyCount');
+        const emptyMessage = document.getElementById('emptyMessage');
+
+        const luckyActions = [
+            "お気に入りの飲み物をゆっくり楽しむ",
+            "5分間だけ目を閉じて深呼吸する",
+            "誰かに小さなお礼を伝えてみる",
+            "デスクの周りを少しだけ片付ける",
+            "新しいプレイリストを作成する",
+            "お気に入りの靴を磨いてみる",
+            "窓を開けて外の空気を吸い込む",
+            "植物に水をあげる（または緑を眺める）",
+            "感謝の気持ちをメモに書いてみる",
+            "今日頑張った自分を褒めてあげる"
+        ];
+
+        // Load History from LocalStorage
+        let history = JSON.parse(localStorage.getItem('oshama_luck_history') || '[]');
+        updateHistoryUI();
+
+        purifyBtn.addEventListener('click', () => {
+            const worry = worryInput.value.trim();
+            if (!worry) {
+                worryInput.focus();
+                worryInput.classList.add('border-red-500');
+                setTimeout(() => worryInput.classList.remove('border-red-500'), 1000);
+                return;
+            }
+
+            // Button Loading State
+            purifyBtn.disabled = true;
+            purifyBtn.innerHTML = '<div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> 浄化中...';
+
+            // Analytics
+            gtag('event', 'purify_start', { worry_length: worry.length });
+
+            setTimeout(() => {
+                // Generate Result
+                const action = luckyActions[Math.floor(Math.random() * luckyActions.length)];
+                const level = Math.floor(Math.random() * (100 - 85 + 1)) + 85; // 85-100%
+
+                luckyActionEl.innerText = action;
+                luckLevelEl.innerText = level + '%';
+                
+                // Show Result Area
+                resultArea.classList.remove('hidden');
+                resultArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                // Save to History
+                const entry = {
+                    id: Date.now(),
+                    worry: worry,
+                    action: action,
+                    date: new Date().toLocaleString()
+                };
+                history.unshift(entry);
+                if (history.length > 20) history.pop();
+                localStorage.setItem('oshama_luck_history', JSON.stringify(history));
+
+                // Update UI
+                updateHistoryUI();
+                worryInput.value = '';
+                
+                // Reset Button
+                purifyBtn.disabled = false;
+                purifyBtn.innerHTML = '<i data-lucide="flame" class="w-5 h-5"></i> 浄化プロセスを開始する';
+                lucide.createIcons();
+                
+                gtag('event', 'purify_complete', { luck_level: level });
+            }, 1500);
+        });
+
+        function updateHistoryUI() {
+            if (history.length > 0) {
+                emptyMessage.classList.add('hidden');
+            } else {
+                emptyMessage.classList.remove('hidden');
+            }
+
+            historyCountEl.innerText = `${history.length} items`;
+            historyList.innerHTML = '';
+            
+            history.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'bg-white/5 border border-white/5 rounded-2xl p-4 text-sm animate-in fade-in duration-500';
+                div.innerHTML = `
+                    <div class="flex justify-between items-start mb-1">
+                        <span class="text-oshama-pink font-medium truncate pr-4">浄化済: ${item.worry}</span>
+                        <span class="text-oshama-gray/50 text-[10px] whitespace-nowrap">${item.date}</span>
+                    </div>
+                    <div class="text-oshama-gray text-xs">Lucky: ${item.action}</div>
+                `;
+                historyList.appendChild(div);
+            });
+        }
+    </script>
+</body>
+</html>
