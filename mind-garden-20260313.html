@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>マインドガーデン - ココロの種を育てる場所</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;400;700&display=swap');
+        
+        :root {
+            --garden-green: #d1fae5;
+            --garden-bloom: #fce7f3;
+            --garden-leaf: #10b981;
+            --garden-accent: #f472b6;
+        }
+
+        body {
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #fdf2f8 100%);
+            color: #334155;
+            min-height: screen;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 2rem;
+        }
+
+        .seed-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .seed-card:hover {
+            transform: scale(1.02) translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+
+        .bloom-animation {
+            animation: bloom 0.6s ease-out forwards;
+        }
+
+        @keyframes bloom {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .sway {
+            animation: sway 3s ease-in-out infinite;
+        }
+
+        @keyframes sway {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
+        }
+
+        /* カスタムスクロールバー */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(16, 185, 129, 0.2);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(16, 185, 129, 0.4);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-12">
+            <div>
+                <div class="flex items-center gap-2 mb-1">
+                    <i data-lucide="sprout" class="text-emerald-500 w-8 h-8 sway"></i>
+                    <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-pink-500">
+                        マインドガーデン
+                    </h1>
+                </div>
+                <p class="text-slate-500 text-sm">ココロに浮かんだ「種」を、大切に育てよう。</p>
+            </div>
+            <button onclick="clearGarden()" class="p-3 glass hover:bg-white/80 transition text-slate-400" title="庭をお手入れする">
+                <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+            </button>
+        </header>
+
+        <!-- Input Area -->
+        <section class="glass p-6 mb-12 shadow-sm">
+            <div class="flex flex-col md:flex-row gap-4">
+                <input type="text" id="seedInput" placeholder="新しいアイデアの種を入力..." 
+                    class="flex-1 bg-white/50 border-none rounded-xl px-6 py-4 focus:ring-2 focus:ring-emerald-400 outline-none text-lg">
+                <button onclick="plantSeed()" class="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-emerald-200 hover:opacity-90 transition flex items-center justify-center gap-2">
+                    <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                    種をまく
+                </button>
+            </div>
+        </section>
+
+        <!-- Garden Area -->
+        <main id="garden" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Seeds/Plants will be injected here -->
+        </main>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="text-center py-20 hidden">
+            <div class="inline-block p-6 bg-emerald-100 rounded-full mb-4">
+                <i data-lucide="wind" class="text-emerald-500 w-12 h-12"></i>
+            </div>
+            <h2 class="text-xl font-bold text-slate-600">まだ種がありません</h2>
+            <p class="text-slate-400">上のフォームから、最初のアイデアをまいてみてね。</p>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-20 text-center text-slate-400 text-sm">
+            <p>© 2026 OShama Project - おしゃまなアイデアが花開く場所</p>
+        </footer>
+    </div>
+
+    <!-- Edit Modal (Simplified) -->
+    <div id="modal" class="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="glass p-8 max-w-lg w-full m-4 shadow-2xl">
+            <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                <i data-lucide="droplet" class="text-blue-400"></i>
+                お水をあげる（詳細をメモ）
+            </h3>
+            <textarea id="modalMemo" rows="5" class="w-full bg-white/50 border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-400 outline-none mb-6" placeholder="このアイデアをどう育てたい？"></textarea>
+            <div class="flex gap-4">
+                <button onclick="closeModal()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold text-slate-500 hover:bg-slate-200 transition">閉じる</button>
+                <button onclick="saveMemo()" class="flex-1 py-3 bg-blue-500 text-white rounded-xl font-bold hover:opacity-90 transition">成長させる</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let seeds = JSON.parse(localStorage.getItem('oshama_garden_seeds')) || [];
+        let currentEditId = null;
+
+        // Initialize
+        function init() {
+            lucide.createIcons();
+            renderGarden();
+        }
+
+        // Render
+        function renderGarden() {
+            const garden = document.getElementById('garden');
+            const emptyState = document.getElementById('emptyState');
+            
+            garden.innerHTML = '';
+            
+            if (seeds.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                seeds.forEach(seed => {
+                    const card = createSeedCard(seed);
+                    garden.appendChild(card);
+                });
+            }
+            lucide.createIcons();
+        }
+
+        function createSeedCard(seed) {
+            const div = document.createElement('div');
+            div.className = 'glass p-6 seed-card bloom-animation flex flex-col justify-between';
+            div.innerHTML = `
+                <div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-2 bg-emerald-100 rounded-lg">
+                            <i data-lucide="${seed.memo ? 'flower-2' : 'sprout'}" class="${seed.memo ? 'text-pink-500' : 'text-emerald-500'} w-6 h-6"></i>
+                        </div>
+                        <button onclick="deleteSeed('${seed.id}')" class="text-slate-300 hover:text-rose-400 transition">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-700 mb-2">${seed.title}</h3>
+                    <p class="text-sm text-slate-500 line-clamp-3">${seed.memo || 'まだ芽が出たばかり。お水をあげて（メモを書いて）育ててね。'}</p>
+                </div>
+                <div class="mt-6 flex items-center justify-between">
+                    <span class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">${new Date(seed.createdAt).toLocaleDateString()}</span>
+                    <button onclick="openModal('${seed.id}')" class="text-sm font-bold flex items-center gap-1 ${seed.memo ? 'text-pink-500' : 'text-blue-500'} hover:opacity-70 transition">
+                        <i data-lucide="droplets" class="w-4 h-4"></i>
+                        ${seed.memo ? 'さらにお水をあげる' : 'お水をあげる'}
+                    </button>
+                </div>
+            `;
+            return div;
+        }
+
+        // Actions
+        function plantSeed() {
+            const input = document.getElementById('seedInput');
+            const title = input.value.trim();
+            
+            if (!title) return;
+
+            const newSeed = {
+                id: Date.now().toString(),
+                title: title,
+                memo: '',
+                createdAt: new Date().toISOString()
+            };
+
+            seeds.unshift(newSeed);
+            saveToStorage();
+            renderGarden();
+            input.value = '';
+        }
+
+        function deleteSeed(id) {
+            if (confirm('このアイデアの種を摘み取りますか？')) {
+                seeds = seeds.filter(s => s.id !== id);
+                saveToStorage();
+                renderGarden();
+            }
+        }
+
+        function openModal(id) {
+            currentEditId = id;
+            const seed = seeds.find(s => s.id === id);
+            document.getElementById('modalMemo').value = seed.memo;
+            document.getElementById('modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+            currentEditId = null;
+        }
+
+        function saveMemo() {
+            const memo = document.getElementById('modalMemo').value.trim();
+            const seedIndex = seeds.findIndex(s => s.id === currentEditId);
+            
+            if (seedIndex !== -1) {
+                seeds[seedIndex].memo = memo;
+                saveToStorage();
+                renderGarden();
+                closeModal();
+            }
+        }
+
+        function clearGarden() {
+            if (confirm('お庭を一度きれいにリセットしますか？')) {
+                seeds = [];
+                saveToStorage();
+                renderGarden();
+            }
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('oshama_garden_seeds', JSON.stringify(seeds));
+        }
+
+        // Boot
+        init();
+    </script>
+</body>
+</html>
