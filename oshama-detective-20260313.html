@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>【おしゃま探偵】探しもの事件簿 - DailyApp</title>
+    <!-- 
+      OShama Daily App: 2026-03-13
+      Theme: Detective Anya 3D / Friday the 13th Luck
+      Concept: A retro-modern detective casebook to track lost items.
+    -->
     <!-- Google Analytics (GA4) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
     <script>
@@ -13,106 +18,158 @@
         gtag('config', 'G-PS2DX1HNVL');
     </script>
     <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
+        :root {
+            --oshama-pink: #ec4899;
+            --retro-brown: #4a3728;
+            --retro-paper: #fdf6e3;
+        }
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #fce7f3 0%, #fae8ff 100%);
             min-height: 100vh;
-            color: #1f2937;
+            color: var(--retro-brown);
             letter-spacing: 0.01em;
             line-height: 1.6;
+            overflow-x: hidden;
         }
         h1, h2, h3 { font-family: 'Outfit', sans-serif; }
         .glass {
             background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
         }
-        .accent-pink { color: #ec4899; }
-        .bg-accent-pink { background-color: #ec4899; }
-        .btn-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .btn-hover:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3); }
-        .list-enter { animation: slideIn 0.4s ease-out; }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .retro-card {
+            background: var(--retro-paper);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(74, 55, 40, 0.1);
         }
+        .btn-oshama {
+            background: var(--oshama-pink);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-oshama:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 10px 15px -3px rgba(236, 72, 153, 0.4);
+        }
+        .stamp-solved {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg) scale(2);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 4px solid #ef4444;
+            color: #ef4444;
+            padding: 4px 12px;
+            font-weight: 800;
+            font-size: 1.5rem;
+            border-radius: 8px;
+            text-transform: uppercase;
+        }
+        .is-solved .stamp-solved {
+            opacity: 0.8;
+            transform: translate(-50%, -50%) rotate(-15deg) scale(1);
+        }
+        .item-row { transition: all 0.3s ease; }
+        .item-row:hover { transform: translateX(4px); }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float { animation: float 3s ease-in-out infinite; }
     </style>
 </head>
-<body class="p-4 md:p-8">
-    <div class="max-w-md mx-auto">
-        <!-- Header -->
-        <header class="text-center mb-8 list-enter">
-            <div class="inline-block p-3 bg-white rounded-full shadow-sm mb-4">
-                <i data-lucide="search" class="w-8 h-8 accent-pink"></i>
+<body class="p-4 md:p-12 selection:bg-pink-200">
+    <div class="max-w-xl mx-auto">
+        <!-- Header Section -->
+        <header class="text-center mb-12 relative">
+            <div class="mb-6 relative inline-block">
+                <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg animate-float">
+                    <i data-lucide="search" class="w-10 h-10 text-pink-500"></i>
+                </div>
+                <div class="absolute -right-2 -bottom-2 w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center shadow-md">
+                    <i data-lucide="star" class="w-4 h-4 text-white fill-current"></i>
+                </div>
             </div>
-            <h1 class="text-3xl font-bold mb-2">【おしゃま探偵】</h1>
-            <p class="text-gray-600">探しもの事件簿 〜 迷宮入りを防ぐ魔法の手帖 〜</p>
+            <h1 class="text-4xl font-extrabold tracking-tight mb-2 text-gray-900">
+                おしゃま探偵の<span class="text-pink-500">「探しもの」</span>事件簿
+            </h1>
+            <p class="text-gray-600 font-medium">迷宮入りを防ぐ、魔法のデジタル手帖</p>
         </header>
 
-        <!-- Search Bar -->
-        <div class="glass rounded-2xl p-4 mb-6 shadow-sm list-enter">
-            <div class="relative">
-                <i data-lucide="zoom-in" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
-                <input type="text" id="searchInput" placeholder="証拠品（アイテム）を捜索..." 
-                    class="w-full pl-10 pr-4 py-3 bg-white/50 border-none rounded-xl focus:ring-2 focus:ring-pink-400 outline-none transition-all">
-            </div>
-        </div>
-
-        <!-- Add Item Form -->
-        <section class="glass rounded-2xl p-6 mb-8 shadow-md list-enter">
-            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
-                <i data-lucide="plus-circle" class="w-5 h-5 accent-pink"></i>
+        <!-- Entry Section -->
+        <section class="glass rounded-[2rem] p-8 mb-10 shadow-xl border-white/50">
+            <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                <i data-lucide="plus-circle" class="w-6 h-6 text-pink-500"></i>
                 新規事件の受理
             </h2>
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm text-gray-500 mb-1 ml-1">証拠品名</label>
-                    <input type="text" id="itemName" placeholder="例：スペアキー、通帳" 
-                        class="w-full px-4 py-3 bg-white/50 rounded-xl border-none focus:ring-2 focus:ring-pink-400 outline-none transition-all">
+            <div class="space-y-5">
+                <div class="group">
+                    <label class="block text-sm font-semibold text-gray-500 mb-2 ml-1 group-focus-within:text-pink-500 transition-colors">証拠品名</label>
+                    <div class="relative">
+                        <i data-lucide="package" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-pink-500 transition-colors"></i>
+                        <input type="text" id="itemName" placeholder="例：スペアキー、通帳、思い出" 
+                            class="w-full pl-12 pr-4 py-4 bg-white/60 border-2 border-transparent focus:border-pink-300 rounded-2xl outline-none transition-all shadow-inner placeholder:text-gray-400">
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm text-gray-500 mb-1 ml-1">隠し場所（保管場所）</label>
-                    <input type="text" id="itemLocation" placeholder="例：リビング右の引き出し" 
-                        class="w-full px-4 py-3 bg-white/50 rounded-xl border-none focus:ring-2 focus:ring-pink-400 outline-none transition-all">
+                <div class="group">
+                    <label class="block text-sm font-semibold text-gray-500 mb-2 ml-1 group-focus-within:text-pink-500 transition-colors">保管場所（現場）</label>
+                    <div class="relative">
+                        <i data-lucide="map-pin" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-pink-500 transition-colors"></i>
+                        <input type="text" id="itemLocation" placeholder="例：リビング右の引き出し、心の奥底" 
+                            class="w-full pl-12 pr-4 py-4 bg-white/60 border-2 border-transparent focus:border-pink-300 rounded-2xl outline-none transition-all shadow-inner placeholder:text-gray-400">
+                    </div>
                 </div>
-                <button id="addBtn" class="w-full bg-accent-pink text-white font-semibold py-3 rounded-xl btn-hover flex items-center justify-center gap-2">
-                    <i data-lucide="save" class="w-5 h-5"></i>
-                    事件簿に記録する
+                <button id="addBtn" class="w-full btn-oshama text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 text-lg">
+                    <i data-lucide="save" class="w-6 h-6"></i>
+                    事件簿に記録してくださいませ
                 </button>
             </div>
         </section>
 
-        <!-- List Section -->
-        <section>
-            <h2 class="text-lg font-semibold mb-4 flex items-center justify-between ml-1">
-                <span class="flex items-center gap-2">
-                    <i data-lucide="clipboard-list" class="w-5 h-5 accent-pink"></i>
-                    捜査進行中の案件
-                </span>
-                <span id="itemCount" class="text-sm bg-white/50 px-3 py-1 rounded-full text-gray-500">0件</span>
-            </h2>
-            <div id="itemList" class="space-y-4">
-                <!-- Items will be injected here -->
+        <!-- Search & Filter -->
+        <div class="flex items-center gap-4 mb-6">
+            <div class="relative flex-1 group">
+                <i data-lucide="zoom-in" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-pink-500"></i>
+                <input type="text" id="searchInput" placeholder="事件を捜索..." 
+                    class="w-full pl-12 pr-4 py-3 bg-white/50 border-none rounded-xl focus:ring-2 focus:ring-pink-400 outline-none transition-all shadow-sm">
             </div>
-        </section>
+            <div id="itemCount" class="bg-white/50 px-4 py-3 rounded-xl font-bold text-pink-500 shadow-sm border border-white/50 whitespace-nowrap">
+                0件の未解決事件
+            </div>
+        </div>
 
-        <!-- Footer Note -->
-        <footer class="mt-12 text-center text-sm text-gray-500 list-enter">
-            <p>※データはあなたの端末（ブラウザ）にのみ保存されます。</p>
-            <p class="mt-2">今日も素晴らしい一日になりますように。</p>
+        <!-- Case List -->
+        <div id="itemList" class="space-y-4">
+            <!-- Items injected here -->
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 text-center space-y-4 pb-12">
+            <div class="flex justify-center gap-4 opacity-40">
+                <i data-lucide="lock" class="w-5 h-5"></i>
+                <i data-lucide="shield-check" class="w-5 h-5"></i>
+                <i data-lucide="eye-off" class="w-5 h-5"></i>
+            </div>
+            <p class="text-xs text-gray-500 uppercase tracking-widest font-bold">Confidential: For Your Eyes Only</p>
+            <p class="text-sm text-gray-400">© 2026 OShama Detective Agency</p>
         </footer>
     </div>
 
+    <!-- Audio Effects (Optional Primitives) -->
     <script>
-        // State Management
-        let items = JSON.parse(localStorage.getItem('oshama_items') || '[]');
+        // State
+        let items = JSON.parse(localStorage.getItem('oshama_detective_cases') || '[]');
 
-        // UI Elements
+        // DOM
         const itemList = document.getElementById('itemList');
         const itemCount = document.getElementById('itemCount');
         const searchInput = document.getElementById('searchInput');
@@ -120,85 +177,91 @@
         const itemName = document.getElementById('itemName');
         const itemLocation = document.getElementById('itemLocation');
 
-        // Functions
-        const renderItems = (filter = '') => {
+        // Logic
+        const render = (filter = '') => {
             itemList.innerHTML = '';
-            const filteredItems = items.filter(item => 
-                item.name.toLowerCase().includes(filter.toLowerCase()) || 
-                item.location.toLowerCase().includes(filter.toLowerCase())
+            const filtered = items.filter(i => 
+                i.name.includes(filter) || i.location.includes(filter)
             );
+            
+            itemCount.textContent = `${filtered.length}件の未解決事件`;
 
-            itemCount.textContent = `${filteredItems.length}件`;
-
-            if (filteredItems.length === 0) {
+            if (filtered.length === 0) {
                 itemList.innerHTML = `
-                    <div class="text-center py-12 text-gray-400 bg-white/30 rounded-2xl border border-dashed border-gray-300">
-                        <i data-lucide="ghost" class="w-12 h-12 mx-auto mb-3 opacity-20"></i>
-                        <p>迷宮入りの案件はありません。</p>
+                    <div class="text-center py-20 bg-white/20 rounded-[2rem] border-2 border-dashed border-pink-200">
+                        <i data-lucide="inbox" class="w-16 h-16 mx-auto mb-4 text-pink-200"></i>
+                        <p class="text-gray-400 font-medium">現在、調査中の事件はありません。</p>
                     </div>
                 `;
-                lucide.createIcons();
-                return;
+            } else {
+                filtered.sort((a,b) => b.id - a.id).forEach(item => {
+                    const el = document.createElement('div');
+                    el.className = 'retro-card rounded-2xl p-6 relative overflow-hidden item-row group';
+                    el.innerHTML = `
+                        <div class="flex justify-between items-center relative z-10">
+                            <div>
+                                <span class="text-[10px] font-bold text-pink-500 uppercase tracking-widest mb-1 block">Case #${item.id.toString().slice(-4)}</span>
+                                <h3 class="text-xl font-bold text-gray-800">${item.name}</h3>
+                                <p class="text-gray-500 flex items-center gap-1 text-sm mt-2">
+                                    <i data-lucide="map-pin" class="w-3 h-3"></i>
+                                    ${item.location}
+                                </p>
+                            </div>
+                            <button onclick="solveCase(this, ${item.id})" class="p-4 bg-white rounded-full shadow-sm hover:bg-green-50 text-green-500 transition-all active:scale-95 group-hover:shadow-md">
+                                <i data-lucide="check-circle" class="w-7 h-7"></i>
+                            </button>
+                        </div>
+                        <div class="stamp-solved font-black">SOLVED!</div>
+                    `;
+                    itemList.appendChild(el);
+                });
             }
-
-            filteredItems.sort((a, b) => b.id - a.id).forEach(item => {
-                const itemEl = document.createElement('div');
-                itemEl.className = 'glass rounded-2xl p-4 shadow-sm flex justify-between items-center list-enter';
-                itemEl.innerHTML = `
-                    <div>
-                        <h3 class="font-bold text-lg">${item.name}</h3>
-                        <p class="text-gray-500 flex items-center gap-1 text-sm mt-1">
-                            <i data-lucide="map-pin" class="w-3 h-3"></i>
-                            ${item.location}
-                        </p>
-                    </div>
-                    <button onclick="resolveItem(${item.id})" class="p-3 rounded-full hover:bg-green-100 text-green-600 transition-colors" title="解決！">
-                        <i data-lucide="check-check" class="w-6 h-6"></i>
-                    </button>
-                `;
-                itemList.appendChild(itemEl);
-            });
             lucide.createIcons();
         };
 
-        const addItem = () => {
-            if (!itemName.value.trim() || !itemLocation.value.trim()) {
-                alert('証拠品名と場所を入力してくださいませ。');
+        const addCase = () => {
+            const name = itemName.value.trim();
+            const loc = itemLocation.value.trim();
+            if(!name || !loc) {
+                alert('事件の真相（品名と場所）を記録してくださいませ。');
                 return;
             }
-
-            const newItem = {
-                id: Date.now(),
-                name: itemName.value.trim(),
-                location: itemLocation.value.trim()
-            };
-
-            items.push(newItem);
-            saveAndRender();
-            
-            // Reset fields
+            items.push({ id: Date.now(), name, location: loc });
+            localStorage.setItem('oshama_detective_cases', JSON.stringify(items));
             itemName.value = '';
             itemLocation.value = '';
-            itemName.focus();
+            render(searchInput.value);
+            
+            // Success animation on button
+            addBtn.innerHTML = '<i data-lucide="check" class="w-6 h-6"></i> 受理いたしました';
+            lucide.createIcons();
+            setTimeout(() => {
+                addBtn.innerHTML = '<i data-lucide="save" class="w-6 h-6"></i> 事件簿に記録してくださいませ';
+                lucide.createIcons();
+            }, 2000);
         };
 
-        const resolveItem = (id) => {
-            items = items.filter(item => item.id !== id);
-            saveAndRender();
+        const solveCase = (btn, id) => {
+            const card = btn.closest('.retro-card');
+            card.classList.add('is-solved');
+            
+            setTimeout(() => {
+                card.style.opacity = '0';
+                card.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    items = items.filter(i => i.id !== id);
+                    localStorage.setItem('oshama_detective_cases', JSON.stringify(items));
+                    render(searchInput.value);
+                }, 300);
+            }, 800);
         };
 
-        const saveAndRender = () => {
-            localStorage.setItem('oshama_items', JSON.stringify(items));
-            renderItems(searchInput.value);
-        };
-
-        // Event Listeners
-        addBtn.addEventListener('click', addItem);
-        searchInput.addEventListener('input', (e) => renderItems(e.target.value));
+        // Listeners
+        addBtn.addEventListener('click', addCase);
+        searchInput.addEventListener('input', e => render(e.target.value));
         
-        // Initial Render
-        renderItems();
-        lucide.createIcons();
+        // Init
+        render();
     </script>
 </body>
 </html>
