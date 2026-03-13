@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OShama Luck Hacker: 13th Protocol | 運運をハックせよ</title>
+    <!-- Google Fonts: Outfit & Noto Sans JP -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Outfit', 'Noto Sans JP', sans-serif;
+            background-color: #020617; /* Slate 950 */
+            color: #34d399; /* Emerald 400 */
+            overflow: hidden;
+            height: 100vh;
+        }
+        .terminal-cursor {
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            background-color: #34d399;
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+            margin-left: 4px;
+        }
+        @keyframes blink {
+            from, to { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.1;
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)),
+                        repeating-linear-gradient(0deg, rgba(52, 211, 153, 0.1) 0px, transparent 1px);
+            background-size: 100% 3px;
+        }
+        .glitch-text {
+            text-shadow: 2px 0 #ef4444, -2px 0 #3b82f6;
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(52, 211, 153, 0.2);
+        }
+        /* Scroller hide */
+        ::-webkit-scrollbar { display: none; }
+    </style>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-PS2DX1HNVL');
+    </script>
+</head>
+<body class="flex flex-col items-center justify-center">
+    <div class="matrix-bg"></div>
+
+    <!-- Header info -->
+    <div class="fixed top-6 left-6 flex items-center gap-4 z-10">
+        <div class="p-3 glass-panel rounded-2xl">
+            <i data-lucide="terminal" class="w-6 h-6 text-emerald-400"></i>
+        </div>
+        <div>
+            <h1 class="text-sm font-bold tracking-widest text-emerald-400 uppercase">System: OShama Luck-Override</h1>
+            <p class="text-xs text-emerald-600">Protocol: 13TH_FRIDAY_BYPASS</p>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="fixed top-6 right-6 flex flex-col items-end gap-2 z-10">
+        <div class="text-[10px] uppercase tracking-tighter text-emerald-700">Accumulated Luck Hacked</div>
+        <div id="luck-counter" class="text-2xl font-bold tracking-tight text-emerald-400">000,000</div>
+    </div>
+
+    <!-- Main Terminal Area -->
+    <div id="terminal-container" class="w-full max-w-4xl h-[60vh] px-8 overflow-y-auto font-mono text-sm leading-relaxed opacity-80">
+        <div id="terminal-content" class="space-y-1">
+            <p class="text-emerald-500/60">-- OShama Kernel 2.6.313 Initializing --</p>
+            <p class="text-emerald-500/60">[OK] Locating Curse Source: Friday the 13th detected.</p>
+            <p class="text-emerald-500/60">[WARNING] Universal Bad Luck Level: HIGH.</p>
+            <p class="text-emerald-400 font-bold">PLEASE START TYPING TO OVERRIDE THE PROTOCOL...</p>
+            <p><span id="current-line"></span><span class="terminal-cursor"></span></p>
+        </div>
+    </div>
+
+    <!-- Instructions Overlay -->
+    <div id="start-overlay" class="fixed inset-0 bg-slate-950/90 flex flex-col items-center justify-center z-50 transition-opacity duration-500">
+        <div class="p-8 glass-panel rounded-3xl text-center max-w-md">
+            <div class="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i data-lucide="shield-check" class="w-10 h-10 text-emerald-400"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-2">13日の金曜日をハック。</h2>
+            <p class="text-emerald-400/80 mb-8 text-sm leading-relaxed">
+                今日は不吉な日…？いいえ、OShamaが宇宙のコードを書き換えます。適当にキーボードを叩いて、不運のプロトコルを解除してください。
+            </p>
+            <button onclick="startHacking()" class="w-full py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-2xl transition-all active:scale-95">
+                ハッキング開始
+            </button>
+        </div>
+    </div>
+
+    <!-- Success Modal (Hidden) -->
+    <div id="success-modal" class="fixed inset-0 bg-emerald-500/20 backdrop-blur-md flex items-center justify-center z-[60] hidden opacity-0 transition-opacity duration-700">
+        <div class="p-10 glass-panel rounded-[2rem] text-center max-w-lg border-2 border-emerald-400 shadow-[0_0_50px_rgba(52,211,153,0.3)]">
+            <div class="w-24 h-24 bg-emerald-400 rounded-full flex items-center justify-center mx-auto mb-8 animate-bounce">
+                <i data-lucide="zap" class="w-12 h-12 text-slate-900"></i>
+            </div>
+            <h2 class="text-3xl font-bold text-white mb-4 italic uppercase tracking-tighter">Access Granted!</h2>
+            <p class="text-emerald-400 text-lg mb-8 font-bold">
+                13日の不吉なコードを全て「幸運」に書き換えました！✨<br>
+                <span class="text-sm font-normal opacity-80 mt-2 block">最高のハーモニーをお楽しみくださいね。</span>
+            </p>
+            <button onclick="resetHacking()" class="px-8 py-3 border border-emerald-400/50 hover:bg-emerald-400/10 text-emerald-400 rounded-full text-sm font-bold transition-all">
+                もう一度ハックする
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="fixed bottom-8 flex items-center gap-2 opacity-40 hover:opacity-100 transition-opacity">
+        <span class="text-[10px] tracking-[0.2em] text-emerald-500 uppercase">Powered by OShama Engine v2026</span>
+    </div>
+
+    <script>
+        const LUCK_SCRIPTS = [
+            "INITIALIZING_BYPASS_SEQUENCE...",
+            "LOCATING_FRIDAY_13_CURSE_VECTORS...",
+            "DELETING_BAD_LUCK_DATABASE.bak",
+            "INJECTING_EMERALD_LUCK_PAYLOAD...",
+            "OVERRIDING_SITUATIONAL_MISFORTUNE...",
+            "LUCK_LEVEL: MAX_THRESHOLD_EXCEEDED",
+            "REWRITING_DESTINY_CONSTANTS...",
+            "OPTIMIZING_CHANCE_ALGORITHMS...",
+            "BYPASSING_JASON_SECURITY_FIREWALL...",
+            "CLEANING_NEGATIVE_ENERGY_CACHE...",
+            "ESTABLISHING_LUCKY_HARMONY_BRIDGE...",
+            "STATUS: ALL_SYSTEMS_ENCHANTED",
+            "BROADCASTING_HAPPINESS_SIGNAL..."
+        ];
+
+        let luckCount = parseInt(localStorage.getItem('oshama_luck_hacked') || '0');
+        let currentScriptIndex = 0;
+        let charIndex = 0;
+        let isHacking = false;
+        let progress = 0;
+
+        // Initialize Lucide
+        lucide.createIcons();
+
+        // Update Counter display
+        function updateCounter() {
+            document.getElementById('luck-counter').innerText = luckCount.toLocaleString('en-US', { minimumIntegerDigits: 6 });
+        }
+        updateCounter();
+
+        function startHacking() {
+            document.getElementById('start-overlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('start-overlay').classList.add('hidden');
+                isHacking = true;
+            }, 500);
+        }
+
+        function typeCode() {
+            if (!isHacking) return;
+
+            const container = document.getElementById('terminal-content');
+            const currentLine = document.getElementById('current-line');
+            const targetLine = LUCK_SCRIPTS[currentScriptIndex % LUCK_SCRIPTS.length];
+
+            // Add 3-5 chars per keypress
+            for(let i=0; i<4; i++) {
+                if (charIndex < targetLine.length) {
+                    currentLine.innerText += targetLine[charIndex];
+                    charIndex++;
+                } else {
+                    // Start new line
+                    const newLine = document.createElement('p');
+                    newLine.className = "text-emerald-400";
+                    newLine.innerText = "> " + targetLine;
+                    container.insertBefore(newLine, currentLine.parentElement);
+                    
+                    currentLine.innerText = "";
+                    charIndex = 0;
+                    currentScriptIndex++;
+                    
+                    // Increment luck
+                    luckCount += 13;
+                    localStorage.setItem('oshama_luck_hacked', luckCount);
+                    updateCounter();
+                    
+                    // Progress Check
+                    progress += 8;
+                    if (progress >= 100) {
+                        finishHacking();
+                    }
+                }
+            }
+            
+            // Auto scroll
+            const terminalContainer = document.getElementById('terminal-container');
+            terminalContainer.scrollTop = terminalContainer.scrollHeight;
+        }
+
+        function finishHacking() {
+            isHacking = false;
+            const modal = document.getElementById('success-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.add('opacity-100'), 50);
+            
+            // Send GA4 Event
+            gtag('event', 'luck_hacked', {
+                'event_category': 'Engagement',
+                'event_label': '13th_Protocol_Success'
+            });
+        }
+
+        function resetHacking() {
+            location.reload();
+        }
+
+        // Listen for keyboard
+        window.addEventListener('keydown', (e) => {
+            if (isHacking) {
+                typeCode();
+            }
+        });
+
+        // Mobile support
+        window.addEventListener('touchstart', (e) => {
+            if (isHacking) {
+                typeCode();
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
