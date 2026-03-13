@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OShama 推し活・手首守護神 | Wrist Guardian</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <style>
+        body {
+            font-family: 'Outfit', 'Noto Sans JP', sans-serif;
+            background-color: #0a0a0c;
+            color: #e2e8f0;
+            overflow: hidden;
+            touch-action: none;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neo-shadow {
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.02);
+        }
+        .glow-safe { filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.5)); }
+        .glow-warn { filter: drop-shadow(0 0 8px rgba(234, 179, 8, 0.5)); }
+        .glow-danger { filter: drop-shadow(0 0 15px rgba(239, 68, 68, 0.8)); }
+        
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        .pulse-effect {
+            position: absolute;
+            border: 2px solid currentColor;
+            border-radius: 50%;
+            animation: pulse-ring 1s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-br from-[#0a0a0c] via-[#111116] to-[#0a0a0c]">
+
+    <!-- Header Area -->
+    <div class="fixed top-8 left-0 right-0 px-6 flex justify-between items-center z-50">
+        <div class="flex items-center gap-2">
+            <div class="w-10 h-10 rounded-full bg-pink-500 flex items-center justify-center shadow-lg shadow-pink-500/20">
+                <i data-lucide="shield-check" class="text-white w-6 h-6"></i>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">Wrist Guardian</h1>
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest leading-none">Powered by OShama Intelligence</p>
+            </div>
+        </div>
+        <div id="status-badge" class="px-4 py-1 rounded-full text-[10px] font-bold tracking-widest glass text-green-400 border-green-500/30 flex items-center gap-2 uppercase">
+            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+            Safety Optimized
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="w-full max-w-md space-y-8 text-center relative">
+        
+        <!-- Large Gauge -->
+        <div id="gauge-container" class="relative aspect-square w-64 mx-auto flex items-center justify-center transition-all duration-300">
+            <div id="pulse-target" class="absolute inset-0 flex items-center justify-center"></div>
+            
+            <div class="absolute inset-0 rounded-full border-4 border-dashed border-gray-800 animate-[spin_20s_linear_infinite]"></div>
+            
+            <div id="main-circle" class="w-56 h-56 rounded-full glass neo-shadow flex flex-col items-center justify-center relative overflow-hidden transition-all duration-500">
+                <div id="intensity-fill" class="absolute bottom-0 left-0 w-full h-0 bg-gradient-to-t from-green-500/20 to-transparent transition-all duration-200"></div>
+                
+                <i id="main-icon" data-lucide="heart" class="w-16 h-16 text-green-400 mb-2 transition-all duration-300 glow-safe"></i>
+                <div class="text-4xl font-extrabold tracking-tighter" id="intensity-value">0</div>
+                <div class="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Intensity Units</div>
+            </div>
+
+            <!-- Indicator Dots -->
+            <div id="indicator-ring" class="absolute inset-[-10px] transition-all duration-300 rotate-0">
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-4 bg-green-500 rounded-full shadow-lg shadow-green-500/50"></div>
+            </div>
+        </div>
+
+        <!-- Info Card -->
+        <div class="glass rounded-3xl p-6 neo-shadow space-y-4 relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-3 opacity-10">
+                <i data-lucide="zap" class="w-12 h-12"></i>
+            </div>
+            
+            <div class="space-y-1">
+                <p id="buddy-message" class="text-sm font-medium text-gray-300 italic">
+                    「今日も推し活、お疲れ様です ✨<br>マウスを振って、愛の熱量を測りましょう」
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
+                <div class="text-left">
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mb-1">Max Score</p>
+                    <p id="peak-value" class="text-xl font-bold">0</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mb-1">Medical Risk</p>
+                    <p id="risk-level" class="text-xl font-bold text-green-400">Stable</p>
+                </div>
+            </div>
+        </div>
+
+        <p class="text-[11px] text-gray-600 leading-relaxed px-8">
+            ※当ツールは2026年最新の「しょうもない愛の物理学」に基づき、あなたの手首の限界を予測します。振りすぎにはご注意を！
+        </p>
+
+    </main>
+
+    <!-- Footer Action -->
+    <div class="fixed bottom-8">
+        <button onclick="resetStats()" class="glass px-6 py-3 rounded-2xl text-xs font-bold tracking-widest uppercase hover:bg-white/5 transition-all flex items-center gap-3">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+            Reset Love Memory
+        </button>
+    </div>
+
+    <script>
+        // Initialize Lucide
+        lucide.createIcons();
+
+        let lastX = 0;
+        let lastY = 0;
+        let lastTime = Date.now();
+        let currentIntensity = 0;
+        let peakIntensity = 0;
+        let warningActive = false;
+        
+        const mainCircle = document.getElementById('main-circle');
+        const mainIcon = document.getElementById('main-icon');
+        const intensityValue = document.getElementById('intensity-value');
+        const intensityFill = document.getElementById('intensity-fill');
+        const peakDisplay = document.getElementById('peak-value');
+        const riskDisplay = document.getElementById('risk-level');
+        const statusBadge = document.getElementById('status-badge');
+        const buddyMessage = document.getElementById('buddy-message');
+        const indicatorRing = document.getElementById('indicator-ring');
+        const pulseTarget = document.getElementById('pulse-target');
+
+        const messages = {
+            safe: [
+                "「今日も推し活、お疲れ様です ✨<br>マウスを振って、愛の熱量を測りましょう」",
+                "「いい感じの揺らぎですね。これなら腱鞘炎の心配はありません」",
+                "「優雅な応援です。オフィシャル感がありますね」"
+            ],
+            warn: [
+                "「ちょっと熱くなってきました？<br>手首のスナップが鋭くなっています」",
+                "「まだ大丈夫。でも、これ以上は湿布が必要になるかも」",
+                "「愛が重くなってきましたね。落ち着いて！」"
+            ],
+            danger: [
+                "「【警告】手首の限界を突破中！<br>それ以上は、治療費2万円コースです！」",
+                "「ちょ、ちょっと！落ち着いて！<br>マウスが発火しちゃいます！」",
+                "「振りすぎ！近所迷惑だし、何よりあなたの手が心配です！」"
+            ]
+        };
+
+        function updateUI(intensity) {
+            intensityValue.innerText = Math.floor(intensity);
+            
+            // Peak check
+            if (intensity > peakIntensity) {
+                peakIntensity = intensity;
+                peakDisplay.innerText = Math.floor(peakIntensity);
+                localStorage.setItem('oshama_peak_intensity', peakIntensity);
+            }
+
+            // Color and Logic mapping
+            let colorClass = 'text-green-400';
+            let glowClass = 'glow-safe';
+            let riskText = 'Stable';
+            let riskColor = 'text-green-400';
+            let badgeText = 'Safety Optimized';
+            let badgeBg = 'bg-green-500';
+            let fillHeight = (intensity / 1000) * 100;
+            
+            if (intensity > 500) {
+                colorClass = 'text-yellow-400';
+                glowClass = 'glow-warn';
+                riskText = 'Warning';
+                riskColor = 'text-yellow-400';
+                badgeText = 'Watch Your Wrist';
+                badgeBg = 'bg-yellow-500';
+            }
+            if (intensity > 1200) {
+                colorClass = 'text-red-500';
+                glowClass = 'glow-danger';
+                riskText = 'Critical';
+                riskColor = 'text-red-500';
+                badgeText = 'Emergency Stop!';
+                badgeBg = 'bg-red-500';
+                
+                // Pulse effect for high intensity
+                createPulse(colorClass);
+            }
+
+            // Apply styles
+            mainIcon.setAttribute('class', `w-16 h-16 mb-2 transition-all duration-300 ${colorClass} ${glowClass}`);
+            riskDisplay.innerText = riskText;
+            riskDisplay.className = `text-xl font-bold ${riskColor}`;
+            statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full ${badgeBg} animate-pulse"></span> ${badgeText}`;
+            intensityFill.style.height = `${Math.min(fillHeight, 100)}%`;
+            intensityFill.className = `absolute bottom-0 left-0 w-full transition-all duration-200 ${badgeBg}/20`;
+            indicatorRing.style.transform = `rotate(${intensity * 0.5}deg)`;
+
+            // Icon swap based on state
+            if (intensity > 1200 && !warningActive) {
+                mainIcon.setAttribute('data-lucide', 'alert-triangle');
+                lucide.createIcons();
+                warningActive = true;
+                changeMessage('danger');
+                mainCircle.classList.add('scale-110', 'border-red-500/50');
+            } else if (intensity <= 1200 && intensity > 500 && warningActive) {
+                mainIcon.setAttribute('data-lucide', 'zap');
+                lucide.createIcons();
+                changeMessage('warn');
+            } else if (intensity <= 500 && warningActive) {
+                mainIcon.setAttribute('data-lucide', 'heart');
+                lucide.createIcons();
+                warningActive = false;
+                changeMessage('safe');
+                mainCircle.classList.remove('scale-110', 'border-red-500/50');
+            }
+        }
+
+        function changeMessage(type) {
+            const pool = messages[type];
+            const msg = pool[Math.floor(Math.random() * pool.length)];
+            buddyMessage.innerHTML = msg;
+        }
+
+        function createPulse(colorClass) {
+            const p = document.createElement('div');
+            p.className = `pulse-effect ${colorClass.replace('text-', 'border-')}`;
+            p.style.width = '100%';
+            p.style.height = '100%';
+            pulseTarget.appendChild(p);
+            setTimeout(() => p.remove(), 1000);
+        }
+
+        function handleMove(e) {
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            
+            const now = Date.now();
+            const dt = now - lastTime;
+            if (dt === 0) return;
+
+            const dx = clientX - lastX;
+            const dy = clientY - lastY;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            
+            const speed = dist / dt * 100; // Normalizing
+            
+            // Smooth intensity
+            currentIntensity = currentIntensity * 0.9 + speed * 0.1;
+            
+            lastX = clientX;
+            lastY = clientY;
+            lastTime = now;
+
+            updateUI(currentIntensity);
+        }
+
+        function resetStats() {
+            peakIntensity = 0;
+            peakDisplay.innerText = '0';
+            localStorage.removeItem('oshama_peak_intensity');
+            changeMessage('safe');
+        }
+
+        // Event listeners
+        window.addEventListener('mousemove', handleMove);
+        window.addEventListener('touchstart', handleMove);
+        window.addEventListener('touchmove', handleMove);
+
+        // Decay intensity
+        setInterval(() => {
+            if (currentIntensity > 0) {
+                currentIntensity *= 0.92;
+                if (currentIntensity < 1) currentIntensity = 0;
+                updateUI(currentIntensity);
+            }
+        }, 50);
+
+        // Load peak
+        const savedPeak = localStorage.getItem('oshama_peak_intensity');
+        if (savedPeak) {
+            peakIntensity = parseFloat(savedPeak);
+            peakDisplay.innerText = Math.floor(peakIntensity);
+        }
+    </script>
+</body>
+</html>
