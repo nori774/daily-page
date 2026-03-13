@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OShama Sugar Crusher | White Day Special</title>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter, Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Outfit', 'Inter', sans-serif;
+            background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+        .sugar-cube {
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            user-select: none;
+        }
+        .sugar-cube:active {
+            transform: scale(0.9);
+        }
+        .crushed {
+            animation: crush 0.4s forwards;
+            pointer-events: none;
+        }
+        @keyframes crush {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2) rotate(5deg); opacity: 0.5; filter: blur(2px); }
+            100% { transform: scale(0); opacity: 0; filter: blur(10px); }
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            border: 0.5px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+        .toast {
+            animation: slideUp 3s forwards;
+        }
+        @keyframes slideUp {
+            0% { transform: translateY(20px); opacity: 0; }
+            10% { transform: translateY(0); opacity: 1; }
+            90% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-20px); opacity: 0; }
+        }
+        .particle {
+            position: absolute;
+            background: white;
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center p-4">
+
+    <!-- Header -->
+    <header class="text-center mb-8 z-10">
+        <h1 class="text-4xl font-bold text-gray-800 mb-2 tracking-tight">OShama Sugar Crusher</h1>
+        <p class="text-gray-500 font-medium tracking-wide">ホワイトデーの甘い「お返し」を粉砕せよ ✨</p>
+    </header>
+
+    <!-- Counter -->
+    <div class="glass px-6 py-2 rounded-full mb-8 flex items-center gap-2">
+        <i data-lucide="zap" class="w-4 h-4 text-yellow-500"></i>
+        <span class="text-sm font-bold text-gray-700">TOTAL CRUSH: <span id="crush-count">0</span></span>
+    </div>
+
+    <!-- Main Game Area -->
+    <div id="game-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-6 p-8 glass rounded-3xl max-w-md w-full aspect-square relative overflow-hidden">
+        <!-- Cubes will be generated here -->
+    </div>
+
+    <!-- Toast Area -->
+    <div id="toast-container" class="fixed bottom-10 left-0 right-0 flex flex-col items-center gap-2 pointer-events-none"></div>
+
+    <!-- Info -->
+    <footer class="mt-8 text-center text-gray-400 text-xs">
+        <p>© 2026 OShama Project | Powered by Sugar & Curiosity</p>
+    </footer>
+
+    <script>
+        // Initialize Lucide
+        lucide.createIcons();
+
+        const grid = document.getElementById('game-grid');
+        const countDisplay = document.getElementById('crush-count');
+        const toastContainer = document.getElementById('toast-container');
+        
+        let count = parseInt(localStorage.getItem('oshama_sugar_crush_count') || '0');
+        countDisplay.textContent = count;
+
+        const facts = [
+            "砂糖は甘いですね✨",
+            "ホワイトデーのお返し、マシュマロは「嫌い」という意味らしいですよ…（諸説あり）",
+            "クッキーは「友達」という意味だそうです。健全ですね！",
+            "キャンディは「好き」という意味。本命ですね ✨",
+            "キャラメルは「一緒にいると安心する」だそうです。温かい！",
+            "バレンタインデーのちょうど1ヶ月後。それが今日です。",
+            "砂糖の結晶は立方体に近い形をしています。",
+            "甘いものは脳のガソリンです。でも粉砕しましょう。",
+            "このアプリに意味はありません。それが「おしゃま」です。",
+            "クリックする感触、最高じゃないですか？✨",
+            "マカロンは「特別な人」という意味。高級ですね！",
+            "マドレーヌは「仲良くなりたい」という意味。控えめですね。"
+        ];
+
+        // Web Audio API for "Crunch"
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playCrunch() {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(100, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 0.1);
+            
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.1);
+        }
+
+        function createParticles(x, y) {
+            for (let i = 0; i < 8; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                const size = Math.random() * 4 + 2;
+                p.style.width = `${size}px`;
+                p.style.height = `${size}px`;
+                p.style.left = `${x}px`;
+                p.style.top = `${y}px`;
+                
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 5 + 2;
+                const vx = Math.cos(angle) * speed;
+                const vy = Math.sin(angle) * speed;
+                
+                document.body.appendChild(p);
+                
+                let opacity = 1;
+                let curX = x;
+                let curY = y;
+                
+                const anim = () => {
+                    curX += vx;
+                    curY += vy;
+                    opacity -= 0.05;
+                    p.style.transform = `translate(${curX - x}px, ${curY - y}px)`;
+                    p.style.opacity = opacity;
+                    
+                    if (opacity > 0) {
+                        requestAnimationFrame(anim);
+                    } else {
+                        p.remove();
+                    }
+                };
+                requestAnimationFrame(anim);
+            }
+        }
+
+        function showToast() {
+            const toast = document.createElement('div');
+            toast.className = 'glass px-4 py-2 rounded-xl text-xs font-medium text-gray-600 toast mb-2';
+            toast.textContent = facts[Math.floor(Math.random() * facts.length)];
+            toastContainer.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function spawnCube() {
+            const cube = document.createElement('div');
+            cube.className = 'sugar-cube w-full h-full glass rounded-xl flex items-center justify-center';
+            cube.innerHTML = `<div class="w-8 h-8 bg-white opacity-80 rounded-sm shadow-sm"></div>`;
+            
+            cube.addEventListener('click', (e) => {
+                if (cube.classList.contains('crushed')) return;
+                
+                playCrunch();
+                createParticles(e.clientX, e.clientY);
+                cube.classList.add('crushed');
+                
+                count++;
+                countDisplay.textContent = count;
+                localStorage.setItem('oshama_sugar_crush_count', count);
+                
+                showToast();
+                
+                setTimeout(() => {
+                    cube.remove();
+                    spawnCube();
+                }, 1000);
+            });
+            
+            grid.appendChild(cube);
+        }
+
+        // Initial spawn
+        for (let i = 0; i < 12; i++) {
+            spawnCube();
+        }
+    </script>
+</body>
+</html>
