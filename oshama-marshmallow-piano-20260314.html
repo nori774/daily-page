@@ -165,13 +165,20 @@
         lucide.createIcons();
 
         const PI_DIGITS = "31415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679";
-        let piIndex = 0;
+        
+        // Load saved progress
+        let piIndex = parseInt(localStorage.getItem('oshama_pi_index') || '0');
         let isProcessing = false;
 
         const marshmallow = document.getElementById('marshmallow');
         const piSequence = document.getElementById('pi-sequence');
         const stage = document.getElementById('stage');
         const digitPop = document.getElementById('digit-pop');
+
+        // Restore sequence view
+        if (piIndex > 0) {
+            piSequence.innerText = "3." + PI_DIGITS.substring(1, piIndex);
+        }
 
         // Audio Context Setup
         let audioCtx = null;
@@ -220,7 +227,13 @@
             if (piIndex === 0) {
                 piSequence.innerText = "3.";
             } else if (piIndex > 0) {
-                piSequence.innerText += PI_DIGITS[piIndex];
+                // Keep show last 15 digits for clarity
+                const fullSeq = PI_DIGITS.substring(0, piIndex + 1);
+                if (fullSeq.length > 20) {
+                    piSequence.innerText = "..." + fullSeq.substring(fullSeq.length - 15);
+                } else {
+                    piSequence.innerText = "3." + PI_DIGITS.substring(1, piIndex + 1);
+                }
             }
             
             // Pop large digit
@@ -231,11 +244,14 @@
             );
 
             // Create particles
-            createParticles(e.clientX || window.innerWidth/2, e.clientY || window.innerHeight/2);
+            const x = e.clientX || window.innerWidth / 2;
+            const y = e.clientY || window.innerHeight / 2;
+            createParticles(x, y);
 
             playTone(digit);
             
             piIndex = (piIndex + 1) % PI_DIGITS.length;
+            localStorage.setItem('oshama_pi_index', piIndex);
 
             // Haptic
             if (window.navigator.vibrate) window.navigator.vibrate(20);
