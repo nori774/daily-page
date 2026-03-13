@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OShama AI-Mirror: 13日の運命影診断 ✨</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+        body { font-family: 'Noto+Sans+JP', sans-serif; }
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .mirror-glow {
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+        }
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen flex flex-col items-center p-4">
+
+    <!-- Header -->
+    <header class="w-full max-w-md flex justify-between items-center mb-8">
+        <div class="flex items-center gap-2">
+            <div class="bg-violet-600 p-2 rounded-lg">
+                <i data-lucide="sparkles" class="text-white w-5 h-5"></i>
+            </div>
+            <h1 class="text-xl font-bold tracking-tight">OShama <span class="text-violet-400">AI-Mirror</span></h1>
+        </div>
+        <div class="text-xs text-slate-500 bg-slate-900 px-2 py-1 rounded border border-slate-800">
+            2026.03.13 Fri
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="w-full max-w-md flex-grow flex flex-col items-center gap-6">
+        
+        <!-- Intro -->
+        <section class="text-center space-y-2">
+            <h2 class="text-2xl font-bold text-white">13日の運命影診断</h2>
+            <p class="text-sm text-slate-400">不吉な「影」は、あなたの隠れた「才能」ですね ✨</p>
+        </section>
+
+        <!-- Mirror Area -->
+        <div id="mirror-container" class="relative w-full aspect-square max-w-[320px] rounded-full glass border-4 border-slate-800 flex flex-col items-center justify-center overflow-hidden mirror-glow transition-all duration-700">
+            <div id="mirror-content" class="text-center p-6 transition-all duration-500">
+                <i data-lucide="ghost" id="mirror-icon" class="w-20 h-20 text-slate-700 mx-auto mb-4 transition-all duration-500"></i>
+                <p id="mirror-text" class="text-slate-500 font-medium italic">鏡を覗き込んでください...</p>
+            </div>
+            <div id="scan-line" class="absolute top-0 left-0 w-full h-1 bg-violet-500/50 shadow-[0_0_15px_rgba(139,92,246,0.5)] hidden"></div>
+        </div>
+
+        <!-- Action Button -->
+        <button id="btn-diagnose" class="w-full bg-violet-600 hover:bg-violet-500 text-white font-bold py-4 rounded-2xl shadow-lg shadow-violet-900/20 flex items-center justify-center gap-2 transition-all active:scale-95 group">
+            <i data-lucide="flashlight" class="group-hover:rotate-12 transition-transform"></i>
+            <span>光を当てる（診断開始）</span>
+        </button>
+
+        <!-- Result Card (Hidden) -->
+        <div id="result-card" class="w-full glass rounded-2xl p-6 space-y-4 hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div class="flex items-center gap-3">
+                <div id="result-icon-bg" class="p-3 rounded-xl bg-violet-500/20 text-violet-400">
+                    <i data-lucide="moon" id="result-icon"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 uppercase tracking-widest">Shadow Talent</p>
+                    <h3 id="result-title" class="text-xl font-bold text-white">深淵の共鳴者</h3>
+                </div>
+            </div>
+            <p id="result-desc" class="text-sm text-slate-300 leading-relaxed italic">
+                13日の金曜日の静寂の中で、あなたは他人が見落とす微かな予兆を感じ取ることができます。その「影」は、未来を切り拓く鋭い直感へと変わるでしょう。
+            </p>
+            <div class="pt-2 flex gap-2">
+                <button id="btn-save" class="flex-1 bg-slate-800 hover:bg-slate-700 py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-2 transition-colors">
+                    <i data-lucide="save" class="w-4 h-4"></i>
+                    記憶に刻む
+                </button>
+                <button id="btn-reset" class="px-4 py-2 bg-slate-900/50 hover:bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-500 transition-colors">
+                    もう一度
+                </button>
+            </div>
+        </div>
+
+        <!-- History -->
+        <section id="history-section" class="w-full hidden">
+            <h4 class="text-xs font-bold text-slate-500 uppercase tracking-tighter mb-2 px-1">刻まれた記憶</h4>
+            <div id="history-list" class="space-y-2">
+                <!-- Items added here -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full max-w-md mt-12 pb-6 text-center">
+        <p class="text-[10px] text-slate-600 uppercase tracking-widest mb-2">Designed by OShama Agentic Framework</p>
+        <div class="flex justify-center gap-4">
+            <i data-lucide="twitter" class="w-4 h-4 text-slate-700 cursor-not-allowed"></i>
+            <i data-lucide="github" class="w-4 h-4 text-slate-700 cursor-not-allowed"></i>
+            <i data-lucide="external-link" class="w-4 h-4 text-slate-700 cursor-not-allowed"></i>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide
+        lucide.createIcons();
+
+        const talents = [
+            { title: "深淵の共鳴者", desc: "13日の金曜日の静寂の中で、あなたは他人が見落とす微かな予兆を感じ取ることができます。その「影」は、未来を切り拓く鋭い直感へと変わるでしょう。", icon: "moon" },
+            { title: "月光のハッカー", desc: "暗闇の中でのみ冴え渡る思考力。トラブルやバグが重なる不運な日こそ、あなたの論理的解決能力が最大のパフォーマンスを発揮します。", icon: "zap" },
+            { title: "不運の調律師", desc: "周囲の負のエネルギーを、美しいメロディやアイデアへと変換する力を持っています。あなたの手にかかれば、13日の呪いすらハーモニーの一部です。", icon: "music" },
+            { title: "ナイト・バディ", desc: "孤独な夜にこそ力を発揮する優しさ。誰かの不安を安らぎに変えるその「影」は、暗い道を照らす道標（ガイド）そのものです。", icon: "user-check" },
+            { title: "影の創造主", desc: "現実世界のルールに縛られない自由な想像力。13日の金曜日に見る白昼夢から、誰も思いつかないような傑作が生まれる予感ですね ✨", icon: "pen-tool" },
+            { title: "サイレント・リーダー", desc: "騒がしい世界の中で、あえて沈黙を守り本質を見極める力。あなたの放つ一言は、暗闇の中で最も強く輝く閃光となります。", icon: "eye" }
+        ];
+
+        const btnDiagnose = document.getElementById('btn-diagnose');
+        const btnSave = document.getElementById('btn-save');
+        const btnReset = document.getElementById('btn-reset');
+        const mirrorContainer = document.getElementById('mirror-container');
+        const mirrorContent = document.getElementById('mirror-content');
+        const mirrorIcon = document.getElementById('mirror-icon');
+        const mirrorText = document.getElementById('mirror-text');
+        const scanLine = document.getElementById('scan-line');
+        const resultCard = document.getElementById('result-card');
+        const resultTitle = document.getElementById('result-title');
+        const resultDesc = document.getElementById('result-desc');
+        const resultIcon = document.getElementById('result-icon');
+        const historySection = document.getElementById('history-section');
+        const historyList = document.getElementById('history-list');
+
+        let currentResult = null;
+
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('oshama_shadow_history') || '[]');
+            if (history.length > 0) {
+                historySection.classList.remove('hidden');
+                historyList.innerHTML = history.slice(-3).reverse().map(item => `
+                    <div class="glass p-3 rounded-xl flex items-center gap-3 border-l-2 border-violet-500 animate-in fade-in slide-in-from-left-2 duration-300">
+                        <i data-lucide="${item.icon}" class="w-4 h-4 text-violet-400"></i>
+                        <span class="text-xs font-bold text-slate-200">${item.title}</span>
+                        <span class="text-[10px] text-slate-500 ml-auto">${item.date}</span>
+                    </div>
+                `).join('');
+                lucide.createIcons();
+            }
+        }
+
+        btnDiagnose.addEventListener('click', () => {
+            btnDiagnose.disabled = true;
+            btnDiagnose.classList.add('opacity-50', 'cursor-not-allowed');
+            
+            // Start Animation
+            mirrorContent.classList.add('scale-75', 'opacity-0');
+            scanLine.classList.remove('hidden');
+            scanLine.style.animation = 'scan 2s linear infinite';
+            mirrorContainer.classList.add('mirror-glow', 'ring-2', 'ring-violet-500/50');
+            
+            const style = document.createElement('style');
+            style.innerHTML = `@keyframes scan { 0% { top: 0; } 100% { top: 100%; } }`;
+            document.head.appendChild(style);
+
+            setTimeout(() => {
+                // Show Result
+                const talent = talents[Math.floor(Math.random() * talents.length)];
+                currentResult = talent;
+
+                scanLine.classList.add('hidden');
+                mirrorContainer.classList.remove('max-w-[320px]');
+                mirrorContainer.classList.add('max-w-[120px]', 'h-[120px]', 'opacity-30', 'grayscale');
+                
+                resultTitle.innerText = talent.title;
+                resultDesc.innerText = talent.desc;
+                resultIcon.setAttribute('data-lucide', talent.icon);
+                lucide.createIcons();
+
+                resultCard.classList.remove('hidden');
+                btnDiagnose.classList.add('hidden');
+                
+                // Track GA
+                if (typeof gtag === 'function') {
+                    gtag('event', 'diagnosis_complete', { 'talent': talent.title });
+                }
+            }, 2500);
+        });
+
+        btnSave.addEventListener('click', () => {
+            if (!currentResult) return;
+            const history = JSON.parse(localStorage.getItem('oshama_shadow_history') || '[]');
+            const newItem = {
+                ...currentResult,
+                date: new Date().toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' })
+            };
+            history.push(newItem);
+            localStorage.setItem('oshama_shadow_history', JSON.stringify(history));
+            
+            btnSave.disabled = true;
+            btnSave.innerHTML = '<i data-lucide="check" class="w-4 h-4 text-green-400"></i> 記憶しました';
+            lucide.createIcons();
+            loadHistory();
+        });
+
+        btnReset.addEventListener('click', () => {
+            location.reload();
+        });
+
+        // Initial load
+        loadHistory();
+
+    </script>
+</body>
+</html>
