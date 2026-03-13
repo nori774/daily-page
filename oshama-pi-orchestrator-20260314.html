@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OShama Pi-Day Orchestrator | White Day Special</title>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter, Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Outfit', 'Inter', sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            color: #1f2937;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 0.5px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+            border-radius: 2rem;
+        }
+        .digit-node {
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            user-select: none;
+        }
+        .digit-node:hover {
+            transform: scale(1.1) translateY(-5px);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+        .digit-node:active {
+            transform: scale(0.9);
+        }
+        .pi-container {
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
+        @keyframes pulse-white {
+            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+        .active-pulse {
+            animation: pulse-white 0.5s infinite;
+        }
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+    </style>
+</head>
+<body class="p-4">
+
+    <div class="max-w-md w-full glass p-8 text-center relative z-10 floating">
+        <div class="flex justify-center mb-4">
+            <div class="bg-white p-3 rounded-full shadow-inner">
+                <i data-lucide="music" class="w-8 h-8 text-pink-300"></i>
+            </div>
+        </div>
+        <h1 class="text-3xl font-bold mb-2 tracking-tight">OShama Pi-Orchestrator</h1>
+        <p class="text-gray-500 text-sm mb-6">3.14の愛を、ホワイトデーの響きに。✨</p>
+
+        <div class="mb-8 overflow-hidden pi-container h-32 flex items-center justify-center">
+            <div id="pi-track" class="flex gap-4 items-center">
+                <!-- Digits will be injected here -->
+            </div>
+        </div>
+
+        <div class="grid grid-cols-5 gap-3 mb-8">
+            <button onclick="playNote(1)" class="glass p-4 text-xl font-bold hover:bg-pink-50 transition-colors">1</button>
+            <button onclick="playNote(2)" class="glass p-4 text-xl font-bold hover:bg-pink-50 transition-colors">2</button>
+            <button onclick="playNote(3)" class="glass p-4 text-xl font-bold hover:bg-pink-50 transition-colors">3</button>
+            <button onclick="playNote(4)" class="glass p-4 text-xl font-bold hover:bg-pink-50 transition-colors">4</button>
+            <button onclick="playNote(5)" class="glass p-4 text-xl font-bold hover:bg-pink-50 transition-colors">5</button>
+            <button onclick="playNote(6)" class="glass p-4 text-xl font-bold hover:bg-pink-50 transition-colors">6</button>
+            <button onclick="playNote(7)" class="glass p-4 text-xl font-bold hover:bg-pink-50 transition-colors">7</button>
+            <button onclick="playNote(8)" class="glass p-4 text-xl font-bold hover:bg-pink-50 transition-colors">8</button>
+            <button onclick="playNote(9)" class="glass p-4 text-xl font-bold hover:bg-pink-50 transition-colors">9</button>
+            <button onclick="playNote(0)" class="glass p-4 text-xl font-bold hover:bg-pink-50 transition-colors">0</button>
+        </div>
+
+        <div id="status" class="text-xs text-gray-400 italic">
+            円周率を奏でて、愛をオーケストレーションしてくださいね ✨
+        </div>
+    </div>
+
+    <!-- Background Decoration -->
+    <div class="fixed top-0 left-0 w-full h-full pointer-events-none opacity-20">
+        <div class="absolute top-10 left-10 w-32 h-32 bg-pink-100 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-20 right-10 w-48 h-48 bg-blue-50 rounded-full blur-3xl"></div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const piDigits = "3.141592653589793238462643383279502884197169399375105820974944592307816406286";
+        const track = document.getElementById('pi-track');
+        const status = document.getElementById('status');
+        
+        let currentIndex = 0;
+
+        function initTrack() {
+            piDigits.split('').forEach((d, i) => {
+                const el = document.createElement('div');
+                el.className = `digit-node glass w-12 h-12 flex items-center justify-center text-xl font-bold ${d === '.' ? 'bg-transparent shadow-none w-4' : ''}`;
+                el.innerText = d;
+                el.id = `digit-${i}`;
+                track.appendChild(el);
+            });
+            updateFocus();
+        }
+
+        function updateFocus() {
+            const current = document.getElementById(`digit-${currentIndex}`);
+            if (current) {
+                current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                current.classList.add('active-pulse', 'border-pink-300', 'bg-pink-50');
+            }
+        }
+
+        const synth = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playNote(num) {
+            const expected = piDigits[currentIndex];
+            
+            // Audio Feedback
+            const osc = synth.createOscillator();
+            const gain = synth.createGain();
+            osc.connect(gain);
+            gain.connect(synth.destination);
+            
+            const frequencies = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25, 587.33, 659.25];
+            osc.frequency.setValueAtTime(frequencies[num] || 440, synth.currentTime);
+            
+            gain.gain.setValueAtTime(0.1, synth.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, synth.currentTime + 0.5);
+            
+            osc.start();
+            osc.stop(synth.currentTime + 0.5);
+
+            if (num.toString() === expected) {
+                const prev = document.getElementById(`digit-${currentIndex}`);
+                prev.classList.remove('active-pulse', 'border-pink-300', 'bg-pink-50');
+                prev.classList.add('text-pink-400');
+                
+                currentIndex++;
+                if (piDigits[currentIndex] === '.') currentIndex++;
+                
+                updateFocus();
+                status.innerText = `完璧なハーモニーです！ (${currentIndex}桁目) ✨`;
+            } else {
+                status.innerText = `おっと、円周率の調べが乱れたようです... 🍬`;
+            }
+        }
+
+        initTrack();
+
+        // Keyboard Support
+        window.addEventListener('keydown', (e) => {
+            if (e.key >= '0' && e.key <= '9') {
+                playNote(parseInt(e.key));
+            }
+        });
+    </script>
+</body>
+</html>
