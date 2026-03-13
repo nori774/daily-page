@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>不運を斬れ！ジェイソン君の不運ポイント銀行 | OShama DailyApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Tag Manager -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=M+PLUS+Rounded+1c:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #581c87 50%, #db2777 100%);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .dot-font {
+            font-family: 'DotGothic16', sans-serif;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+        }
+
+        .neo-button {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 15px rgba(219, 39, 119, 0.3);
+        }
+
+        .neo-button:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 0 25px rgba(219, 39, 119, 0.6);
+        }
+
+        .neo-button:active {
+            transform: scale(0.95);
+        }
+
+        .sparkle {
+            position: absolute;
+            pointer-events: none;
+            animation: fly 1s ease-out forwards;
+        }
+
+        @keyframes fly {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; }
+        }
+
+        .horror-shake {
+            animation: shake 0.5s infinite;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(2px, -2px); }
+            50% { transform: translate(-2px, 2px); }
+            75% { transform: translate(2px, 2px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        .blood-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 50%, rgba(220, 38, 38, 0.3) 100%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s;
+            z-index: 50;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center p-4">
+    <div id="blood" class="blood-overlay"></div>
+
+    <!-- Header -->
+    <header class="w-full max-w-md mt-8 mb-6 text-center">
+        <div class="inline-block p-2 mb-2 bg-pink-600 rounded-full horror-shake">
+            <i data-lucide="ghost" class="w-8 h-8 text-white"></i>
+        </div>
+        <h1 class="text-3xl font-bold dot-font mb-2 tracking-tighter">不運ポイント銀行</h1>
+        <p class="text-sm opacity-80">13日の金曜日限定・ジェイソン君の救済</p>
+    </header>
+
+    <!-- Main Card -->
+    <main class="w-full max-w-md glass p-8 shadow-2xl relative overflow-hidden">
+        <div class="absolute top-0 right-0 p-4 opacity-10">
+            <i data-lucide="skull" class="w-24 h-24"></i>
+        </div>
+
+        <!-- Point Display -->
+        <div class="text-center mb-8">
+            <p class="text-xs text-pink-300 mb-1 uppercase tracking-widest">Total Bad Luck Savings</p>
+            <div class="flex items-center justify-center gap-2">
+                <span id="point-display" class="text-6xl font-black dot-font text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">0</span>
+                <span class="text-xl font-bold">Pt</span>
+            </div>
+        </div>
+
+        <!-- Input Section -->
+        <div class="space-y-4">
+            <p class="text-sm text-center mb-4">今日起きた「不運」を選択して、<br>ジェイソン君に供養してもらいましょう。</p>
+            
+            <button onclick="addPoint(13, 'black-cat')" class="w-full neo-button bg-purple-900/50 p-4 rounded-xl flex items-center justify-between border border-purple-500/30">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="cat" class="w-5 h-5 text-purple-400"></i>
+                    <span>黒猫が横切った</span>
+                </div>
+                <span class="text-xs font-bold bg-purple-500 px-2 py-1 rounded">+13 Pt</span>
+            </button>
+
+            <button onclick="addPoint(31, 'toast')" class="w-full neo-button bg-pink-900/50 p-4 rounded-xl flex items-center justify-between border border-pink-500/30">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="utensils" class="w-5 h-5 text-pink-400"></i>
+                    <span>トーストをバター面から落とした</span>
+                </div>
+                <span class="text-xs font-bold bg-pink-500 px-2 py-1 rounded">+31 Pt</span>
+            </button>
+
+            <button onclick="addPoint(66, 'umbrella')" class="w-full neo-button bg-indigo-900/50 p-4 rounded-xl flex items-center justify-between border border-indigo-500/30">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="umbrella" class="w-5 h-5 text-indigo-400"></i>
+                    <span>傘を持った瞬間に雨が止んだ</span>
+                </div>
+                <span class="text-xs font-bold bg-indigo-500 px-2 py-1 rounded">+66 Pt</span>
+            </button>
+
+            <div class="relative pt-4">
+                <input type="text" id="custom-unluck" placeholder="その他の不運を叫ぶ..." class="w-full bg-white/5 border border-white/20 rounded-xl p-4 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all">
+                <button onclick="addCustomPoint()" class="absolute right-2 top-[22px] p-2 text-pink-400 hover:text-pink-300">
+                    <i data-lucide="send" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Jason Mascot (Hidden Easter Egg Trigger) -->
+    <div class="mt-8 text-center">
+        <button id="jason-btn" onclick="triggerEasterEgg()" class="opacity-50 hover:opacity-100 transition-opacity">
+            <i data-lucide="ghost" class="w-12 h-12"></i>
+            <p class="text-[10px] mt-1 opacity-50">13回タップで...？</p>
+        </button>
+    </div>
+
+    <!-- Message Area -->
+    <div id="message-area" class="mt-6 w-full max-w-md text-center text-sm font-bold min-h-[3em]"></div>
+
+    <!-- Footer -->
+    <footer class="mt-auto py-8 text-center opacity-40 text-[10px] flex flex-col items-center gap-2">
+        <p>© 2026 OShama Agent Nexus / HAMA</p>
+        <div class="flex gap-4">
+            <a href="#" class="hover:underline">Twitter</a>
+            <a href="#" class="hover:underline">Privacy</a>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        let totalPoints = parseInt(localStorage.getItem('jason_unluck_points') || '0');
+        let tapCount = 0;
+        const pointDisplay = document.getElementById('point-display');
+        const messageArea = document.getElementById('message-area');
+        const blood = document.getElementById('blood');
+
+        pointDisplay.innerText = totalPoints;
+
+        const jasonQuotes = [
+            "「それ、ホラー映画なら真っ先に死んでるぞ」",
+            "「チェーンソーのガソリンにするわ」",
+            "「不運が貯まれば、明日のおやつが豪華になる...かもな」",
+            "「フフフ、いい不運だ」",
+            "「不吉な予感がする...おめでとう」",
+            "「運命を切り刻んでやったぜ」"
+        ];
+
+        function addPoint(amount, type) {
+            totalPoints += amount;
+            updateDisplay();
+            showEffect(event.clientX, event.clientY);
+            showMessage(jasonQuotes[Math.floor(Math.random() * jasonQuotes.length)]);
+            
+            // Unnecessary Rich Effect: Screen Shake
+            document.body.classList.add('horror-shake');
+            setTimeout(() => document.body.classList.remove('horror-shake'), 300);
+        }
+
+        function addCustomPoint() {
+            const input = document.getElementById('custom-unluck');
+            if (!input.value) return;
+            
+            const amount = Math.floor(Math.random() * 50) + 13;
+            addPoint(amount, 'custom');
+            input.value = '';
+        }
+
+        function updateDisplay() {
+            pointDisplay.innerText = totalPoints;
+            localStorage.setItem('jason_unluck_points', totalPoints);
+        }
+
+        function showMessage(text) {
+            messageArea.innerText = text;
+            messageArea.style.opacity = '1';
+            setTimeout(() => {
+                messageArea.style.opacity = '0.5';
+            }, 2000);
+        }
+
+        function showEffect(x, y) {
+            for (let i = 0; i < 8; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = x + 'px';
+                sparkle.style.top = y + 'px';
+                sparkle.style.setProperty('--x', (Math.random() - 0.5) * 200 + 'px');
+                sparkle.style.setProperty('--y', (Math.random() - 0.5) * 200 + 'px');
+                sparkle.innerHTML = '<i data-lucide="zap" class="w-4 h-4 text-pink-400"></i>';
+                document.body.appendChild(sparkle);
+                lucide.createIcons();
+                setTimeout(() => sparkle.remove(), 1000);
+            }
+        }
+
+        function triggerEasterEgg() {
+            tapCount++;
+            if (tapCount >= 13) {
+                blood.style.opacity = '1';
+                showMessage("「ハッピー13日の金曜日！お前はまだ生きている。」");
+                document.body.style.background = 'linear-gradient(135deg, #450a0a 0%, #000 100%)';
+                setTimeout(() => {
+                    blood.style.opacity = '0';
+                    tapCount = 0;
+                }, 3000);
+            } else {
+                showMessage(`「あと ${13 - tapCount} 回...」`);
+            }
+        }
+    </script>
+</body>
+</html>
