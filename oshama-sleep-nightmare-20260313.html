@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OShama | 13日の金曜日・快眠ナイトメアサンド</title>
+    <!-- Google Fonts: Outfit & Noto Sans JP -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- GA4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        oshama: {
+                            pink: '#ff4da6',
+                            deep: '#1a1a2e',
+                            glass: 'rgba(255, 255, 255, 0.05)',
+                        }
+                    },
+                    fontFamily: {
+                        outfit: ['Outfit', 'Noto Sans JP', 'sans-serif'],
+                    },
+                    animation: {
+                        'bounce-slow': 'bounce 3s infinite',
+                        'pulse-gentle': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Outfit', 'Noto Sans JP', sans-serif; background-color: #0f172a; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glass-pink { background: rgba(255, 77, 166, 0.1); backdrop-filter: blur(8px); border: 1px solid rgba(255, 77, 166, 0.2); }
+        .ingredient-btn { transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .ingredient-btn:hover { transform: translateY(-4px) scale(1.05); background: rgba(255, 77, 166, 0.15); border-color: rgba(255, 77, 166, 0.4); }
+        .sheep-bread { transition: all 0.5s ease; cursor: pointer; }
+        .sheep-bread:active { transform: scale(0.95); }
+        .speech-bubble { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .layer-anim { animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-50px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col selection:bg-oshama-pink/30">
+    <!-- Background Decor -->
+    <div class="fixed top-0 left-0 w-full h-full pointer-events-none -z-10 overflow-hidden">
+        <div class="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-oshama-pink/10 rounded-full blur-[120px] animate-pulse-gentle"></div>
+        <div class="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/10 rounded-full blur-[100px] animate-pulse-gentle" style="animation-delay: 2s"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="p-6 flex justify-between items-center max-w-5xl mx-auto w-full">
+        <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-oshama-pink rounded-2xl flex items-center justify-center shadow-[0_0_25px_rgba(255,77,166,0.4)]">
+                <i data-lucide="moon-star" class="text-white w-7 h-7"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-extrabold tracking-tighter leading-none">OSHAMA<br><span class="text-oshama-pink text-sm uppercase tracking-[0.2em]">Lab.</span></h1>
+            </div>
+        </div>
+        <div class="text-right glass px-4 py-2 rounded-2xl border-white/5">
+            <p class="text-[10px] text-slate-400 font-bold tracking-widest uppercase">Friday the 13th</p>
+            <p class="text-sm font-mono font-bold text-oshama-pink">2026.03.13</p>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-5xl mx-auto w-full px-6 py-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+        <!-- Builder Side -->
+        <div class="space-y-8">
+            <div class="glass rounded-[2rem] p-8 relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4">
+                    <i data-lucide="info" class="text-slate-500 w-5 h-5 cursor-help" title="不安（具材）を選んで、羊ではさみましょう。13日の金曜日の呪いを眠りに変えます。"></i>
+                </div>
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-2 h-8 bg-oshama-pink rounded-full"></span>
+                    具材（不安）を選ぶ
+                </h2>
+                
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" id="ingredient-grid">
+                    <!-- Dynamic Ingredients -->
+                </div>
+            </div>
+
+            <div class="glass rounded-[2rem] p-8">
+                <h2 class="text-lg font-bold mb-4 flex items-center gap-2 text-slate-400">
+                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                    眠りの配合ログ
+                </h2>
+                <div id="history-container" class="space-y-2 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
+                    <p class="text-sm text-slate-500 italic">まだ眠りのサンドはありません...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visual Side -->
+        <div class="sticky top-8 flex flex-col items-center gap-8">
+            <div class="relative w-full aspect-square flex flex-col-reverse items-center justify-center pt-20" id="sandwich-canvas">
+                <!-- Bottom Sheep Bread -->
+                <div class="sheep-bread relative group" onclick="speak('bottom')">
+                    <div id="bubble-bottom" class="speech-bubble absolute -top-12 -left-4 glass-pink px-4 py-2 rounded-2xl text-xs font-bold text-oshama-pink hidden">
+                        メェ〜（眠い...）
+                    </div>
+                    <div class="w-56 h-16 bg-white rounded-[2rem] shadow-xl border-b-8 border-slate-200 relative overflow-hidden">
+                        <div class="absolute left-6 top-4 w-3 h-3 bg-slate-800 rounded-full"></div>
+                        <div class="absolute left-14 top-4 w-3 h-3 bg-slate-800 rounded-full"></div>
+                        <div class="absolute -right-4 -top-4 w-16 h-16 bg-slate-50 rounded-full opacity-50"></div>
+                    </div>
+                    <!-- Ears/Legs -->
+                    <div class="absolute -left-2 top-4 w-6 h-8 bg-slate-200 rounded-full -rotate-45 -z-10"></div>
+                    <div class="absolute -right-2 top-4 w-6 h-8 bg-slate-200 rounded-full rotate-45 -z-10"></div>
+                </div>
+
+                <!-- Layers will be prepended here -->
+            </div>
+
+            <div id="result-panel" class="w-full max-w-sm glass-pink rounded-[2.5rem] p-8 hidden transform transition-all">
+                <div class="text-center space-y-4">
+                    <div class="inline-flex p-4 bg-oshama-pink/20 rounded-full border border-oshama-pink/30 animate-bounce-slow">
+                        <i id="result-icon" data-lucide="coffee" class="text-oshama-pink w-8 h-8"></i>
+                    </div>
+                    <h3 id="result-title" class="text-2xl font-black tracking-tight text-white">快眠レベル：極限</h3>
+                    <p id="result-message" class="text-slate-300 text-sm leading-relaxed">
+                        13日の金曜日の不安を全て吸い込みました。今夜は深い眠りが約束されています。
+                    </p>
+                    <div class="pt-4 flex gap-3">
+                        <button onclick="share()" class="flex-1 bg-oshama-pink hover:bg-oshama-pink/80 text-white font-bold py-4 px-6 rounded-2xl shadow-lg shadow-oshama-pink/20 transition-all active:scale-95 flex items-center justify-center gap-2">
+                            <i data-lucide="share-2" class="w-5 h-5"></i>
+                            記録を共有
+                        </button>
+                        <button onclick="reset()" class="bg-white/5 hover:bg-white/10 text-white p-4 rounded-2xl border border-white/10 transition-all">
+                            <i data-lucide="rotate-ccw" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="p-8 text-center space-y-4">
+        <p class="text-slate-500 text-xs font-medium tracking-widest uppercase">
+            &copy; 2026 OShama Daily Application Lab.
+        </p>
+        <div class="flex justify-center gap-4">
+            <a href="#" class="text-slate-400 hover:text-oshama-pink transition-colors"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+            <a href="#" class="text-slate-400 hover:text-oshama-pink transition-colors"><i data-lucide="github" class="w-5 h-5"></i></a>
+        </div>
+    </footer>
+
+    <script>
+        const INGREDIENTS = [
+            { id: 'work', name: '未完了のタスク', icon: 'briefcase', color: '#94a3b8', score: 10, msg: '重たい仕事のプレッシャー' },
+            { id: 'sns', name: '通知の嵐', icon: 'bell', color: '#ff4da6', score: 15, msg: '止まらないSNSの刺激' },
+            { id: 'future', name: '将来のぼんやり', icon: 'cloud-fog', color: '#818cf8', score: 20, msg: '見えない先への不安' },
+            { id: 'money', name: '財布の冷え込み', icon: 'wallet', color: '#34d399', score: 12, msg: '経済的な小さな悩み' },
+            { id: 'health', name: '肩こり・腰痛', icon: 'activity', color: '#f87171', score: 18, msg: '体に蓄積した疲労感' },
+            { id: 'coffee', name: '飲みすぎた珈琲', icon: 'coffee', color: '#b45309', score: 25, msg: 'カフェインの覚醒作用' }
+        ];
+
+        let stack = [];
+        let isComplete = false;
+
+        function init() {
+            const grid = document.getElementById('ingredient-grid');
+            INGREDIENTS.forEach(ing => {
+                const btn = document.createElement('button');
+                btn.className = 'ingredient-btn glass rounded-2xl p-4 flex flex-col items-center gap-3 text-[11px] font-bold text-slate-300';
+                btn.onclick = () => add(ing.id);
+                btn.innerHTML = `
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-white/5 group-hover:bg-oshama-pink/20">
+                        <i data-lucide="${ing.icon}" class="w-5 h-5" style="color: ${ing.color}"></i>
+                    </div>
+                    ${ing.name}
+                `;
+                grid.appendChild(btn);
+            });
+            lucide.createIcons();
+            loadHistory();
+        }
+
+        function add(id) {
+            if (isComplete || stack.length >= 6) return;
+            const item = INGREDIENTS.find(i => i.id === id);
+            stack.push(item);
+            
+            const canvas = document.getElementById('sandwich-canvas');
+            const layer = document.createElement('div');
+            layer.className = 'layer-anim w-48 h-6 rounded-xl border-b-2 border-black/10 shadow-sm relative z-10';
+            layer.style.backgroundColor = item.color;
+            layer.style.marginBottom = '-8px';
+            layer.style.transform = `rotate(${(Math.random() - 0.5) * 6}deg)`;
+            
+            // Insert after top sheep if it exists, otherwise before bottom sheep
+            canvas.insertBefore(layer, canvas.firstChild);
+
+            if (stack.length === 3) {
+                finish();
+            }
+        }
+
+        function finish() {
+            isComplete = true;
+            const canvas = document.getElementById('sandwich-canvas');
+            const topSheep = document.createElement('div');
+            topSheep.className = 'layer-anim sheep-bread relative group mt-[-20px] z-20';
+            topSheep.onclick = () => speak('top');
+            topSheep.innerHTML = `
+                <div id="bubble-top" class="speech-bubble absolute -top-12 -right-4 glass-pink px-4 py-2 rounded-2xl text-xs font-bold text-oshama-pink hidden">
+                    メェ〜（おやすみ...）
+                </div>
+                <div class="w-60 h-20 bg-white rounded-t-[3rem] rounded-b-[1rem] shadow-2xl border-b-4 border-slate-200 relative overflow-hidden">
+                    <div class="absolute right-8 top-10 w-2 h-2 bg-slate-800 rounded-full animate-pulse"></div>
+                    <div class="absolute right-16 top-10 w-2 h-2 bg-slate-800 rounded-full animate-pulse"></div>
+                    <div class="absolute -left-6 -top-6 w-20 h-20 bg-slate-50 rounded-full opacity-60"></div>
+                </div>
+                <div class="absolute -left-2 top-10 w-8 h-4 bg-slate-200 rounded-full rotate-12 -z-10"></div>
+                <div class="absolute -right-2 top-10 w-8 h-4 bg-slate-200 rounded-full -rotate-12 -z-10"></div>
+            `;
+            canvas.prepend(topSheep);
+
+            setTimeout(showResult, 600);
+        }
+
+        function showResult() {
+            const panel = document.getElementById('result-panel');
+            const totalScore = stack.reduce((acc, cur) => acc + cur.score, 0);
+            const title = document.getElementById('result-title');
+            const msg = document.getElementById('result-message');
+            const icon = document.getElementById('result-icon');
+
+            panel.classList.remove('hidden');
+            setTimeout(() => {
+                panel.classList.add('translate-y-0', 'opacity-100');
+            }, 50);
+
+            if (totalScore > 50) {
+                title.innerText = '快眠ナイトメア：深淵';
+                msg.innerText = '13日の金曜日の重圧を、羊たちが完全に封印しました。明日の朝まで意識が戻らないほどの爆睡です。';
+                icon.setAttribute('data-lucide', 'ghost');
+            } else {
+                title.innerText = '快眠サンド：陽だまり';
+                msg.innerText = '程よい疲れが羊に包まれ、心地よい微睡みが訪れます。13日の金曜日を優しく締めくくりましょう。';
+                icon.setAttribute('data-lucide', 'sparkles');
+            }
+            lucide.createIcons();
+            saveHistory(totalScore);
+        }
+
+        function speak(type) {
+            const bubble = document.getElementById(`bubble-${type}`);
+            bubble.classList.remove('hidden');
+            setTimeout(() => bubble.classList.add('hidden'), 2000);
+        }
+
+        function reset() {
+            stack = [];
+            isComplete = false;
+            document.getElementById('sandwich-canvas').innerHTML = `
+                <div class="sheep-bread relative group" onclick="speak('bottom')">
+                    <div id="bubble-bottom" class="speech-bubble absolute -top-12 -left-4 glass-pink px-4 py-2 rounded-2xl text-xs font-bold text-oshama-pink hidden">
+                        メェ〜（眠い...）
+                    </div>
+                    <div class="w-56 h-16 bg-white rounded-[2rem] shadow-xl border-b-8 border-slate-200 relative overflow-hidden">
+                        <div class="absolute left-6 top-4 w-3 h-3 bg-slate-800 rounded-full"></div>
+                        <div class="absolute left-14 top-4 w-3 h-3 bg-slate-800 rounded-full"></div>
+                        <div class="absolute -right-4 -top-4 w-16 h-16 bg-slate-50 rounded-full opacity-50"></div>
+                    </div>
+                    <div class="absolute -left-2 top-4 w-6 h-8 bg-slate-200 rounded-full -rotate-45 -z-10"></div>
+                    <div class="absolute -right-2 top-4 w-6 h-8 bg-slate-200 rounded-full rotate-45 -z-10"></div>
+                </div>
+            `;
+            document.getElementById('result-panel').classList.add('hidden');
+            lucide.createIcons();
+        }
+
+        function saveHistory(score) {
+            const logs = JSON.parse(localStorage.getItem('oshama_sleep_logs') || '[]');
+            logs.unshift({ date: new Date().toLocaleTimeString(), score, items: stack.length });
+            localStorage.setItem('oshama_sleep_logs', JSON.stringify(logs.slice(0, 5)));
+            loadHistory();
+        }
+
+        function loadHistory() {
+            const logs = JSON.parse(localStorage.getItem('oshama_sleep_logs') || '[]');
+            const container = document.getElementById('history-container');
+            if (logs.length === 0) return;
+            container.innerHTML = logs.map(l => `
+                <div class="flex justify-between items-center glass px-4 py-2 rounded-xl text-[10px] font-mono border-white/5">
+                    <span class="text-slate-400">${l.date}</span>
+                    <span class="text-oshama-pink font-bold">SCORE: ${l.score}pt</span>
+                </div>
+            `).join('');
+        }
+
+        function share() {
+            const text = `OShama Labで「13日の金曜日・快眠ナイトメアサンド」を作りました。今夜の快眠スコアは【${stack.reduce((a,b)=>a+b.score,0)}pt】！ #DailyApp #13日の金曜日 #サンドイッチの日 #睡眠改善無理ゲー選手権`;
+            const url = window.location.href;
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
