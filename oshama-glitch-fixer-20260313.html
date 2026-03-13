@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OShama Glitch Fixer | 13日の金曜日・不運デバッガー</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'JetBrains+Mono', 'Noto+Sans+JP', sans-serif;
+            background-color: #0a0a0c;
+            color: #00ff41;
+            overflow-x: hidden;
+        }
+
+        .glitch-text {
+            text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff;
+            animation: glitch 2s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch {
+            0% { text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff; }
+            50% { text-shadow: -2px 0 #ff00ff, 2px 0 #00ffff; }
+            100% { text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff; }
+        }
+
+        .neon-border {
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.3), inset 0 0 5px rgba(0, 255, 65, 0.2);
+            border: 1px solid rgba(0, 255, 65, 0.5);
+        }
+
+        .patch-anim {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .patch-anim:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a1f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00ff41;
+            border-radius: 3px;
+        }
+    </style>
+    <!-- Google Tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-PS2DX1HNVL');
+    </script>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 md:p-8">
+
+    <!-- Header -->
+    <header class="w-full max-w-2xl mb-8 text-center">
+        <div class="flex justify-center mb-2">
+            <i data-lucide="shield-alert" class="w-12 h-12 text-red-500 animate-pulse"></i>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-bold glitch-text mb-2">OShama Glitch Fixer [46]</h1>
+        <p class="text-sm text-gray-400">System Status: <span class="text-yellow-500">13th Friday Detected. High Glitch Probability.</span></p>
+    </header>
+
+    <main class="w-full max-w-2xl space-y-6">
+        <!-- Input Section -->
+        <section class="bg-[#16161a] p-6 rounded-lg neon-border">
+            <div class="flex items-center gap-2 mb-4">
+                <i data-lucide="bug" class="w-5 h-5"></i>
+                <h2 class="text-lg font-bold">New Glitch Report</h2>
+            </div>
+            <div class="space-y-4">
+                <textarea id="glitchInput" placeholder="例：コーヒーをこぼした、電車に乗り遅れた..." 
+                    class="w-full bg-black border border-gray-700 rounded p-3 text-sm focus:outline-none focus:border-[#00ff41] h-24 placeholder-gray-600"></textarea>
+                <button onclick="applyPatch()" class="w-full bg-[#00ff41] text-black font-bold py-3 rounded flex items-center justify-center gap-2 hover:bg-[#00cc33] transition-colors">
+                    <i data-lucide="zap" class="w-5 h-5"></i>
+                    APPLY POSITIVE PATCH
+                </button>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-[#16161a] p-4 rounded-lg neon-border text-center">
+                <p class="text-xs text-gray-400 mb-1 uppercase">Luck Re-Sync Rate</p>
+                <p id="luckRate" class="text-2xl font-bold">0%</p>
+            </div>
+            <div class="bg-[#16161a] p-4 rounded-lg neon-border text-center">
+                <p class="text-xs text-gray-400 mb-1 uppercase">Patches Applied</p>
+                <p id="patchCount" class="text-2xl font-bold">0</p>
+            </div>
+        </div>
+
+        <!-- Log Section -->
+        <section class="bg-[#16161a] p-6 rounded-lg neon-border">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="history" class="w-5 h-5"></i>
+                    <h2 class="text-lg font-bold">Glitch Log</h2>
+                </div>
+                <button onclick="clearLogs()" class="text-xs text-gray-500 hover:text-red-400">CLEAR_ALL</button>
+            </div>
+            <div id="glitchLog" class="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+                <!-- Log items will appear here -->
+                <div class="text-center py-8 text-gray-600 italic text-sm">
+                    No glitches detected in current sector.
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 text-center text-xs text-gray-600">
+        <p>© 2026 OShama Agentic Buddy System | Terminal Ver 2.0</p>
+        <p class="mt-2 flex items-center justify-center gap-1">
+            <i data-lucide="cpu" class="w-3 h-3"></i> Powered by OShama Engine
+        </p>
+    </footer>
+
+    <!-- Overlay Template (Hidden) -->
+    <div id="patchTemplate" class="hidden">
+        <div class="bg-black/50 border-l-4 border-[#00ff41] p-4 rounded-r patch-anim animate-in fade-in slide-in-from-left duration-500">
+            <div class="flex justify-between items-start mb-2">
+                <span class="text-[10px] text-[#00ff41] font-bold">REPORT_ID: #DATE#</span>
+                <i data-lucide="check-circle-2" class="w-4 h-4 text-[#00ff41]"></i>
+            </div>
+            <p class="text-xs text-gray-400 mb-2 line-through italic">#ORIGINAL#</p>
+            <p class="text-sm font-bold text-white">#PATCHED#</p>
+        </div>
+    </div>
+
+    <script>
+        // Lucide implementation
+        lucide.createIcons();
+
+        // Data Management
+        let logs = JSON.parse(localStorage.getItem('oshama_glitches') || '[]');
+        updateUI();
+
+        function applyPatch() {
+            const input = document.getElementById('glitchInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const patches = [
+                "これは『不運』ではなく、後の『大成功』のためのシステム・プリロードです。",
+                "不吉な波動を検出し、自動的に『ネタ』としての価値へ変換しました。",
+                "13日の金曜日のノイズを、あなたの魅力的なストーリーの一部としてパッチを当てました。",
+                "このグリッチにより、あなたの『運気キャッシュ』がクリアされ、新しい幸運が書き込み可能になりました。",
+                "エラーを『ユニークな体験』として再定義しました。システムは正常です。",
+                "その出来事は、今日一番の『不運』を先に消化したことを意味します。これからは上昇のみです。",
+                "宇宙のデバッグプロセスが完了しました。あなたは現在、最も安全なタイムラインにいます。"
+            ];
+
+            const patch = patches[Math.floor(Math.random() * patches.length)];
+            const id = Math.random().toString(36).substr(2, 9).toUpperCase();
+
+            const newLog = {
+                id: id,
+                original: text,
+                patched: patch,
+                timestamp: new Date().toLocaleTimeString()
+            };
+
+            logs.unshift(newLog);
+            localStorage.setItem('oshama_glitches', JSON.stringify(logs));
+            
+            input.value = '';
+            updateUI();
+            
+            // Re-render icons for new elements
+            lucide.createIcons();
+        }
+
+        function updateUI() {
+            const logContainer = document.getElementById('glitchLog');
+            const template = document.getElementById('patchTemplate').innerHTML;
+            
+            if (logs.length === 0) {
+                logContainer.innerHTML = '<div class="text-center py-8 text-gray-600 italic text-sm">No glitches detected in current sector.</div>';
+                document.getElementById('patchCount').innerText = '0';
+                document.getElementById('luckRate').innerText = '0%';
+                return;
+            }
+
+            logContainer.innerHTML = logs.map(log => {
+                return template
+                    .replace('#DATE#', log.id)
+                    .replace('#ORIGINAL#', log.original)
+                    .replace('#PATCHED#', log.patched);
+            }).join('');
+
+            document.getElementById('patchCount').innerText = logs.length;
+            const rate = Math.min(100, logs.length * 13);
+            document.getElementById('luckRate').innerText = rate + '%';
+        }
+
+        function clearLogs() {
+            if (confirm('全てのログを消去しますか？（システムの再起動）')) {
+                logs = [];
+                localStorage.setItem('oshama_glitches', '[]');
+                updateUI();
+            }
+        }
+    </script>
+</body>
+</html>
