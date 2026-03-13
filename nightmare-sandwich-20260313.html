@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OShama: 13日の金曜日・快眠ナイトメアサンド</title>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'oshama-night': '#0a0a20',
+                        'oshama-pink': '#FF69B4',
+                        'oshama-indigo': '#4B0082',
+                        'oshama-star': '#FFFACD',
+                    },
+                    fontFamily: {
+                        sans: ['"M PLUS Rounded 1c"', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: radial-gradient(circle at center, #1a1a3a 0%, #0a0a20 100%);
+            color: #f8fafc;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .glass {
+            background: rgba(255, 105, 180, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .sheep-float {
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            50% { transform: translateY(-15px) rotate(2deg); }
+        }
+        .sandwich-press {
+            animation: press 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes press {
+            0% { transform: scaleY(1.5); opacity: 0; }
+            100% { transform: scaleY(1); opacity: 1; }
+        }
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: twinkle var(--duration) infinite;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center py-10 px-4">
+    <!-- Background Stars -->
+    <div id="starContainer" class="fixed inset-0 pointer-events-none -z-10"></div>
+
+    <header class="text-center mb-10 relative z-10">
+        <div class="flex items-center justify-center gap-3 mb-2">
+            <div id="jasonIcon" class="cursor-help transition-transform hover:scale-110 active:rotate-12">
+                <i data-lucide="ghost" class="text-oshama-pink w-8 h-8"></i>
+            </div>
+            <span class="font-outfit text-oshama-pink font-bold tracking-[0.2em] text-xs uppercase">13th Fri Special</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold font-outfit mb-4 text-white drop-shadow-lg">
+            Nightmare <span class="text-oshama-pink">Sandwich</span>
+        </h1>
+        <p class="text-slate-400 text-sm max-w-xs mx-auto">
+            13日の金曜日、眠れない夜の「厄」を<br>サンドイッチにして食べてしまおう。
+        </p>
+    </header>
+
+    <main class="w-full max-w-md relative z-10">
+        <!-- Input Area -->
+        <section class="glass rounded-[2.5rem] p-8 mb-8 text-center border-t-white/20">
+            <div class="mb-6 flex justify-center">
+                <div class="sheep-float bg-white/10 p-6 rounded-full border border-white/5">
+                    <i data-lucide="sheep" class="w-16 h-16 text-white"></i>
+                </div>
+            </div>
+            <h2 class="text-lg font-bold mb-4">パンに挟む「厄」を入力してね</h2>
+            <div class="space-y-4">
+                <input type="text" id="worryInput" maxlength="20"
+                    placeholder="例：昨日の失敗、コーヒーの飲み過ぎ..." 
+                    class="w-full bg-oshama-night/50 border border-white/10 rounded-2xl py-4 px-6 focus:outline-none focus:border-oshama-pink transition-all text-center">
+                <button id="makeSandwichBtn" 
+                    class="w-full bg-gradient-to-r from-oshama-pink to-purple-500 hover:from-pink-500 hover:to-purple-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-oshama-pink/30 flex items-center justify-center gap-2 transition-transform active:scale-95">
+                    <i data-lucide="utensils" class="w-5 h-5"></i>
+                    サンドイッチにする！
+                </button>
+            </div>
+        </section>
+
+        <!-- Result Area (Hidden) -->
+        <div id="resultArea" class="hidden">
+            <section class="glass rounded-[2.5rem] p-8 text-center animate-in fade-in zoom-in duration-500 border-oshama-pink/30">
+                <div class="sandwich-press flex flex-col items-center gap-2 mb-6">
+                    <div class="w-32 h-6 bg-amber-100 rounded-t-lg shadow-inner"></div>
+                    <div id="ingredientTag" class="bg-oshama-pink/20 px-4 py-2 rounded-md border border-oshama-pink/50 text-sm font-bold text-oshama-pink italic">
+                        [ここに厄が入る]
+                    </div>
+                    <div class="w-32 h-6 bg-amber-100 rounded-b-lg shadow-inner"></div>
+                </div>
+                
+                <h3 class="text-xl font-bold mb-2">浄化完了！</h3>
+                <p id="dreamMessage" class="text-slate-300 text-sm italic mb-6">
+                    「厄」はパンの精霊が美味しくいただきました。<br>代わりにこの夢の欠片をどうぞ。
+                </p>
+
+                <div class="bg-oshama-night/40 border border-white/5 rounded-3xl p-6">
+                    <div class="text-oshama-star text-xs uppercase tracking-widest mb-2 flex items-center justify-center gap-1">
+                        <i data-lucide="moon" class="w-3 h-3"></i> Today's Dream Fragment
+                    </div>
+                    <p id="luckyDream" class="text-lg font-bold text-white"></p>
+                </div>
+            </section>
+        </div>
+
+        <!-- History -->
+        <div class="mt-12">
+            <div class="flex items-center gap-2 px-6 mb-4">
+                <i data-lucide="sparkles" class="text-oshama-star w-4 h-4"></i>
+                <h4 class="text-xs font-bold uppercase tracking-widest text-slate-500">My Dream Collection</h4>
+            </div>
+            <div id="historyList" class="space-y-3 px-2">
+                <!-- Items -->
+            </div>
+        </div>
+    </main>
+
+    <footer class="mt-20 mb-10 text-center opacity-30 text-[10px] tracking-tighter">
+        <p>&copy; 2026 OShama Project | 13日の金曜日特別企画 | #SandwichDay</p>
+    </footer>
+
+    <script>
+        // Init Icons
+        lucide.createIcons();
+
+        // Stars Background
+        const starContainer = document.getElementById('starContainer');
+        for (let i = 0; i < 50; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 3 + 'px';
+            star.style.width = size;
+            star.style.height = size;
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.setProperty('--duration', Math.random() * 3 + 2 + 's');
+            starContainer.appendChild(star);
+        }
+
+        const worryInput = document.getElementById('worryInput');
+        const makeBtn = document.getElementById('makeSandwichBtn');
+        const resultArea = document.getElementById('resultArea');
+        const ingredientTag = document.getElementById('ingredientTag');
+        const luckyDreamEl = document.getElementById('luckyDream');
+        const historyList = document.getElementById('historyList');
+
+        const dreamFragments = [
+            "わたあめの雲に乗って散歩する夢",
+            "喋る猫とチェスをして勝つ夢",
+            "図書館の扉を開けたら海に繋がっている夢",
+            "銀河の果てで最高のホットミルクを飲む夢",
+            "ほうきに乗って夜の街を一望する夢",
+            "懐かしい友達とお菓子パーティをする夢",
+            "空飛ぶクジラの背中で昼寝する夢",
+            "自分の描いた絵が動き出す夢",
+            "宝石の雨が降る森を歩く夢",
+            "月面でウサギとお餅をつく夢"
+        ];
+
+        let collection = JSON.parse(localStorage.getItem('oshama_dream_collection') || '[]');
+        renderHistory();
+
+        makeBtn.addEventListener('click', () => {
+            const worry = worryInput.value.trim();
+            if (!worry) {
+                worryInput.classList.add('border-red-500');
+                setTimeout(() => worryInput.classList.remove('border-red-500'), 1000);
+                return;
+            }
+
+            makeBtn.disabled = true;
+            makeBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> サンド中...';
+            lucide.createIcons();
+
+            setTimeout(() => {
+                const dream = dreamFragments[Math.floor(Math.random() * dreamFragments.length)];
+                
+                ingredientTag.innerText = `「${worry}」`;
+                luckyDreamEl.innerText = dream;
+                
+                resultArea.classList.remove('hidden');
+                resultArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                // Save
+                const entry = {
+                    id: Date.now(),
+                    worry: worry,
+                    dream: dream,
+                    date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                };
+                collection.unshift(entry);
+                if (collection.length > 5) collection.pop();
+                localStorage.setItem('oshama_dream_collection', JSON.stringify(collection));
+                
+                renderHistory();
+                worryInput.value = '';
+                makeBtn.disabled = false;
+                makeBtn.innerHTML = '<i data-lucide="utensils" class="w-5 h-5"></i> サンドイッチにする！';
+                lucide.createIcons();
+                
+                // Analytics
+                gtag('event', 'sandwich_made', { worry_item: worry });
+            }, 1200);
+        });
+
+        function renderHistory() {
+            historyList.innerHTML = '';
+            collection.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'glass rounded-2xl p-4 flex justify-between items-center text-xs animate-in slide-in-from-left-2 duration-300';
+                div.innerHTML = `
+                    <div class="flex flex-col gap-1">
+                        <span class="text-slate-500 font-bold uppercase tracking-tighter">Banish: ${item.worry}</span>
+                        <span class="text-white">✨ ${item.dream}</span>
+                    </div>
+                    <span class="text-oshama-pink/40 font-outfit font-bold">${item.date}</span>
+                `;
+                historyList.appendChild(div);
+            });
+        }
+
+        // Easter Egg
+        document.getElementById('jasonIcon').addEventListener('click', () => {
+            alert('「13日の金曜日だけど、ジェイソンも今はぐっすり夢の中だメェ...🐑」');
+            gtag('event', 'jason_clicked');
+        });
+    </script>
+</body>
+</html>
