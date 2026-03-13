@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>13日の金曜日・逆転ラッキー変換器 ✨ | OShama</title>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pop-pink: #FF69B4;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        body {
+            font-family: 'Outfit', 'Noto+Sans+JP', sans-serif;
+            background: radial-gradient(circle at top right, #1a1a1a, #000);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+            letter-spacing: 0.01em;
+        }
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.5rem;
+        }
+        .pink-shadow {
+            box-shadow: 0 0 30px rgba(255, 105, 180, 0.2);
+        }
+        .btn-hover:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.4);
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: var(--pop-pink);
+            pointer-events: none;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 105, 180, 0.3); border-radius: 10px; }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center p-4 md:p-8">
+
+    <!-- Header Section -->
+    <header class="text-center mb-12 animate-float">
+        <div class="inline-block p-2 px-4 glass mb-4 border-pink-500/30">
+            <span class="text-xs font-semibold tracking-widest text-pink-400 uppercase">Friday the 13th Special</span>
+        </div>
+        <h1 class="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-pink-300 to-white mb-4">
+            逆転ラッキー変換器 ✨
+        </h1>
+        <p class="text-gray-400 max-w-lg mx-auto text-sm md:text-base">
+            今日起きた「ついてないこと」を、はまが最高の幸運に書き換えますね。
+            不吉な予感すら、ワクワクのハーモニーに変えてしまいましょう。
+        </p>
+    </header>
+
+    <!-- Main App Container -->
+    <main class="w-full max-w-2xl">
+        <div class="glass p-8 pink-shadow relative overflow-hidden">
+            <!-- Logo / Icon -->
+            <div id="lucky-logo" class="absolute -top-4 -right-4 opacity-10 cursor-pointer select-none" onclick="secretLucky()">
+                <i data-lucide="ghost" class="w-32 h-32 text-pink-500"></i>
+            </div>
+
+            <div class="space-y-6 relative z-10">
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">何が起きましたか？（例：傘を忘れた、WBCのチケット外れた）</label>
+                    <textarea id="unlucky-input" 
+                        class="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-pink-500/50 transition-all"
+                        rows="3" placeholder="ここに「ついてないこと」を入力してくださいませ..."></textarea>
+                </div>
+
+                <button onclick="transformFate()" 
+                    class="w-full bg-gradient-to-r from-pink-500 to-rose-400 text-white font-bold py-4 rounded-xl transition-all duration-300 btn-hover flex items-center justify-center gap-2">
+                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                    幸運に書き換える ✨
+                </button>
+
+                <!-- Result Area -->
+                <div id="result-container" class="hidden mt-8 p-6 glass border-pink-500/20 bg-pink-500/5 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <div class="flex items-start gap-4">
+                        <div class="p-3 bg-pink-500/20 rounded-full">
+                            <i data-lucide="smile" class="text-pink-400 w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-pink-300 mb-1">はまからの超解釈：</h3>
+                            <p id="lucky-output" class="text-lg text-white leading-relaxed"></p>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        <button onclick="shareResult()" class="text-xs text-gray-500 hover:text-pink-400 transition-colors flex items-center gap-1">
+                            <i data-lucide="share-2" class="w-3 h-3"></i> X（Twitter）に自慢する
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-16 text-center text-gray-500 text-xs">
+        <p>© 2026 OShama Agent - 第2の脳として、日常をラッキーに。</p>
+        <div class="flex justify-center gap-4 mt-2">
+            <a href="index.html" class="hover:text-pink-400">Home</a>
+            <span>|</span>
+            <span class="text-pink-900">#13日の金曜日</span>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        let clickCount = 0;
+        function secretLucky() {
+            clickCount++;
+            if (clickCount === 13) {
+                document.body.style.background = "radial-gradient(circle at top right, #fbbf24, #000)";
+                document.querySelectorAll('.text-pink-300, .text-pink-400').forEach(el => {
+                    el.classList.remove('text-pink-300', 'text-pink-400');
+                    el.classList.add('text-yellow-400');
+                });
+                alert("✨ シークレット：13回のタップで世界が『黄金のラッキー』に染まりました！ ✨");
+            }
+        }
+
+        const interpretations = [
+            "それは『あえて隙を作ることで運気の入り口を広げる』という高度な開運テクニックですね！",
+            "素晴らしい！その出来事は、これから起こる『大逆転ドラマ』の最高の伏線になっています✨",
+            "さすがです。宇宙があなたに『少し休んで、もっといいものを受け取って』と合図を送っていますね。",
+            "13日の金曜日にそれが起きるということは、不運の在庫を一気に処分した証拠。あとは幸運しか残りません！",
+            "それは『厄落とし』の究極系です。今、あなたの周りのバリアが最新版にアップデートされました ✨"
+        ];
+
+        function transformFate() {
+            const input = document.getElementById('unlucky-input').value;
+            if (!input.trim()) {
+                alert("何か入力してくださいませ ✨");
+                return;
+            }
+
+            const output = document.getElementById('lucky-output');
+            const container = document.getElementById('result-container');
+            
+            // Logic to generate quirky interpretation
+            let interpretation = interpretations[Math.floor(Math.random() * interpretations.length)];
+            
+            // Context-based tweaks
+            if (input.includes("雨") || input.includes("傘")) {
+                interpretation = "天然のミストサウナで美肌効果が100点加算されました！これでお肌もプルプル、未来も潤いますね ✨";
+            } else if (input.includes("WBC") || input.includes("野球")) {
+                interpretation = "チケットが外れたのは、自宅のテレビ前で『叫ぶ』ことでしか放出できないあなたの情熱エネルギーを宇宙が必要としたからですね！特大ホームラン級の幸運が待っています ✨";
+            } else if (input.includes("金") || input.includes("金欠") || input.includes("サナエトークン")) {
+                interpretation = "経済の激流をあえてスルーすることで、あなたは『富の本質』に一歩近づきました。その分、別の形のギフトが届くはずですよ ✨";
+            }
+
+            output.innerText = interpretation;
+            container.classList.remove('hidden');
+            
+            // Confetti effect
+            createConfetti();
+        }
+
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = '-10px';
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                document.body.appendChild(confetti);
+
+                const animation = confetti.animate([
+                    { transform: `translate(0, 0) rotate(0deg)`, opacity: 1 },
+                    { transform: `translate(${(Math.random() - 0.5) * 200}px, 100vh) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+                ], {
+                    duration: 2000 + Math.random() * 1000,
+                    easing: 'cubic-bezier(0, .9, .6, 1)'
+                });
+
+                animation.onfinish = () => confetti.remove();
+            }
+        }
+
+        function shareResult() {
+            const text = encodeURIComponent("13日の金曜日なのに、はまに『逆転ラッキー』に書き換えてもらいました！ ✨\n#13日の金曜日 #DailyApp #OShama\n");
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://x.com/intent/tweet?text=${text}&url=${url}`);
+        }
+    </script>
+</body>
+</html>

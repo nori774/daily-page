@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OShama White Day Agent: 想い繋ぐMCP</title>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary: #f472b6;
+            --secondary: #ec4899;
+            --bg: #fafaf9;
+            --card-bg: rgba(255, 255, 255, 0.7);
+        }
+        body {
+            font-family: 'Inter', 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #fff1f2 0%, #fafaf9 100%);
+            color: #44403c;
+            min-height: 100vh;
+            letter-spacing: 0.01em;
+            line-height: 1.6;
+        }
+        .glass {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 0.5px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+        }
+        .mcp-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            background: #e7e5e4;
+            border-radius: 2px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 10px rgba(244, 114, 182, 0.3);
+        }
+    </style>
+</head>
+<body class="p-6 md:p-12 flex items-center justify-center">
+    <div class="max-w-md w-full space-y-8 fade-in">
+        <!-- Header -->
+        <header class="text-center space-y-2">
+            <div class="inline-flex items-center justify-center p-3 bg-white rounded-full shadow-sm mb-4">
+                <i data-lucide="heart" class="w-8 h-8 text-pink-500 fill-pink-500"></i>
+            </div>
+            <h1 class="text-3xl font-bold tracking-tight text-stone-800">White Day Agent</h1>
+            <p class="text-stone-500 font-light">Model Context Protocol: 想い繋ぐMCP</p>
+        </header>
+
+        <!-- Main Card -->
+        <main id="app-content" class="glass rounded-3xl p-8 space-y-8">
+            <div class="space-y-6">
+                <!-- Selection -->
+                <div class="space-y-3">
+                    <label class="text-sm font-semibold text-stone-600 flex items-center gap-2">
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                        贈り先を選択してください
+                    </label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="selectTarget('partner')" class="target-btn p-4 rounded-2xl border border-stone-100 bg-white/50 hover:bg-pink-50 hover:border-pink-200 transition-all text-sm font-medium">パートナー</button>
+                        <button onclick="selectTarget('friend')" class="target-btn p-4 rounded-2xl border border-stone-100 bg-white/50 hover:bg-pink-50 hover:border-pink-200 transition-all text-sm font-medium">友人・知人</button>
+                        <button onclick="selectTarget('boss')" class="target-btn p-4 rounded-2xl border border-stone-100 bg-white/50 hover:bg-pink-50 hover:border-pink-200 transition-all text-sm font-medium">同僚・上司</button>
+                        <button onclick="selectTarget('self')" class="target-btn p-4 rounded-2xl border border-stone-100 bg-white/50 hover:bg-pink-50 hover:border-pink-200 transition-all text-sm font-medium">自分へのご褒美</button>
+                    </div>
+                </div>
+
+                <!-- Slider -->
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <label class="text-sm font-semibold text-stone-600 flex items-center gap-2">
+                            <i data-lucide="zap" class="w-4 h-4 text-amber-500"></i>
+                            誠実度 (Sincerity Level)
+                        </label>
+                        <span id="sincerity-value" class="text-xs font-mono bg-stone-100 px-2 py-1 rounded-full text-stone-600">50%</span>
+                    </div>
+                    <input type="range" id="sincerity-slider" min="0" max="100" value="50" oninput="updateSincerity(this.value)">
+                    <p class="text-[10px] text-stone-400 text-center">※2026年のトレンドは「実用性 × 誠実」です。</p>
+                </div>
+
+                <!-- Connect Button -->
+                <button id="connect-btn" onclick="startMCP()" disabled class="w-full py-4 bg-stone-900 text-white rounded-2xl font-semibold shadow-lg shadow-stone-200 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-stone-800 transition-all flex items-center justify-center gap-2 group">
+                    <i data-lucide="database" class="w-4 h-4 group-hover:rotate-12 transition-transform"></i>
+                    MCPブリッジを確立する
+                </button>
+            </div>
+        </main>
+
+        <!-- Result View (Hidden initially) -->
+        <div id="result-view" class="hidden glass rounded-3xl p-8 space-y-6 fade-in">
+            <div class="flex items-center gap-4 border-b border-stone-100 pb-4">
+                <div class="p-3 bg-pink-50 rounded-full">
+                    <i data-lucide="sparkles" class="w-6 h-6 text-pink-500"></i>
+                </div>
+                <div>
+                    <h2 class="font-bold text-stone-800">最適解が見つかりました</h2>
+                    <p class="text-xs text-stone-500 font-mono mcp-pulse">Status: Syncing with Heart DB...</p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div id="gift-recommendation" class="bg-white/80 p-5 rounded-2xl border border-pink-100">
+                    <h3 class="text-xs font-bold text-pink-400 uppercase tracking-widest mb-1">Recommended Gift</h3>
+                    <p id="gift-text" class="text-lg font-bold text-stone-800 leading-snug">名前入りのチタン製タンブラー</p>
+                </div>
+
+                <div class="bg-stone-50 p-4 rounded-xl space-y-2">
+                    <div class="flex items-center gap-2 text-xs font-semibold text-stone-400">
+                        <i data-lucide="message-circle" class="w-3 h-3"></i>
+                        OShama Buddy Advice
+                    </div>
+                    <p id="buddy-advice" class="text-xs text-stone-600">「実用的なものに、さりげなく名前を入れる。これが2026年の『本気』の証です。きっと喜んでいただけますよ ✨」</p>
+                </div>
+            </div>
+
+            <button onclick="resetApp()" class="w-full py-3 border border-stone-200 rounded-xl text-xs font-semibold text-stone-500 hover:bg-stone-50 transition-all">
+                再試行する
+            </button>
+        </div>
+
+        <!-- Footer / Log -->
+        <footer class="text-center space-y-4">
+            <div id="mcp-log" class="text-[10px] font-mono text-stone-300 h-4 overflow-hidden">
+                Waiting for input...
+            </div>
+            <p class="text-[10px] text-stone-400">© 2026 OShama Agentic Pivot | 44th Daily App</p>
+        </footer>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        let selectedTarget = null;
+        let sincerityLevel = 50;
+
+        const gifts = {
+            partner: [
+                { gift: "名前入りのチタン製タンブラー", advice: "2026年は長く使える実用品がトレンド。名前入りで『あなただけ』感を演出しましょう ✨" },
+                { gift: "睡眠の質を整えるスマートピロー", advice: "健康への配慮は最大の誠実さです。毎日使うものだからこそ、こだわりを。" },
+                { gift: "完全オーダーメイドの香り（香水）", advice: "世界に一つだけの香りを贈る。想いを形にするMCPの真骨頂ですね。" }
+            ],
+            friend: [
+                { gift: "ハイエンドなドリップコーヒーセット", advice: "日常のひとときを贅沢に。重すぎない、でも上質な選択です。" },
+                { gift: "オーガニックコットンのタオルセット", advice: "何枚あっても困らない実用品に、最高級のこだわりを添えて。" },
+                { gift: "話題のセルフケア美容家電", advice: "トレンドに敏感な友人には、自分では買わないけれど欲しいものを。" }
+            ],
+            boss: [
+                { gift: "デスク周りを整理するレザーマット", advice: "仕事への敬意を形に。実用的で洗練されたオフィスアイテムは好印象です。" },
+                { gift: "有名産地の高級茶葉詰め合わせ", advice: "消え物（食品）はマナーの基本。でも質には一切妥協しないのが吉。" },
+                { gift: "デジタルギフトカード（特注メッセージ付）", advice: "合理性と誠実さを両立。選ぶ楽しみも一緒にプレゼントしましょう。" }
+            ],
+            self: [
+                { gift: "没入型ノイズキャンセリングヘッドフォン", advice: "自分だけの静寂を。日頃の頑張りを最高のリサーチ環境で癒してください ✨" },
+                { gift: "憧れのホテルランチ招待券", advice: "体験を贈る。明日への活力をチャージする贅沢な時間を。" },
+                { gift: "最先端AIガジェット", advice: "好奇心を満たす。エージェントと共に歩む未来への投資ですね！" }
+            ]
+        };
+
+        function selectTarget(target) {
+            selectedTarget = target;
+            document.querySelectorAll('.target-btn').forEach(btn => {
+                btn.classList.remove('bg-stone-900', 'text-white', 'border-stone-900');
+                btn.classList.add('bg-white/50', 'text-stone-600', 'border-stone-100');
+            });
+            event.currentTarget.classList.remove('bg-white/50', 'text-stone-600', 'border-stone-100');
+            event.currentTarget.classList.add('bg-stone-900', 'text-white', 'border-stone-900');
+            document.getElementById('connect-btn').disabled = false;
+            updateLog(`Target selected: ${target}`);
+        }
+
+        function updateSincerity(value) {
+            sincerityLevel = value;
+            document.getElementById('sincerity-value').innerText = `${value}%`;
+            updateLog(`Sincerity level adjusted: ${value}%`);
+        }
+
+        function updateLog(msg) {
+            const log = document.getElementById('mcp-log');
+            log.innerText = `[LOG] ${msg}`;
+        }
+
+        async function startMCP() {
+            const btn = document.getElementById('connect-btn');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 接続中...';
+            lucide.createIcons();
+
+            updateLog("Establishing MCP Bridge...");
+            await new Promise(r => setTimeout(r, 800));
+            updateLog("Querying Heart Database...");
+            await new Promise(r => setTimeout(r, 800));
+            updateLog("Analyzing 2026 Gift Trends...");
+            await new Promise(r => setTimeout(r, 800));
+            updateLog("Optimization Complete.");
+
+            showResult();
+        }
+
+        function showResult() {
+            document.getElementById('app-content').classList.add('hidden');
+            document.getElementById('result-view').classList.remove('hidden');
+            
+            const targetGifts = gifts[selectedTarget];
+            const index = sincerityLevel < 33 ? 0 : (sincerityLevel < 66 ? 1 : 2);
+            const recommendation = targetGifts[index];
+
+            document.getElementById('gift-text').innerText = recommendation.gift;
+            document.getElementById('buddy-advice').innerText = recommendation.advice;
+
+            localStorage.setItem('oshama_white_day_2026', JSON.stringify({
+                target: selectedTarget,
+                level: sincerityLevel,
+                gift: recommendation.gift,
+                date: new Date().toISOString()
+            }));
+
+            // Success feedback
+            updateLog("Result saved to LocalStorage.");
+        }
+
+        function resetApp() {
+            document.getElementById('result-view').classList.add('hidden');
+            document.getElementById('app-content').classList.remove('hidden');
+            document.getElementById('connect-btn').disabled = true;
+            document.getElementById('connect-btn').innerHTML = `
+                <i data-lucide="database" class="w-4 h-4 group-hover:rotate-12 transition-transform"></i>
+                MCPブリッジを確立する
+            `;
+            document.querySelectorAll('.target-btn').forEach(btn => {
+                btn.classList.remove('bg-stone-900', 'text-white', 'border-stone-900');
+                btn.classList.add('bg-white/50', 'text-stone-600', 'border-stone-100');
+            });
+            selectedTarget = null;
+            lucide.createIcons();
+            updateLog("Ready.");
+        }
+
+        // Initialize LocalStorage check
+        window.onload = () => {
+            const saved = localStorage.getItem('oshama_white_day_2026');
+            if (saved) {
+                updateLog("Welcome back! Last diagnosis found.");
+            }
+        };
+    </script>
+</body>
+</html>
