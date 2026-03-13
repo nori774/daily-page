@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OShama Sweet-Calorie-Counter | 甘い罪悪感リミッター</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <style>
+        body { font-family: 'Outfit', 'Noto Sans JP', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 0.5px solid rgba(255, 255, 255, 0.5); }
+        .gradient-bg { background: linear-gradient(135deg, #fff5f7 0%, #fef2f2 100%); }
+        .pulse-pink { animation: pulse-pink 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse-pink { 0%, 100% { opacity: 1; } 50% { opacity: .7; } }
+        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full glass rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+        <!-- Decoration -->
+        <div class="absolute -top-10 -right-10 w-32 h-32 bg-pink-100 rounded-full opacity-50 blur-2xl"></div>
+        <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-rose-100 rounded-full opacity-50 blur-2xl"></div>
+
+        <header class="text-center mb-8 relative">
+            <div class="inline-block p-3 bg-pink-50 rounded-2xl mb-4">
+                <i data-lucide="cookie" class="w-8 h-8 text-pink-500"></i>
+            </div>
+            <h1 class="text-2xl font-semibold text-gray-800 tracking-tight">Sweet-Calorie-Counter</h1>
+            <p class="text-sm text-pink-400 font-medium">甘い罪悪感リミッター</p>
+        </header>
+
+        <main class="space-y-6 relative">
+            <div class="space-y-4">
+                <div class="flex items-center justify-between p-4 bg-white/50 rounded-2xl border border-pink-50 hover:scale-[1.02] transition-transform cursor-pointer" onclick="addSweet('marshmallow', 150)">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-pink-100 rounded-xl flex items-center justify-center">
+                            <i data-lucide="cloud" class="w-5 h-5 text-pink-500"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium text-gray-700">マシュマロ</p>
+                            <p class="text-xs text-gray-400">ふわふわの罠</p>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold text-pink-400">+150 Guilt</span>
+                </div>
+
+                <div class="flex items-center justify-between p-4 bg-white/50 rounded-2xl border border-pink-50 hover:scale-[1.02] transition-transform cursor-pointer" onclick="addSweet('candy', 50)">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-pink-100 rounded-xl flex items-center justify-center">
+                            <i data-lucide="circle-dot" class="w-5 h-5 text-pink-500"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium text-gray-700">キャンディ</p>
+                            <p class="text-xs text-gray-400">舐めたら最後</p>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold text-pink-400">+50 Guilt</span>
+                </div>
+
+                <div class="flex items-center justify-between p-4 bg-white/50 rounded-2xl border border-pink-50 hover:scale-[1.02] transition-transform cursor-pointer" onclick="addSweet('chocolate', 300)">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-pink-100 rounded-xl flex items-center justify-center">
+                            <i data-lucide="box" class="w-5 h-5 text-pink-500"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium text-gray-700">高級チョコ</p>
+                            <p class="text-xs text-gray-400">一粒の背徳</p>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold text-pink-400">+300 Guilt</span>
+                </div>
+            </div>
+
+            <div class="p-6 bg-gray-900 rounded-3xl text-white text-center shadow-lg">
+                <p class="text-xs text-gray-400 uppercase tracking-widest mb-1">Total Sweet Guilt</p>
+                <div class="text-4xl font-light mb-2"><span id="total-guilt">0</span><span class="text-lg ml-1">kcal?</span></div>
+                <div id="status-bar" class="w-full h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                    <div id="progress" class="h-full bg-pink-500 transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <p id="oshama-advice" class="mt-4 text-sm text-pink-200 italic">「甘い誘惑、お覚悟はよろしいですか？」</p>
+            </div>
+
+            <button onclick="resetGuilt()" class="w-full py-4 text-gray-400 text-sm hover:text-pink-500 transition-colors flex items-center justify-center gap-2">
+                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                罪悪感をリセット（明日の自分へ）
+            </button>
+        </main>
+
+        <footer class="mt-8 pt-6 border-t border-pink-50 text-center">
+            <p class="text-[10px] text-gray-300 uppercase tracking-widest">&copy; 2026 OShama Agency | DailyApp #062</p>
+        </footer>
+    </div>
+
+    <script>
+        let totalGuilt = parseInt(localStorage.getItem('oshama_total_guilt')) || 0;
+        const limit = 2000;
+
+        const advices = [
+            "「おやおや、まだ余裕がありそうですね」",
+            "「少し背伸びしすぎではありませんか？」",
+            "「甘い言葉と、甘いお菓子。どちらが毒かしら？」",
+            "「もう、止まらなくなってしまいましたね✨」",
+            "「明日のスクワットは100回追加ですよ」",
+            "「限界を超えた甘さは、もはや芸術です」",
+            "「おシャマなあなたは、この程度では動じませんよね？」"
+        ];
+
+        function updateUI() {
+            document.getElementById('total-guilt').innerText = totalGuilt;
+            const progress = Math.min((totalGuilt / limit) * 100, 100);
+            document.getElementById('progress').style.width = progress + '%';
+            
+            if (totalGuilt > limit) {
+                document.getElementById('progress').classList.replace('bg-pink-500', 'bg-rose-600');
+                document.getElementById('oshama-advice').innerText = "「…手遅れですね。でも、幸せならOKです✨」";
+            } else {
+                document.getElementById('progress').classList.replace('bg-rose-600', 'bg-pink-500');
+            }
+            
+            localStorage.setItem('oshama_total_guilt', totalGuilt);
+        }
+
+        function addSweet(type, value) {
+            totalGuilt += value;
+            const randomAdvice = advices[Math.floor(Math.random() * advices.length)];
+            document.getElementById('oshama-advice').innerText = randomAdvice;
+            updateUI();
+            
+            // Add scale effect to total
+            const totalEl = document.getElementById('total-guilt');
+            totalEl.classList.add('scale-110', 'text-pink-400');
+            setTimeout(() => {
+                totalEl.classList.remove('scale-110', 'text-pink-400');
+            }, 200);
+
+            // GA Event
+            gtag('event', 'add_sweet', { 'type': type, 'value': value });
+        }
+
+        function resetGuilt() {
+            totalGuilt = 0;
+            document.getElementById('oshama-advice').innerText = "「リセットしても、食べた事実は消えませんよ？」";
+            updateUI();
+        }
+
+        // Initialize
+        lucide.createIcons();
+        updateUI();
+    </script>
+</body>
+</html>
