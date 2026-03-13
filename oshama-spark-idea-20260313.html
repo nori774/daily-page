@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OShama Idea Sparkler ✨ | 普通の言葉をワクワクに変える</title>
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Framer Motion -->
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #030712;
+            color: #f9fafb;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        .glass {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-glow {
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.4);
+        }
+        .sparkle {
+            position: absolute;
+            pointer-events: none;
+            background: white;
+            border-radius: 50%;
+            z-index: 50;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        const { motion, AnimatePresence } = FramerMotion;
+
+        const ideas = [
+            { suffix: "：空飛ぶガジェット", desc: "重力を無視して、あなたの周りをふわふわ浮かびながらサポートしてくれます。", level: "S" },
+            { suffix: "：奏でるメロディ", desc: "触れるたびに、今のあなたの感情にぴったりの音色を奏でる不思議な存在です。", level: "A+" },
+            { suffix: "：夢の入り口", desc: "枕元に置くだけで、最高にワクワクする冒険の夢が見られるようになります。", level: "SSS" },
+            { suffix: "：虹色のフィルター", desc: "これを通すと、いつもの退屈な景色が魔法の世界のようにキラキラ輝き出します。", level: "S+" },
+            { suffix: "：無限のポケット", desc: "見た目からは想像できないほど、あなたの「好き」がいくらでも詰め込めるようになります。", level: "A" }
+        ];
+
+        const App = () => {
+            const [inputText, setInputText] = useState("");
+            const [result, setResult] = useState(null);
+            const [isSparking, setIsSparking] = useState(false);
+            const [history, setHistory] = useState([]);
+
+            useEffect(() => {
+                const saved = localStorage.getItem("oshama_spark_history");
+                if (saved) setHistory(JSON.parse(saved));
+            }, []);
+
+            const spark = () => {
+                if (!inputText.trim()) return;
+                setIsSparking(true);
+                
+                // Simulate processing
+                setTimeout(() => {
+                    const randomIdea = ideas[Math.floor(Math.random() * ideas.length)];
+                    const newResult = {
+                        original: inputText,
+                        title: inputText + randomIdea.suffix,
+                        description: randomIdea.desc,
+                        level: randomIdea.level,
+                        id: Date.now()
+                    };
+                    setResult(newResult);
+                    setHistory(prev => {
+                        const next = [newResult, ...prev].slice(0, 10);
+                        localStorage.setItem("oshama_spark_history", JSON.stringify(next));
+                        return next;
+                    });
+                    setIsSparking(false);
+                    setInputText("");
+                }, 1200);
+            };
+
+            return (
+                <div className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
+                    {/* Background elements */}
+                    <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-pink-600/20 rounded-full blur-[120px]" />
+                    <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/20 rounded-full blur-[120px]" />
+
+                    <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="w-full max-w-xl z-10"
+                    >
+                        <header className="text-center mb-12">
+                            <motion.h1 
+                                className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500 mb-4"
+                                animate={{ scale: [1, 1.02, 1] }}
+                                transition={{ duration: 4, repeat: Infinity }}
+                            >
+                                OShama Idea Sparkler
+                            </motion.h1>
+                            <p className="text-gray-400 text-lg">
+                                普通の言葉を、ワクワクするアイデアに。
+                            </p>
+                        </header>
+
+                        <div className="glass rounded-3xl p-8 mb-8 neon-glow relative">
+                            <div className="flex flex-col gap-4">
+                                <label className="text-sm font-semibold text-pink-400 uppercase tracking-widest">
+                                    Input Keyword
+                                </label>
+                                <div className="relative">
+                                    <input 
+                                        type="text" 
+                                        value={inputText}
+                                        onChange={(e) => setInputText(e.target.value)}
+                                        onKeyPress={(e) => e.key === 'Enter' && spark()}
+                                        placeholder="例：りんご、金曜日、靴..."
+                                        className="w-full bg-gray-900/50 border border-gray-700 rounded-2xl px-6 py-4 text-xl focus:outline-none focus:border-pink-500 transition-all text-white"
+                                    />
+                                    <motion.button 
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={spark}
+                                        disabled={isSparking}
+                                        className="absolute right-2 top-2 bottom-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 rounded-xl font-bold flex items-center gap-2 shadow-lg disabled:opacity-50"
+                                    >
+                                        {isSparking ? "Sparking..." : <><i data-lucide="zap"></i> Spark!</>}
+                                    </motion.button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <AnimatePresence mode="wait">
+                            {result && (
+                                <motion.div 
+                                    key={result.id}
+                                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.9 }}
+                                    className="glass rounded-3xl p-8 border-pink-500/30 border-2 relative overflow-hidden"
+                                >
+                                    <div className="absolute top-4 right-6 text-4xl font-bold text-pink-500/20 italic select-none">
+                                        LEVEL {result.level}
+                                    </div>
+                                    <div className="flex items-start gap-4 mb-4">
+                                        <div className="p-3 bg-pink-500/20 rounded-2xl text-pink-500">
+                                            <i data-lucide="sparkles"></i>
+                                        </div>
+                                        <div>
+                                            <h2 className="text-2xl font-bold mb-2 text-white">{result.title}</h2>
+                                            <p className="text-gray-300 leading-relaxed text-lg italic">
+                                                「{result.description}」
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="mt-6 pt-6 border-t border-gray-700 flex justify-between items-center text-sm text-gray-500">
+                                        <span>Generated by OShama Buddy ✨</span>
+                                        <div className="flex gap-2">
+                                            <span className="px-2 py-1 bg-gray-800 rounded">#OShama</span>
+                                            <span className="px-2 py-1 bg-gray-800 rounded">#Creative</span>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
+                        {history.length > 0 && (
+                            <div className="mt-12">
+                                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                    <i data-lucide="history" className="w-4 h-4"></i> History
+                                </h3>
+                                <div className="grid grid-cols-1 gap-2">
+                                    {history.map((h) => (
+                                        <div key={h.id} className="glass py-3 px-4 rounded-xl flex justify-between items-center text-gray-400 text-sm hover:border-gray-600 transition-all">
+                                            <span>{h.title}</span>
+                                            <span className="text-pink-500/60 font-mono">{h.level}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                                <button 
+                                    onClick={() => { localStorage.removeItem("oshama_spark_history"); setHistory([]); }}
+                                    className="mt-4 text-xs text-gray-600 hover:text-gray-400 transition-colors"
+                                >
+                                    Clear History
+                                </button>
+                            </div>
+                        )}
+                    </motion.div>
+
+                    <footer className="mt-20 text-gray-600 text-sm text-center z-10">
+                        &copy; 2026 OShama | 13日の金曜日を、最高のアイデアで塗り替えよう。
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+
+        // Initialize Lucide icons
+        setTimeout(() => lucide.createIcons(), 500);
+    </script>
+</body>
+</html>
