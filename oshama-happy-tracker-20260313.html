@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【おしゃま】ハッピーセット・コンプリート管理帳 - DailyApp</title>
+    <!-- 
+      OShama Daily App: 2026-03-13
+      Theme: #ドラえもんハッピーセット & #13日の金曜日
+      Concept: A cute tracker for collecting limited-time toys.
+    -->
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --oshama-pink: #ec4899;
+            --dora-blue: #0ea5e9;
+            --soft-bg: #fdf2f8;
+        }
+        body {
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            background-color: var(--soft-bg);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(236, 72, 153, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(14, 165, 233, 0.05) 0%, transparent 20%);
+            min-height: 100vh;
+            color: #334155;
+        }
+        .title-font { font-family: 'Outfit', 'M PLUS Rounded 1c', sans-serif; }
+        .glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+        .item-card {
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+        .item-card:hover { transform: translateY(-5px); }
+        .item-card.is-collected {
+            background: white;
+            border-color: var(--oshama-pink);
+            box-shadow: 0 10px 15px -3px rgba(236, 72, 153, 0.2);
+        }
+        .check-badge {
+            transition: all 0.3s ease;
+            transform: scale(0);
+            opacity: 0;
+        }
+        .is-collected .check-badge {
+            transform: scale(1);
+            opacity: 1;
+        }
+        .progress-bar {
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--dora-blue), var(--oshama-pink));
+            transition: width 0.5s ease-out;
+        }
+        .confetti {
+            position: fixed;
+            pointer-events: none;
+            width: 10px;
+            height: 10px;
+            background: var(--oshama-pink);
+            border-radius: 50%;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-2xl mx-auto">
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <div class="inline-flex items-center justify-center p-3 bg-white rounded-full shadow-md mb-4">
+                <i data-lucide="package-check" class="w-10 h-10 text-sky-500"></i>
+            </div>
+            <h1 class="text-3xl font-black title-font mb-2 tracking-tight">
+                ハッピーセット<span class="text-pink-500">管理帳</span>
+            </h1>
+            <p class="text-gray-500 font-bold text-sm">#ドラえもんハッピーセット コンプリート応援！</p>
+        </header>
+
+        <!-- Stats Card -->
+        <section class="glass rounded-3xl p-6 mb-8 shadow-sm">
+            <div class="flex justify-between items-end mb-3">
+                <h2 class="font-black text-lg flex items-center gap-2">
+                    <i data-lucide="trophy" class="w-5 h-5 text-amber-500"></i>
+                    コンプリート率
+                </h2>
+                <span id="progressText" class="font-black text-2xl text-pink-500">0%</span>
+            </div>
+            <div class="progress-bar mb-4">
+                <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+            </div>
+            <p id="statusMsg" class="text-center text-sm font-bold text-gray-400">13日の金曜日も、ワクワクを集めてラッキーに！</p>
+        </section>
+
+        <!-- Setup Section -->
+        <section class="glass rounded-3xl p-6 mb-8 shadow-sm border-dashed border-2 border-pink-200">
+            <div class="flex gap-2">
+                <input type="text" id="newToy" placeholder="新しいおもちゃを追加..." 
+                    class="flex-1 px-4 py-3 rounded-2xl border-none outline-none focus:ring-2 focus:ring-pink-300 bg-white/50 font-bold">
+                <button id="addBtn" class="p-4 bg-pink-500 text-white rounded-2xl shadow-lg hover:bg-pink-600 active:scale-95 transition-all">
+                    <i data-lucide="plus" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- List Section -->
+        <div id="toyList" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Toys injected here -->
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 text-center pb-12">
+            <div class="flex justify-center gap-6 mb-4">
+                <i data-lucide="heart" class="w-5 h-5 text-pink-300"></i>
+                <i data-lucide="sparkles" class="w-5 h-5 text-sky-300"></i>
+                <i data-lucide="gift" class="w-5 h-5 text-amber-300"></i>
+            </div>
+            <p class="text-xs text-gray-400 font-bold uppercase tracking-tighter">Powered by OShama Daily Apps</p>
+            <p class="text-[10px] text-gray-300 mt-2 italic">※特定の企業とは関係のない個人用管理ツールです。</p>
+        </footer>
+    </div>
+
+    <script>
+        // Default Toys (Doraemon Movie 2026 Style)
+        const DEFAULT_TOYS = [
+            '映画ドラえもん 飛行船のび太号',
+            'どこでもドア スピーカー',
+            'タケコプター くるくる独楽',
+            'アンキパン メモスタンド',
+            'タイムマシン プロジェクター',
+            'ころばし屋 ターゲットゲーム'
+        ];
+
+        // State
+        let toys = JSON.parse(localStorage.getItem('oshama_toy_tracker') || '[]');
+        
+        // Initialize if empty
+        if (toys.length === 0) {
+            toys = DEFAULT_TOYS.map(name => ({ id: Math.random().toString(36).substr(2, 9), name, collected: false }));
+            save();
+        }
+
+        // DOM
+        const toyList = document.getElementById('toyList');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const newToy = document.getElementById('newToy');
+        const addBtn = document.getElementById('addBtn');
+        const statusMsg = document.getElementById('statusMsg');
+
+        function save() {
+            localStorage.setItem('oshama_toy_tracker', JSON.stringify(toys));
+        }
+
+        function updateStats() {
+            const total = toys.length;
+            const collected = toys.filter(t => t.collected).length;
+            const percent = total === 0 ? 0 : Math.round((collected / total) * 100);
+            
+            progressFill.style.width = `${percent}%`;
+            progressText.textContent = `${percent}%`;
+
+            if (percent === 100) {
+                statusMsg.textContent = "✨ 完璧！全種類コンプリートです！ ✨";
+                statusMsg.classList.add('text-pink-500');
+            } else if (percent > 0) {
+                statusMsg.textContent = `あと ${total - collected} 種類で見つかります！`;
+                statusMsg.classList.remove('text-pink-500');
+            } else {
+                statusMsg.textContent = "13日の金曜日も、ワクワクを集めてラッキーに！";
+            }
+        }
+
+        function render() {
+            toyList.innerHTML = '';
+            toys.forEach(toy => {
+                const card = document.createElement('div');
+                card.className = `item-card glass p-5 rounded-2xl flex items-center justify-between border-2 border-transparent shadow-sm ${toy.collected ? 'is-collected' : ''}`;
+                card.innerHTML = `
+                    <div class="flex-1">
+                        <h3 class="font-bold text-gray-700">${toy.name}</h3>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="check-badge w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center shadow-inner">
+                            <i data-lucide="check" class="w-5 h-5 text-white"></i>
+                        </div>
+                        <button onclick="toggleToy('${toy.id}')" class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center hover:bg-pink-100 transition-colors">
+                            <i data-lucide="${toy.collected ? 'rotate-ccw' : 'check'}" class="w-5 h-5 text-gray-400"></i>
+                        </button>
+                        <button onclick="deleteToy('${toy.id}')" class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center hover:bg-red-50 text-gray-300 hover:text-red-400 transition-colors">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `;
+                toyList.appendChild(card);
+            });
+            updateStats();
+            lucide.createIcons();
+        }
+
+        function toggleToy(id) {
+            const toy = toys.find(t => t.id === id);
+            if (toy) {
+                toy.collected = !toy.collected;
+                if (toy.collected) createConfetti();
+                save();
+                render();
+            }
+        }
+
+        function deleteToy(id) {
+            if (confirm('このおもちゃをリストから削除しますか？')) {
+                toys = toys.filter(t => t.id !== id);
+                save();
+                render();
+            }
+        }
+
+        function addToy() {
+            const name = newToy.value.trim();
+            if (!name) return;
+            toys.push({ id: Math.random().toString(36).substr(2, 9), name, collected: false });
+            newToy.value = '';
+            save();
+            render();
+        }
+
+        function createConfetti() {
+            for (let i = 0; i < 20; i++) {
+                const c = document.createElement('div');
+                c.className = 'confetti';
+                c.style.left = Math.random() * 100 + 'vw';
+                c.style.top = '100vh';
+                c.style.backgroundColor = Math.random() > 0.5 ? '#ec4899' : '#0ea5e9';
+                document.body.appendChild(c);
+                
+                const anim = c.animate([
+                    { transform: 'translateY(0) rotate(0)', opacity: 1 },
+                    { transform: `translateY(-100vh) translateX(${Math.random() * 200 - 100}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+                ], {
+                    duration: 1000 + Math.random() * 1000,
+                    easing: 'cubic-bezier(0, .9, .57, 1)'
+                });
+                anim.onfinish = () => c.remove();
+            }
+        }
+
+        addBtn.addEventListener('click', addToy);
+        newToy.addEventListener('keypress', e => e.key === 'Enter' && addToy());
+
+        // Init
+        render();
+    </script>
+</body>
+</html>
