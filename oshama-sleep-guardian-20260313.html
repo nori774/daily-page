@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OShama | 13日の安眠ナイト・エージェント</title>
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- GA4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        night: {
+                            900: '#0f172a',
+                            800: '#1e1b4b',
+                            700: '#312e81',
+                        },
+                        moon: '#fde047',
+                        mint: '#4ade80',
+                        oshama: '#ff4da6',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'drift': 'drift 20s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        drift: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(100vw)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Outfit', sans-serif; background-color: #0f172a; overflow-x: hidden; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .moon-glow { box-shadow: 0 0 60px 10px rgba(252, 211, 77, 0.15); }
+        .ritual-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .ritual-card:hover { transform: translateY(-8px) scale(1.02); background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.2); }
+        .ritual-card.active { border-color: #4ade80; background: rgba(74, 222, 128, 0.05); }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+    </style>
+</head>
+<body class="text-slate-200 min-h-screen flex flex-col">
+    <!-- Ambient Clouds -->
+    <div class="fixed top-0 left-0 w-full h-full pointer-events-none -z-10 opacity-20">
+        <div class="absolute top-[20%] w-64 h-32 bg-slate-400 blur-3xl rounded-full animate-drift" style="animation-duration: 40s"></div>
+        <div class="absolute top-[60%] w-96 h-48 bg-night-700 blur-3xl rounded-full animate-drift" style="animation-duration: 60s; animation-delay: -10s"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="p-6 flex justify-between items-center max-w-4xl mx-auto w-full">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-night-800 rounded-xl flex items-center justify-center border border-white/10 shadow-lg">
+                <i data-lucide="shield-check" class="text-mint w-6 h-6"></i>
+            </div>
+            <h1 class="font-black text-xl tracking-tight">OShama <span class="text-slate-500 font-light">Sleep Guardian</span></h1>
+        </div>
+        <div class="text-right glass px-4 py-1.5 rounded-full border-white/5 flex items-center gap-2">
+            <span class="w-2 h-2 bg-mint rounded-full animate-pulse"></span>
+            <p class="text-[10px] font-bold tracking-widest uppercase text-slate-400">Nightmare Shield Active</p>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-4xl mx-auto w-full px-6 py-12 flex flex-col items-center">
+        <!-- Center Visual -->
+        <div class="relative mb-16 group">
+            <div class="absolute inset-0 bg-moon/10 rounded-full blur-[80px] animate-pulse-slow"></div>
+            <div class="w-48 h-48 bg-gradient-to-br from-moon to-amber-200 rounded-full moon-glow animate-float flex items-center justify-center relative z-10 overflow-hidden">
+                <div class="absolute inset-0 opacity-20 pointer-events-none">
+                    <div class="absolute top-8 left-10 w-8 h-8 bg-black/10 rounded-full"></div>
+                    <div class="absolute bottom-10 right-12 w-12 h-12 bg-black/10 rounded-full"></div>
+                </div>
+                <i data-lucide="moon" class="text-night-900 w-24 h-24 drop-shadow-lg"></i>
+            </div>
+            <!-- Floating Stars -->
+            <div class="absolute -top-4 -right-8 animate-bounce" style="animation-duration: 3s">
+                <i data-lucide="sparkles" class="text-moon w-8 h-8"></i>
+            </div>
+            <div class="absolute bottom-4 -left-12 animate-bounce" style="animation-duration: 4s">
+                <i data-lucide="star" class="text-slate-500 w-6 h-6"></i>
+            </div>
+        </div>
+
+        <!-- Greeting -->
+        <div class="text-center space-y-4 mb-12 max-w-lg">
+            <h2 class="text-3xl font-extrabold tracking-tight">
+                13日の金曜日を、<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-mint to-teal-400">最高の安眠</span>に変えましょう。
+            </h2>
+            <p class="text-slate-400 text-sm leading-relaxed">
+                世界睡眠デーの今夜、エージェント・おしゃまがあなたの枕元をガードします。不運な悪夢の入り口はすべて封鎖しました。あとはリラックスするだけ。
+            </p>
+        </div>
+
+        <!-- Ritual Section -->
+        <div class="w-full space-y-6">
+            <div class="flex justify-between items-end">
+                <h3 class="text-lg font-bold flex items-center gap-2">
+                    <i data-lucide="bed" class="text-oshama w-5 h-5"></i>
+                    今夜の安眠儀式
+                </h3>
+                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Select your ritual</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="ritual-grid">
+                <!-- Rituals will be injected here -->
+            </div>
+        </div>
+
+        <!-- Feedback Area -->
+        <div class="w-full mt-12 glass rounded-[2.5rem] p-8 relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-6 opacity-10">
+                <i data-lucide="quote" class="w-20 h-20 text-white"></i>
+            </div>
+            <div class="flex items-start gap-6 relative z-10">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-oshama to-night-800 flex items-center justify-center shadow-xl flex-shrink-0">
+                    <i data-lucide="bot" class="text-white w-10 h-10"></i>
+                </div>
+                <div class="space-y-2">
+                    <p class="text-xs font-bold text-oshama uppercase tracking-[0.3em]">Agent OShama</p>
+                    <p id="agent-msg" class="text-lg font-medium leading-relaxed italic">
+                        「…えっと、今夜はジェイソン君もお休みだそうです。安心して、ゆっくり目を閉じてくださいね ✨」
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="p-12 text-center space-y-6">
+        <div class="flex justify-center gap-8">
+            <div class="flex flex-col items-center">
+                <p id="total-sleep-count" class="text-2xl font-black text-white">0</p>
+                <p class="text-[9px] text-slate-500 uppercase font-bold tracking-widest">Guardian Missions</p>
+            </div>
+            <div class="w-px h-8 bg-white/10 mt-2"></div>
+            <div class="flex flex-col items-center">
+                <p class="text-2xl font-black text-white">100%</p>
+                <p class="text-[9px] text-slate-500 uppercase font-bold tracking-widest">Safe Dreams</p>
+            </div>
+        </div>
+        <p class="text-slate-600 text-[10px] font-medium tracking-widest uppercase">
+            &copy; 2026 OShama Daily Application Lab. [45]
+        </p>
+    </footer>
+
+    <script>
+        const RITUALS = [
+            { id: 'tea', name: 'デジタルのハーブティー', desc: '画面のブルーライトを遮断し、暖色系の光で目を休めます。', icon: 'coffee', color: 'text-amber-400' },
+            { id: 'meditation', name: '13秒の深呼吸', desc: '4秒吸って、4秒止めて、5秒吐く。13日の金曜日をリセット。', icon: 'wind', color: 'text-mint' },
+            { id: 'sound', name: '夜の静寂ノイズ', desc: '遠くの雨音と、エージェントの優しいハミングを流します。', icon: 'music', color: 'text-oshama' }
+        ];
+
+        let completedRituals = new Set();
+
+        function init() {
+            const grid = document.getElementById('ritual-grid');
+            RITUALS.forEach(r => {
+                const card = document.createElement('div');
+                card.className = 'ritual-card glass rounded-3xl p-6 cursor-pointer flex flex-col gap-4';
+                card.id = `ritual-${r.id}`;
+                card.onclick = () => toggleRitual(r.id);
+                card.innerHTML = `
+                    <div class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center">
+                        <i data-lucide="${r.icon}" class="${r.color} w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold mb-1">${r.name}</h4>
+                        <p class="text-[11px] text-slate-400 leading-snug">${r.desc}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+            updateStats();
+        }
+
+        function toggleRitual(id) {
+            const card = document.getElementById(`ritual-${id}`);
+            const msg = document.getElementById('agent-msg');
+            
+            if (completedRituals.has(id)) {
+                completedRituals.delete(id);
+                card.classList.remove('active');
+            } else {
+                completedRituals.add(id);
+                card.classList.add('active');
+                
+                // Feedback Logic
+                if (id === 'tea') msg.innerText = "「良い選択ですね。デジタルの温もりが、心に染み渡ります… ✨」";
+                if (id === 'meditation') msg.innerText = "「吸って…吐いて…。13秒の魔法で、不運が幸運に変わりますよ。」";
+                if (id === 'sound') msg.innerText = "「この音、心地よいですね。悪夢の入り口はすべて閉じられました。」";
+            }
+
+            if (completedRituals.size === 3) {
+                msg.innerText = "「完璧な儀式です！今夜のあなたは、世界で一番守られています。おやすみなさい ✨」";
+                incrementStats();
+            }
+        }
+
+        function incrementStats() {
+            let count = parseInt(localStorage.getItem('oshama_sleep_guardian_count') || '0');
+            count++;
+            localStorage.setItem('oshama_sleep_guardian_count', count);
+            updateStats();
+        }
+
+        function updateStats() {
+            const count = localStorage.getItem('oshama_sleep_guardian_count') || '0';
+            document.getElementById('total-sleep-count').innerText = count;
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
