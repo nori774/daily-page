@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sakura Noir Beats | OShama Daily App</title>
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@300;600&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS for rapid styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- GA4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PS2DX1HNVL');
+    </script>
+    <style>
+        :root {
+            --noir-bg: #0a0a0c;
+            --sakura-pink: #ff85a1;
+            --sakura-glow: rgba(255, 133, 161, 0.4);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--noir-bg);
+            color: #e2e8f0;
+            overflow: hidden;
+        }
+        .outfit { font-family: 'Outfit', sans-serif; }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sakura-petal {
+            position: absolute;
+            background: var(--sakura-pink);
+            border-radius: 100% 0 100% 0;
+            opacity: 0.6;
+            filter: blur(1px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .beat-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .beat-btn.active {
+            background-color: var(--sakura-pink);
+            box-shadow: 0 0 15px var(--sakura-glow);
+            transform: scale(1.1);
+        }
+        
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        .noir-gradient {
+            background: radial-gradient(circle at center, #1a1a1e 0%, #0a0a0c 100%);
+        }
+    </style>
+</head>
+<body class="noir-gradient min-h-screen flex items-center justify-center p-4">
+
+    <!-- Sakura Petals Layer -->
+    <div id="sakura-container" class="fixed inset-0 overflow-hidden"></div>
+
+    <!-- Main App Container -->
+    <main class="relative z-10 w-full max-max-w-md">
+        <div class="glass p-8 rounded-[2rem] shadow-2xl space-y-8">
+            
+            <!-- Header -->
+            <header class="text-center space-y-2">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/5 border border-white/10 mb-4">
+                    <i data-lucide="shield" class="text-[#ff85a1] w-8 h-8"></i>
+                </div>
+                <h1 class="outfit text-3xl font-semibold tracking-tight text-white">Sakura Noir Beats</h1>
+                <p class="text-sm text-gray-400">13日の金曜日の「静寂」を、桜の「響き」に。 ✨</p>
+            </header>
+
+            <!-- Sequencer -->
+            <div class="space-y-6">
+                <div id="sequencer" class="grid grid-cols-4 gap-4">
+                    <!-- Beat buttons will be generated here -->
+                </div>
+
+                <div class="flex items-center justify-between pt-4">
+                    <button id="play-btn" class="flex items-center gap-2 bg-white text-black px-6 py-3 rounded-full font-medium transition-all hover:scale-105 active:scale-95">
+                        <i data-lucide="play" id="play-icon"></i>
+                        <span id="play-text">PLAY</span>
+                    </button>
+                    <div class="flex gap-4">
+                        <button id="clear-btn" class="glass p-3 rounded-full hover:bg-white/5 text-gray-400">
+                            <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+                        </button>
+                        <button id="share-btn" class="glass p-3 rounded-full hover:bg-white/5 text-gray-400">
+                            <i data-lucide="share-2" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wisdom / Reality Check Section -->
+            <footer class="pt-6 border-t border-white/5">
+                <div class="flex items-start gap-3 p-4 bg-white/5 rounded-2xl text-xs leading-relaxed text-gray-300 italic">
+                    <i data-lucide="info" class="w-4 h-4 mt-0.5 text-[#ff85a1] flex-shrink-0"></i>
+                    <p>
+                        「不吉」とは心のノイズに過ぎません。そのノイズを削ぎ落とし（リミット）、美しいリズムへと変換しましょう。それが今日の「運」を切り拓く鍵となります。
+                    </p>
+                </div>
+            </footer>
+        </div>
+    </main>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Constants & State
+        const steps = 16;
+        let isPlaying = false;
+        let currentStep = 0;
+        let beatData = JSON.parse(localStorage.getItem('sakura-beats')) || Array(steps).fill(false);
+        let intervalId = null;
+
+        // Audio Setup (Synthetic sounds)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSakuraSound(freq = 440) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.5);
+            
+            createPetalBurst();
+        }
+
+        // DOM Elements
+        const sequencer = document.getElementById('sequencer');
+        const playBtn = document.getElementById('play-btn');
+        const playText = document.getElementById('play-text');
+        const playIcon = document.getElementById('play-icon');
+        const clearBtn = document.getElementById('clear-btn');
+        const sakuraContainer = document.getElementById('sakura-container');
+
+        // Create Sequencer Buttons
+        function createSequencer() {
+            sequencer.innerHTML = '';
+            beatData.forEach((active, i) => {
+                const btn = document.createElement('button');
+                btn.className = `beat-btn h-16 rounded-xl glass ${active ? 'active' : ''}`;
+                btn.onclick = () => {
+                    beatData[i] = !beatData[i];
+                    btn.classList.toggle('active');
+                    if (beatData[i]) playSakuraSound(440 + (i * 20));
+                    saveData();
+                };
+                sequencer.appendChild(btn);
+            });
+        }
+
+        // Animation: Sakura Petals
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.className = 'sakura-petal';
+            const size = Math.random() * 10 + 5;
+            petal.style.width = `${size}px`;
+            petal.style.height = `${size}px`;
+            petal.style.left = `${Math.random() * 100}vw`;
+            const duration = Math.random() * 5 + 5;
+            petal.style.animation = `fall ${duration}s linear forwards`;
+            sakuraContainer.appendChild(petal);
+            setTimeout(() => petal.remove(), duration * 1000);
+        }
+
+        function createPetalBurst() {
+            for(let i=0; i<5; i++) {
+                setTimeout(createPetal, i * 50);
+            }
+        }
+
+        setInterval(createPetal, 1000);
+
+        // Logic: Playback
+        function startPlayback() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            intervalId = setInterval(() => {
+                const btns = document.querySelectorAll('.beat-btn');
+                btns.forEach(b => b.classList.remove('ring-2', 'ring-white/50'));
+                
+                if (beatData[currentStep]) {
+                    playSakuraSound(440 + (currentStep * 20));
+                    btns[currentStep].classList.add('scale-110');
+                    setTimeout(() => btns[currentStep].classList.remove('scale-110'), 100);
+                }
+                
+                btns[currentStep].classList.add('ring-2', 'ring-white/50');
+                
+                currentStep = (currentStep + 1) % steps;
+            }, 200);
+        }
+
+        function stopPlayback() {
+            clearInterval(intervalId);
+            currentStep = 0;
+            const btns = document.querySelectorAll('.beat-btn');
+            btns.forEach(b => b.classList.remove('ring-2', 'ring-white/50'));
+        }
+
+        playBtn.onclick = () => {
+            isPlaying = !isPlaying;
+            if (isPlaying) {
+                startPlayback();
+                playText.innerText = 'STOP';
+                playIcon.setAttribute('data-lucide', 'square');
+            } else {
+                stopPlayback();
+                playText.innerText = 'PLAY';
+                playIcon.setAttribute('data-lucide', 'play');
+            }
+            lucide.createIcons();
+        };
+
+        clearBtn.onclick = () => {
+            beatData = Array(steps).fill(false);
+            createSequencer();
+            saveData();
+        };
+
+        function saveData() {
+            localStorage.setItem('sakura-beats', JSON.stringify(beatData));
+        }
+
+        // Initial Build
+        createSequencer();
+
+    </script>
+</body>
+</html>

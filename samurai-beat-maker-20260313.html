@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>侍・ビート・メーカー (Samurai Beat Maker) | OShama</title>
+    <meta name="description" content="侍ジャパンの熱狂をビートに。13日の金曜日の不安を、勝利の鼓動に変える応援シーケンサー。">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Outfit:wght@500;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        samurai: {
+                            blue: '#1e3a8a',
+                            gold: '#fbbf24',
+                            red: '#ef4444',
+                            dark: '#0f172a'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- GA4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PS2DX1HNVL');
+    </script>
+
+    <style>
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .step-active {
+            background: #fbbf24;
+            box-shadow: 0 0 15px #fbbf24;
+        }
+        .step-trigger {
+            background: #1e3a8a;
+        }
+        @keyframes pulse-gold {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        .playing-indicator {
+            animation: pulse-gold 0.5s infinite;
+        }
+    </style>
+</head>
+<body class="bg-samurai-dark text-white font-sans min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- Header -->
+    <header class="w-full max-w-4xl mb-8 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="p-2 bg-samurai-blue rounded-xl shadow-lg">
+                <i data-lucide="music" class="w-8 h-8 text-samurai-gold"></i>
+            </div>
+            <div>
+                <h1 class="text-3xl font-display font-800 tracking-tight">侍・ビート・メーカー</h1>
+                <p class="text-sm text-slate-400">勝利の鼓動を刻んでくださいませ。</p>
+            </div>
+        </div>
+        <div class="text-right">
+            <span class="text-xs font-bold text-samurai-red uppercase tracking-widest px-2 py-1 border border-samurai-red rounded">Live from Stadium</span>
+        </div>
+    </header>
+
+    <!-- Main Sequencer -->
+    <main class="w-full max-w-4xl glass rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+        <!-- Background Decoration -->
+        <div class="absolute -top-24 -right-24 w-64 h-64 bg-samurai-blue/20 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-samurai-red/10 rounded-full blur-3xl"></div>
+
+        <div class="relative z-10 flex flex-col gap-8">
+            <!-- Controls -->
+            <div class="flex flex-wrap items-center justify-between gap-6 pb-6 border-b border-white/10">
+                <div class="flex items-center gap-4">
+                    <button id="playBtn" class="bg-samurai-gold hover:bg-yellow-400 text-samurai-dark p-4 rounded-full transition-all active:scale-95 shadow-lg shadow-samurai-gold/20">
+                        <i data-lucide="play" class="w-6 h-6 fill-current"></i>
+                    </button>
+                    <div class="flex flex-col">
+                        <span class="text-xs text-slate-400 uppercase font-bold tracking-tighter">Tempo</span>
+                        <input type="range" id="tempo" min="60" max="180" value="120" class="w-32 accent-samurai-gold">
+                        <span id="tempoVal" class="text-sm font-display">120 BPM</span>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button id="clearBtn" class="px-4 py-2 text-sm border border-white/20 rounded-lg hover:bg-white/10 transition-colors">
+                        Clear All
+                    </button>
+                </div>
+            </div>
+
+            <!-- Grid -->
+            <div class="grid grid-cols-1 gap-6">
+                <!-- Track: Bat (High) -->
+                <div class="flex items-center gap-4">
+                    <div class="w-24 flex flex-col items-end">
+                        <span class="text-sm font-bold">BAT</span>
+                        <span class="text-[10px] text-slate-500">快音</span>
+                    </div>
+                    <div class="flex-1 grid grid-cols-8 gap-2" id="track-bat">
+                        <!-- Steps 1-8 -->
+                    </div>
+                </div>
+                <!-- Track: Glove (Mid) -->
+                <div class="flex items-center gap-4">
+                    <div class="w-24 flex flex-col items-end">
+                        <span class="text-sm font-bold">GLOVE</span>
+                        <span class="text-[10px] text-slate-500">捕球</span>
+                    </div>
+                    <div class="flex-1 grid grid-cols-8 gap-2" id="track-glove">
+                        <!-- Steps 1-8 -->
+                    </div>
+                </div>
+                <!-- Track: Cheer (Low/Noise) -->
+                <div class="flex items-center gap-4">
+                    <div class="w-24 flex flex-col items-end">
+                        <span class="text-sm font-bold">CHEER</span>
+                        <span class="text-[10px] text-slate-500">歓声</span>
+                    </div>
+                    <div class="flex-1 grid grid-cols-8 gap-2" id="track-cheer">
+                        <!-- Steps 1-8 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer / Persona Msg -->
+    <footer class="w-full max-w-4xl mt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3 glass px-6 py-4 rounded-2xl">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-samurai-blue to-samurai-red flex items-center justify-center text-xs font-bold ring-2 ring-white/20">
+                OS
+            </div>
+            <p class="text-sm italic text-slate-300">
+                「13日の金曜日でも、侍の心があれば勝利は目前です。最高のビートを刻んで、球場を揺らしてくださいませ。」
+            </p>
+        </div>
+        <div class="text-slate-500 text-xs">
+            &copy; 2026 OShama ANTIGRAVITY
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide
+        lucide.createIcons();
+
+        // Audio Engine
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let isPlaying = false;
+        let currentStep = 0;
+        let tempo = 120;
+        let nextStepTime = 0;
+        const lookahead = 25.0; // ms
+        const scheduleAheadTime = 0.1; // sec
+        let timerID;
+
+        const tracks = {
+            bat: Array(8).fill(false),
+            glove: Array(8).fill(false),
+            cheer: Array(8).fill(false)
+        };
+
+        // Synthesizers
+        function playBat(time) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(800, time);
+            osc.frequency.exponentialRampToValueAtTime(100, time + 0.1);
+            gain.gain.setValueAtTime(0.3, time);
+            gain.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(time);
+            osc.stop(time + 0.1);
+        }
+
+        function playGlove(time) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(150, time);
+            osc.frequency.exponentialRampToValueAtTime(50, time + 0.05);
+            gain.gain.setValueAtTime(0.5, time);
+            gain.gain.exponentialRampToValueAtTime(0.01, time + 0.05);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(time);
+            osc.stop(time + 0.05);
+        }
+
+        function playCheer(time) {
+            const bufferSize = audioCtx.sampleRate * 0.2;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+            const gain = audioCtx.createGain();
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(400, time);
+            filter.frequency.exponentialRampToValueAtTime(1200, time + 0.2);
+            gain.gain.setValueAtTime(0.1, time);
+            gain.gain.exponentialRampToValueAtTime(0.01, time + 0.2);
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+            noise.start(time);
+        }
+
+        function scheduleStep(step, time) {
+            if (tracks.bat[step]) playBat(time);
+            if (tracks.glove[step]) playGlove(time);
+            if (tracks.cheer[step]) playCheer(time);
+
+            // Update UI
+            window.requestAnimationFrame(() => {
+                document.querySelectorAll('.step-btn').forEach(btn => btn.classList.remove('ring-4', 'ring-white/50'));
+                document.querySelectorAll(`.step-${step}`).forEach(btn => btn.classList.add('ring-4', 'ring-white/50'));
+            });
+        }
+
+        function scheduler() {
+            while (nextStepTime < audioCtx.currentTime + scheduleAheadTime) {
+                scheduleStep(currentStep, nextStepTime);
+                const secondsPerBeat = 60.0 / tempo / 2; // 8th notes
+                nextStepTime += secondsPerBeat;
+                currentStep = (currentStep + 1) % 8;
+            }
+            timerID = window.setTimeout(scheduler, lookahead);
+        }
+
+        // UI Setup
+        function renderGrid() {
+            const containerBat = document.getElementById('track-bat');
+            const containerGlove = document.getElementById('track-glove');
+            const containerCheer = document.getElementById('track-cheer');
+
+            for (let i = 0; i < 8; i++) {
+                const btnBat = createStepBtn('bat', i);
+                const btnGlove = createStepBtn('glove', i);
+                const btnCheer = createStepBtn('cheer', i);
+                containerBat.appendChild(btnBat);
+                containerGlove.appendChild(btnGlove);
+                containerCheer.appendChild(btnCheer);
+            }
+        }
+
+        function createStepBtn(track, index) {
+            const btn = document.createElement('button');
+            btn.className = `step-btn step-${index} h-12 rounded-lg transition-all active:scale-90 border border-white/10 ${index % 4 === 0 ? 'bg-white/10' : 'bg-white/5'}`;
+            btn.onclick = () => {
+                tracks[track][index] = !tracks[track][index];
+                btn.classList.toggle('step-active');
+                if (tracks[track][index]) {
+                    // Quick audition
+                    if (track === 'bat') playBat(audioCtx.currentTime);
+                    if (track === 'glove') playGlove(audioCtx.currentTime);
+                    if (track === 'cheer') playCheer(audioCtx.currentTime);
+                }
+            };
+            return btn;
+        }
+
+        renderGrid();
+
+        // Event Listeners
+        const playBtn = document.getElementById('playBtn');
+        const tempoInput = document.getElementById('tempo');
+        const tempoVal = document.getElementById('tempoVal');
+        const clearBtn = document.getElementById('clearBtn');
+
+        playBtn.onclick = () => {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            isPlaying = !isPlaying;
+            if (isPlaying) {
+                currentStep = 0;
+                nextStepTime = audioCtx.currentTime;
+                scheduler();
+                playBtn.innerHTML = '<i data-lucide="square" class="w-6 h-6 fill-current"></i>';
+            } else {
+                window.clearTimeout(timerID);
+                playBtn.innerHTML = '<i data-lucide="play" class="w-6 h-6 fill-current"></i>';
+                document.querySelectorAll('.step-btn').forEach(btn => btn.classList.remove('ring-4', 'ring-white/50'));
+            }
+            lucide.createIcons();
+        };
+
+        tempoInput.oninput = (e) => {
+            tempo = e.target.value;
+            tempoVal.innerText = `${tempo} BPM`;
+        };
+
+        clearBtn.onclick = () => {
+            Object.keys(tracks).forEach(key => tracks[key].fill(false));
+            document.querySelectorAll('.step-btn').forEach(btn => btn.classList.remove('step-active'));
+        };
+    </script>
+</body>
+</html>
