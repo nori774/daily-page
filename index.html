@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>サイレント・ホワイトデー・強奪ダイヤ - 2026春の改正版</title>
-    <!-- Google Analytics (GA4) -->
+    <title>White Pi Sweet Orchestrator | ホワイト・パイ・スウィート・オーケストラ</title>
+    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -14,12 +14,12 @@
     </script>
     <style>
         :root {
-            --primary: #ff85a1;
-            --secondary: #ffc2d1;
-            --accent: #4a90e2;
-            --bg: #fff5f7;
-            --text: #4a4a4a;
-            --glass: rgba(255, 255, 255, 0.7);
+            --bg-color: #fdf6f9;
+            --primary-color: #ff99c8;
+            --secondary-color: #fcf6bd;
+            --accent-color: #d0f4de;
+            --text-color: #5d5d5d;
+            --glass-bg: rgba(255, 255, 255, 0.7);
         }
 
         * {
@@ -30,422 +30,313 @@
         }
 
         body {
-            background: var(--bg);
+            background: var(--bg-color);
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(255, 133, 161, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(74, 144, 226, 0.1) 0%, transparent 20%);
-            color: var(--text);
+                radial-gradient(at 0% 0%, hsla(338, 100%, 91%, 1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225, 100%, 91%, 1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339, 49%, 91%, 1) 0, transparent 50%);
+            color: var(--text-color);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            overflow-x: hidden;
-            padding: 20px;
+            overflow: hidden;
+            touch-action: none;
         }
 
         .container {
-            width: 100%;
-            max-width: 500px;
-            background: var(--glass);
+            width: 90%;
+            max-width: 600px;
+            background: var(--glass-bg);
             backdrop-filter: blur(10px);
-            border: 2px solid white;
-            border-radius: 24px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(255, 133, 161, 0.2);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255, 255, 255, 0.5);
             text-align: center;
+            z-index: 10;
             position: relative;
         }
 
         h1 {
-            font-size: 1.5rem;
-            color: var(--primary);
+            font-size: 1.8rem;
             margin-bottom: 10px;
-            line-height: 1.2;
+            background: linear-gradient(45deg, #ff8fa3, #ffb3c1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .subtitle {
+        p.desc {
             font-size: 0.9rem;
-            opacity: 0.8;
+            margin-bottom: 30px;
+            color: #888;
+        }
+
+        #game-area {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: crosshair;
             margin-bottom: 20px;
         }
 
-        .status-panel {
-            background: #fff;
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid var(--secondary);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .timer {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 1.2rem;
+        .pi-digit {
+            position: absolute;
             font-weight: bold;
-            color: var(--accent);
-        }
-
-        .stealth-meter {
-            flex-grow: 1;
-            margin: 0 15px;
-            height: 10px;
-            background: #eee;
-            border-radius: 5px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .stealth-bar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #4caf50, #ffeb3b, #f44336);
-            transition: width 0.1s;
-        }
-
-        .game-area {
-            position: relative;
-            height: 250px;
-            background: #fff;
-            border-radius: 16px;
-            margin-bottom: 20px;
-            border: 1px solid var(--secondary);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .guard {
-            font-size: 4rem;
-            transition: transform 0.3s;
-            z-index: 2;
-        }
-
-        .guard.watching {
-            transform: scale(1.2) rotate(10deg);
-        }
-
-        .target-item {
-            font-size: 3rem;
-            margin-top: 20px;
-            cursor: pointer;
+            font-size: 24px;
+            color: var(--primary-color);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
             user-select: none;
-            transition: transform 0.2s;
+            cursor: pointer;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .target-item:active {
-            transform: scale(0.9);
+        .pi-digit:hover {
+            transform: scale(1.5);
         }
 
-        .instructions {
-            font-size: 0.85rem;
-            color: #666;
+        .score-board {
+            display: flex;
+            justify-content: space-around;
             margin-bottom: 20px;
-            background: rgba(255, 255, 255, 0.5);
-            padding: 10px;
-            border-radius: 8px;
         }
 
-        .btn {
-            background: var(--primary);
+        .score-item {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-weight: bold;
+        }
+
+        #start-btn {
+            background: linear-gradient(45deg, #ff99c8, #ffb3c1);
             color: white;
             border: none;
-            padding: 12px 30px;
+            padding: 15px 40px;
             border-radius: 50px;
             font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(255, 133, 161, 0.4);
+            box-shadow: 0 10px 20px rgba(255, 153, 200, 0.3);
+            transition: all 0.3s ease;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 133, 161, 0.5);
+        #start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(255, 153, 200, 0.4);
         }
 
-        .btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-        .overlay {
+        .floating-heart {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.9);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border-radius: 24px;
-            z-index: 10;
-            display: none;
-        }
-
-        .overlay h2 {
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-
-        .sakura {
-            position: fixed;
-            top: -10%;
-            user-select: none;
+            color: rgba(255, 153, 200, 0.2);
+            font-size: 40px;
+            z-index: 1;
             pointer-events: none;
-            z-index: -1;
-            animation: fall linear forwards;
         }
 
-        @keyframes fall {
-            to {
-                transform: translateY(110vh) rotate(360deg);
-            }
+        footer {
+            margin-top: 30px;
+            font-size: 0.8rem;
+            color: #aaa;
         }
 
-        /* 鉄道ダイヤ改正風の表 */
-        .timetable {
-            font-size: 0.7rem;
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        .timetable th, .timetable td {
-            border: 1px solid #ddd;
-            padding: 4px;
-        }
-
-        .timetable th {
-            background: #f8f8f8;
-        }
-
-        .highlight {
-            background: #fff0f3;
+        /* 3.14 特有の演出 */
+        .combo-text {
+            position: absolute;
+            color: #ff4d6d;
             font-weight: bold;
+            font-size: 40px;
+            pointer-events: none;
+            animation: float-up 1s forwards;
+            z-index: 100;
+        }
+
+        @keyframes float-up {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-100px); }
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>サイレント・ホワイトデー強奪<br>2026春のダイヤ改正版</h1>
-        <p class="subtitle">本日改正：静寂の中でお返しを「設置」せよ</p>
-
-        <div class="status-panel">
-            <div class="timer" id="time-display">12:00:00</div>
-            <div class="stealth-meter">
-                <div class="stealth-bar" id="noise-level"></div>
-            </div>
-            <div id="score">Score: 0</div>
+        <h1>White Pi Sweet Orchestrator</h1>
+        <p class="desc">3.14 円周率とホワイトデーの奇跡。落ちてくる数字の「お菓子」をキャッチして、数学的なメロディを奏でましょう。</p>
+        
+        <div class="score-board">
+            <div class="score-item">SCORE: <span id="score">0</span></div>
+            <div class="score-item">NEXT: <span id="next-digit">3</span></div>
         </div>
 
-        <div class="game-area" id="game-area">
-            <div class="guard" id="guard">😴</div>
-            <div class="target-item" id="target">🍬</div>
-            <div class="overlay" id="message-overlay">
-                <h2 id="result-title">MISSION FAILED</h2>
-                <p id="result-text">騒音により駅員に検知されました</p>
-                <button class="btn" onclick="resetGame()">再試行</button>
+        <div id="game-area">
+            <div id="instruction" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); width:80%;">
+                <p>円周率の順に数字をクリック！<br>リズムに乗ってクリックすると高得点。</p>
             </div>
         </div>
 
-        <div class="instructions">
-            【遊び方】<br>
-            1. 「強奪開始」を押すとゲーム開始<br>
-            2. 駅員が寝ている間に飴をタップしてお返しを設置<br>
-            3. <strong>マイク感度注意！</strong> 大きな音を出すと即座に検知されます<br>
-            4. 2026年改正ダイヤに基づき、定期的に「急行」が発生します
-        </div>
+        <button id="start-btn">演奏を開始する</button>
 
-        <button class="btn" id="start-btn" onclick="startGame()">強奪開始 (マイク許可が必要)</button>
-
-        <table class="timetable">
-            <thead>
-                <tr>
-                    <th>時刻</th>
-                    <th>種別</th>
-                    <th>行先</th>
-                    <th>備考</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>14:00</td>
-                    <td>普通</td>
-                    <td>本命デスク</td>
-                    <td>静寂必須</td>
-                </tr>
-                <tr class="highlight">
-                    <td>14:15</td>
-                    <td>特急</td>
-                    <td>義理一括</td>
-                    <td>ダイヤ改正につき増発</td>
-                </tr>
-                <tr>
-                    <td>14:30</td>
-                    <td>快速</td>
-                    <td>自分用</td>
-                    <td>隠れて食べる</td>
-                </tr>
-            </tbody>
-        </table>
+        <footer>
+            &copy; 2026 OShama Studio. Happy White Pi Day!
+        </footer>
     </div>
 
     <script>
-        let isPlaying = false;
+        // 円周率（100桁程度）
+        const PI_STR = "31415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679";
+        let currentIndex = 0;
         let score = 0;
-        let noiseLevel = 0;
-        let audioContext;
-        let analyser;
-        let microphone;
-        let javascriptNode;
-        let guardState = 'sleeping'; // sleeping, waking, watching
-        let gameTimer;
+        let gameRunning = false;
+        let audioCtx = null;
 
-        const guardEmojis = {
-            sleeping: '😴',
-            waking: '🤔',
-            watching: '👁️'
-        };
+        const gameArea = document.getElementById('game-area');
+        const scoreEl = document.getElementById('score');
+        const nextDigitEl = document.getElementById('next-digit');
+        const startBtn = document.getElementById('start-btn');
+        const instruction = document.getElementById('instruction');
 
-        const targetEmojis = ['🍬', '🍫', '🍪', '🍰', '🍡', '🍦'];
-
-        function createSakura() {
-            const petal = document.createElement('div');
-            petal.innerHTML = '🌸';
-            petal.className = 'sakura';
-            petal.style.left = Math.random() * 100 + 'vw';
-            petal.style.fontSize = Math.random() * 20 + 10 + 'px';
-            petal.style.animationDuration = Math.random() * 3 + 2 + 's';
-            petal.style.opacity = Math.random();
-            document.body.appendChild(petal);
-            setTimeout(() => petal.remove(), 5000);
+        // 音を出す関数
+        function playTone(freq, duration) {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.frequency.value = freq;
+            osc.type = 'sine';
+            
+            gain.gain.setValueAtTime(0, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.2, audioCtx.currentTime + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
         }
 
-        setInterval(createSakura, 300);
+        // 数字を生成
+        function spawnDigit() {
+            if (!gameRunning) return;
 
-        async function initAudio() {
-            try {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                microphone = audioContext.createMediaStreamSource(stream);
-                analyser = audioContext.createAnalyser();
-                analyser.fftSize = 256;
-                microphone.connect(analyser);
-                
-                const bufferLength = analyser.frequencyBinCount;
-                const dataArray = new Uint8Array(bufferLength);
+            const digit = document.createElement('div');
+            digit.className = 'pi-digit';
+            const val = Math.floor(Math.random() * 10);
+            digit.innerText = val;
+            
+            // お菓子っぽい色
+            const colors = ['#ff99c8', '#fcf6bd', '#d0f4de', '#a9def9', '#e4c1f9'];
+            digit.style.color = colors[val % colors.length];
+            
+            const size = 20 + Math.random() * 30;
+            digit.style.fontSize = size + 'px';
+            
+            const startX = Math.random() * (gameArea.clientWidth - 40);
+            digit.style.left = startX + 'px';
+            digit.style.top = '-50px';
+            
+            gameArea.appendChild(digit);
 
-                function checkNoise() {
-                    if (!isPlaying) return;
-                    analyser.getByteFrequencyData(dataArray);
-                    let values = 0;
-                    for (let i = 0; i < bufferLength; i++) {
-                        values += dataArray[i];
-                    }
-                    noiseLevel = (values / bufferLength);
-                    document.getElementById('noise-level').style.width = Math.min(noiseLevel * 2, 100) + '%';
-
-                    if (noiseLevel > 40) {
-                        gameOver('騒音検知！お返しがバレました。');
-                    }
-                    requestAnimationFrame(checkNoise);
+            let posY = -50;
+            const speed = 1 + Math.random() * 3;
+            
+            const anim = setInterval(() => {
+                if (!gameRunning) {
+                    clearInterval(anim);
+                    digit.remove();
+                    return;
                 }
-                checkNoise();
-            } catch (err) {
-                console.error('Audio initialization failed', err);
-                alert('マイクが使用できません。静音チャレンジは無効化されますが、視覚のみでプレイ可能です。');
-            }
+                
+                posY += speed;
+                digit.style.top = posY + 'px';
+                
+                if (posY > gameArea.clientHeight) {
+                    clearInterval(anim);
+                    digit.remove();
+                }
+            }, 20);
+
+            digit.onclick = () => {
+                if (val.toString() === PI_STR[currentIndex]) {
+                    // 正解
+                    score += 10;
+                    scoreEl.innerText = score;
+                    
+                    // 周波数：数字が高いほど高音
+                    const freq = 261.63 * Math.pow(2, (parseInt(val) + (currentIndex % 12)) / 12);
+                    playTone(freq, 0.5);
+                    
+                    currentIndex++;
+                    nextDigitEl.innerText = PI_STR[currentIndex];
+                    
+                    digit.style.transform = 'scale(2) rotate(360deg)';
+                    digit.style.opacity = '0';
+                    setTimeout(() => digit.remove(), 200);
+                    clearInterval(anim);
+
+                    if (val === 3 && PI_STR[currentIndex-1] === '3' && PI_STR[currentIndex] === '1') {
+                         showCombo("START PI!");
+                    }
+                } else {
+                    // 間違い
+                    score = Math.max(0, score - 5);
+                    scoreEl.innerText = score;
+                    playTone(150, 0.2);
+                    digit.style.color = '#ccc';
+                }
+            };
+        }
+
+        function showCombo(text) {
+            const el = document.createElement('div');
+            el.className = 'combo-text';
+            el.innerText = text;
+            el.style.left = '50%';
+            el.style.top = '50%';
+            el.style.transform = 'translate(-50%, -50%)';
+            gameArea.appendChild(el);
+            setTimeout(() => el.remove(), 1000);
         }
 
         function startGame() {
-            if (isPlaying) return;
-            isPlaying = true;
+            gameRunning = true;
             score = 0;
-            document.getElementById('score').innerText = 'Score: ' + score;
-            document.getElementById('start-btn').disabled = true;
-            document.getElementById('message-overlay').style.display = 'none';
+            currentIndex = 0;
+            scoreEl.innerText = score;
+            nextDigitEl.innerText = PI_STR[0];
+            instruction.style.display = 'none';
+            startBtn.style.display = 'none';
             
-            if (!audioContext) initAudio();
-            
-            gameLoop();
-            updateTime();
+            const spawner = setInterval(() => {
+                if (!gameRunning) {
+                    clearInterval(spawner);
+                    return;
+                }
+                spawnDigit();
+            }, 600);
         }
 
-        function gameLoop() {
-            if (!isPlaying) return;
-
-            const nextAction = Math.random() * 2000 + 1000;
-            
-            setTimeout(() => {
-                if (!isPlaying) return;
-                
-                // 駅員の挙動
-                document.getElementById('guard').innerText = guardEmojis.waking;
-                document.getElementById('guard').classList.add('watching');
-                
-                setTimeout(() => {
-                    if (!isPlaying) return;
-                    document.getElementById('guard').innerText = guardEmojis.watching;
-                    guardState = 'watching';
-                    
-                    setTimeout(() => {
-                        if (!isPlaying) return;
-                        document.getElementById('guard').innerText = guardEmojis.sleeping;
-                        document.getElementById('guard').classList.remove('watching');
-                        guardState = 'sleeping';
-                        gameLoop();
-                    }, 1000 + Math.random() * 1000);
-                }, 500);
-            }, nextAction);
-        }
-
-        document.getElementById('target').addEventListener('click', () => {
-            if (!isPlaying) return;
-            
-            if (guardState === 'watching') {
-                gameOver('駅員に見つかりました！');
-            } else {
-                score++;
-                document.getElementById('score').innerText = 'Score: ' + score;
-                document.getElementById('target').innerText = targetEmojis[Math.floor(Math.random() * targetEmojis.length)];
-                
-                // 成功エフェクト
-                document.getElementById('target').style.transform = 'scale(1.5)';
-                setTimeout(() => {
-                    document.getElementById('target').style.transform = 'scale(1)';
-                }, 100);
+        startBtn.onclick = () => {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             }
-        });
-
-        function gameOver(reason) {
-            isPlaying = false;
-            document.getElementById('result-title').innerText = 'MISSION FAILED';
-            document.getElementById('result-text').innerText = reason;
-            document.getElementById('message-overlay').style.display = 'flex';
-            document.getElementById('start-btn').disabled = false;
-        }
-
-        function resetGame() {
-            document.getElementById('message-overlay').style.display = 'none';
             startGame();
-        }
+        };
 
-        function updateTime() {
-            const now = new Date();
-            const timeStr = now.getHours().toString().padStart(2, '0') + ':' + 
-                          now.getMinutes().toString().padStart(2, '0') + ':' + 
-                          now.getSeconds().toString().padStart(2, '0');
-            document.getElementById('time-display').innerText = timeStr;
-            if (isPlaying) setTimeout(updateTime, 1000);
+        // 背景にハートを散らす
+        for(let i=0; i<15; i++) {
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            heart.innerText = i % 2 === 0 ? 'π' : '♥';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.top = Math.random() * 100 + 'vh';
+            heart.style.animation = `float-up ${5 + Math.random() * 10}s linear infinite`;
+            heart.style.fontSize = (10 + Math.random() * 30) + 'px';
+            document.body.appendChild(heart);
         }
     </script>
 </body>
