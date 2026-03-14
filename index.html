@@ -3,14 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OShama Pi-Ribbon | 3.14 White Day & Pi Day Special</title>
-    <!-- Google Fonts: Inter & Outfit for premium look -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@300;600&display=swap" rel="stylesheet">
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- GA4 -->
+    <title>サイレント・ホワイトデー・強奪ダイヤ - 2026春の改正版</title>
+    <!-- Google Analytics (GA4) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -20,236 +14,438 @@
     </script>
     <style>
         :root {
-            --oshama-white: #ffffff;
-            --oshama-pink: #ffcada;
-            --oshama-blue: #cde4ff;
-            --oshama-text: #1a1a1a;
+            --primary: #ff85a1;
+            --secondary: #ffc2d1;
+            --accent: #4a90e2;
+            --bg: #fff5f7;
+            --text: #4a4a4a;
+            --glass: rgba(255, 255, 255, 0.7);
         }
-        body {
+
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 133, 161, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(74, 144, 226, 0.1) 0%, transparent 20%);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 2px solid white;
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(255, 133, 161, 0.2);
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        .status-panel {
+            background: #fff;
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid var(--secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .timer {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .stealth-meter {
+            flex-grow: 1;
+            margin: 0 15px;
+            height: 10px;
+            background: #eee;
+            border-radius: 5px;
             overflow: hidden;
-            background: #fdfdfd;
-            font-family: 'Inter', sans-serif;
-            color: var(--oshama-text);
+            position: relative;
         }
-        canvas {
-            display: block;
+
+        .stealth-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #4caf50, #ffeb3b, #f44336);
+            transition: width 0.1s;
         }
-        .glass {
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+
+        .game-area {
+            position: relative;
+            height: 250px;
+            background: #fff;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            border: 1px solid var(--secondary);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
-        .pi-badge {
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
+
+        .guard {
+            font-size: 4rem;
+            transition: transform 0.3s;
+            z-index: 2;
         }
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
+
+        .guard.watching {
+            transform: scale(1.2) rotate(10deg);
         }
-        .floating {
-            animation: float 4s ease-in-out infinite;
+
+        .target-item {
+            font-size: 3rem;
+            margin-top: 20px;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.2s;
         }
-        /* Custom scrollbar for small UI elements */
-        ::-webkit-scrollbar {
-            width: 4px;
+
+        .target-item:active {
+            transform: scale(0.9);
         }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(0,0,0,0.1);
-            border-radius: 10px;
+
+        .instructions {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 133, 161, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 133, 161, 0.5);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 24px;
+            z-index: 10;
+            display: none;
+        }
+
+        .overlay h2 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .sakura {
+            position: fixed;
+            top: -10%;
+            user-select: none;
+            pointer-events: none;
+            z-index: -1;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(360deg);
+            }
+        }
+
+        /* 鉄道ダイヤ改正風の表 */
+        .timetable {
+            font-size: 0.7rem;
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .timetable th, .timetable td {
+            border: 1px solid #ddd;
+            padding: 4px;
+        }
+
+        .timetable th {
+            background: #f8f8f8;
+        }
+
+        .highlight {
+            background: #fff0f3;
+            font-weight: bold;
         }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen">
+<body>
 
-    <!-- Background Canvas -->
-    <canvas id="ribbonCanvas" class="fixed inset-0 z-0"></canvas>
+    <div class="container">
+        <h1>サイレント・ホワイトデー強奪<br>2026春のダイヤ改正版</h1>
+        <p class="subtitle">本日改正：静寂の中でお返しを「設置」せよ</p>
 
-    <!-- UI Overlay -->
-    <main class="relative z-10 w-full max-w-lg p-8 mx-4 glass rounded-3xl floating">
-        <header class="mb-8 text-center">
-            <div class="flex justify-center mb-4">
-                <div class="p-3 bg-white rounded-full shadow-sm text-pink-400">
-                    <i data-lucide="infinity" class="w-8 h-8"></i>
-                </div>
+        <div class="status-panel">
+            <div class="timer" id="time-display">12:00:00</div>
+            <div class="stealth-meter">
+                <div class="stealth-bar" id="noise-level"></div>
             </div>
-            <h1 class="text-3xl font-light tracking-tight text-gray-800 font-outfit">
-                OShama <span class="font-semibold text-pink-400">Pi-Ribbon</span>
-            </h1>
-            <p class="mt-2 text-sm text-gray-500 font-inter">
-                ホワイトデー(3.14)に舞い降りる、無限の愛の数値。
-            </p>
-        </header>
+            <div id="score">Score: 0</div>
+        </div>
 
-        <section class="space-y-6">
-            <div class="p-4 bg-white/50 rounded-2xl border border-white/80">
-                <p class="text-sm leading-relaxed text-gray-600">
-                    <span class="font-semibold text-pink-400">Ren:</span> 「円周率の無限性と、ホワイトデーの純真さを掛け合わせたインターフェースを構築しました。リボンは円周率の各桁に呼応して、その色と揺らぎを変化させます。マウスを動かして、あなただけの3.14を描いてみてください。」
-                </p>
+        <div class="game-area" id="game-area">
+            <div class="guard" id="guard">😴</div>
+            <div class="target-item" id="target">🍬</div>
+            <div class="overlay" id="message-overlay">
+                <h2 id="result-title">MISSION FAILED</h2>
+                <p id="result-text">騒音により駅員に検知されました</p>
+                <button class="btn" onclick="resetGame()">再試行</button>
             </div>
+        </div>
 
-            <div class="flex items-center justify-between p-4 glass rounded-2xl">
-                <div class="flex items-center space-x-3">
-                    <i data-lucide="activity" class="w-5 h-5 text-blue-400"></i>
-                    <span class="text-xs font-semibold tracking-widest text-gray-400 uppercase">Pi Modulation</span>
-                </div>
-                <div id="piDisplay" class="text-lg font-bold text-gray-700 pi-badge">
-                    3.1415...
-                </div>
-            </div>
+        <div class="instructions">
+            【遊び方】<br>
+            1. 「強奪開始」を押すとゲーム開始<br>
+            2. 駅員が寝ている間に飴をタップしてお返しを設置<br>
+            3. <strong>マイク感度注意！</strong> 大きな音を出すと即座に検知されます<br>
+            4. 2026年改正ダイヤに基づき、定期的に「急行」が発生します
+        </div>
 
-            <div class="text-center">
-                <p class="text-[10px] text-gray-400 uppercase tracking-[0.2em] mb-4">Interactive Ribbon Physics</p>
-                <div class="flex justify-center space-x-4">
-                    <button id="clearBtn" class="flex items-center px-6 py-2 text-sm font-medium text-gray-600 transition-all bg-white rounded-full shadow-sm hover:scale-105 active:scale-95 border border-gray-100">
-                        <i data-lucide="refresh-cw" class="w-4 h-4 mr-2"></i>
-                        Reset
-                    </button>
-                </div>
-            </div>
-        </section>
+        <button class="btn" id="start-btn" onclick="startGame()">強奪開始 (マイク許可が必要)</button>
 
-        <footer class="mt-12 text-center">
-            <p class="text-[10px] text-gray-300">© 2026 OShama Daily | Precision Engineering for the Soul</p>
-        </footer>
-    </main>
-
-    <!-- Interaction Hint -->
-    <div class="fixed bottom-8 left-1/2 -translate-x-1/2 z-20 pointer-events-none opacity-50 transition-opacity" id="hint">
-        <p class="text-xs tracking-widest text-gray-400 uppercase">Move your mouse to flow</p>
+        <table class="timetable">
+            <thead>
+                <tr>
+                    <th>時刻</th>
+                    <th>種別</th>
+                    <th>行先</th>
+                    <th>備考</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>14:00</td>
+                    <td>普通</td>
+                    <td>本命デスク</td>
+                    <td>静寂必須</td>
+                </tr>
+                <tr class="highlight">
+                    <td>14:15</td>
+                    <td>特急</td>
+                    <td>義理一括</td>
+                    <td>ダイヤ改正につき増発</td>
+                </tr>
+                <tr>
+                    <td>14:30</td>
+                    <td>快速</td>
+                    <td>自分用</td>
+                    <td>隠れて食べる</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
     <script>
-        // Lucide Icons initialization
-        lucide.createIcons();
+        let isPlaying = false;
+        let score = 0;
+        let noiseLevel = 0;
+        let audioContext;
+        let analyser;
+        let microphone;
+        let javascriptNode;
+        let guardState = 'sleeping'; // sleeping, waking, watching
+        let gameTimer;
 
-        // Canvas Setup
-        const canvas = document.getElementById('ribbonCanvas');
-        const ctx = canvas.getContext('2d');
-        const piDisplay = document.getElementById('piDisplay');
-        const hint = document.getElementById('hint');
+        const guardEmojis = {
+            sleeping: '😴',
+            waking: '🤔',
+            watching: '👁️'
+        };
 
-        let width, height;
-        const piDigits = "31415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679";
-        let piIndex = 0;
+        const targetEmojis = ['🍬', '🍫', '🍪', '🍰', '🍡', '🍦'];
 
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
+        function createSakura() {
+            const petal = document.createElement('div');
+            petal.innerHTML = '🌸';
+            petal.className = 'sakura';
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.fontSize = Math.random() * 20 + 10 + 'px';
+            petal.style.animationDuration = Math.random() * 3 + 2 + 's';
+            petal.style.opacity = Math.random();
+            document.body.appendChild(petal);
+            setTimeout(() => petal.remove(), 5000);
         }
 
-        window.addEventListener('resize', resize);
-        resize();
+        setInterval(createSakura, 300);
 
-        // Physics Ribbon
-        const points = [];
-        const maxPoints = 60;
-        let mouse = { x: width / 2, y: height / 2, moved: false };
-
-        window.addEventListener('mousemove', (e) => {
-            mouse.x = e.clientX;
-            mouse.y = e.clientY;
-            mouse.moved = true;
-            hint.style.opacity = '0';
-        });
-
-        class Point {
-            constructor(x, y, digit) {
-                this.x = x;
-                this.y = y;
-                this.digit = parseInt(digit);
-                this.life = 1.0;
-                this.vx = (Math.random() - 0.5) * 2;
-                this.vy = (Math.random() - 0.5) * 2;
-            }
-
-            update() {
-                this.life -= 0.015;
-                this.x += this.vx;
-                this.y += this.vy;
-            }
-        }
-
-        function animate() {
-            // Fade effect for trails
-            ctx.fillStyle = 'rgba(253, 253, 253, 0.15)';
-            ctx.fillRect(0, 0, width, height);
-
-            if (mouse.moved) {
-                const currentDigit = piDigits[piIndex % piDigits.length];
-                points.unshift(new Point(mouse.x, mouse.y, currentDigit));
-                piIndex++;
+        async function initAudio() {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                microphone = audioContext.createMediaStreamSource(stream);
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+                microphone.connect(analyser);
                 
-                // Update UI Display
-                const start = Math.max(0, piIndex - 4);
-                piDisplay.innerText = piDigits.substring(start, piIndex + 2).split('').join('.');
+                const bufferLength = analyser.frequencyBinCount;
+                const dataArray = new Uint8Array(bufferLength);
 
-                if (points.length > maxPoints) {
-                    points.pop();
-                }
-            } else {
-                // Idle movement
-                const time = Date.now() * 0.001;
-                const idleX = width / 2 + Math.cos(time) * 200;
-                const idleY = height / 2 + Math.sin(time * 0.8) * 150;
-                const currentDigit = piDigits[piIndex % piDigits.length];
-                points.unshift(new Point(idleX, idleY, currentDigit));
-                piIndex++;
-                if (points.length > maxPoints) points.pop();
-            }
-
-            // Draw Ribbon
-            if (points.length > 1) {
-                for (let i = 0; i < points.length - 1; i++) {
-                    const p1 = points[i];
-                    const p2 = points[i+1];
-                    
-                    p1.update();
-
-                    // Pi-based properties
-                    const thickness = (p1.digit + 1) * 2.5 * p1.life;
-                    const hue = 210 + (p1.digit * 15); // Blue to Pink range
-                    const alpha = p1.life * 0.6;
-
-                    ctx.beginPath();
-                    ctx.strokeStyle = `hsla(${hue}, 100%, 85%, ${alpha})`;
-                    ctx.lineWidth = thickness;
-                    ctx.lineCap = 'round';
-                    ctx.lineJoin = 'round';
-                    ctx.moveTo(p1.x, p1.y);
-                    ctx.lineTo(p2.x, p2.y);
-                    ctx.stroke();
-
-                    // Optional "sweets" particles (circles) on digits like 3 or 1
-                    if (p1.digit === 3 || p1.digit === 1 || p1.digit === 4) {
-                        ctx.beginPath();
-                        ctx.fillStyle = `hsla(${hue + 20}, 100%, 90%, ${alpha * 0.5})`;
-                        ctx.arc(p1.x, p1.y, thickness * 1.5, 0, Math.PI * 2);
-                        ctx.fill();
+                function checkNoise() {
+                    if (!isPlaying) return;
+                    analyser.getByteFrequencyData(dataArray);
+                    let values = 0;
+                    for (let i = 0; i < bufferLength; i++) {
+                        values += dataArray[i];
                     }
-                }
-            }
+                    noiseLevel = (values / bufferLength);
+                    document.getElementById('noise-level').style.width = Math.min(noiseLevel * 2, 100) + '%';
 
-            requestAnimationFrame(animate);
+                    if (noiseLevel > 40) {
+                        gameOver('騒音検知！お返しがバレました。');
+                    }
+                    requestAnimationFrame(checkNoise);
+                }
+                checkNoise();
+            } catch (err) {
+                console.error('Audio initialization failed', err);
+                alert('マイクが使用できません。静音チャレンジは無効化されますが、視覚のみでプレイ可能です。');
+            }
         }
 
-        animate();
+        function startGame() {
+            if (isPlaying) return;
+            isPlaying = true;
+            score = 0;
+            document.getElementById('score').innerText = 'Score: ' + score;
+            document.getElementById('start-btn').disabled = true;
+            document.getElementById('message-overlay').style.display = 'none';
+            
+            if (!audioContext) initAudio();
+            
+            gameLoop();
+            updateTime();
+        }
 
-        // Clear Button
-        document.getElementById('clearBtn').addEventListener('click', () => {
-            points.length = 0;
-            piIndex = 0;
-            piDisplay.innerText = "3.1415...";
-            gtag('event', 'reset_ribbon', { 'event_category': 'interaction' });
+        function gameLoop() {
+            if (!isPlaying) return;
+
+            const nextAction = Math.random() * 2000 + 1000;
+            
+            setTimeout(() => {
+                if (!isPlaying) return;
+                
+                // 駅員の挙動
+                document.getElementById('guard').innerText = guardEmojis.waking;
+                document.getElementById('guard').classList.add('watching');
+                
+                setTimeout(() => {
+                    if (!isPlaying) return;
+                    document.getElementById('guard').innerText = guardEmojis.watching;
+                    guardState = 'watching';
+                    
+                    setTimeout(() => {
+                        if (!isPlaying) return;
+                        document.getElementById('guard').innerText = guardEmojis.sleeping;
+                        document.getElementById('guard').classList.remove('watching');
+                        guardState = 'sleeping';
+                        gameLoop();
+                    }, 1000 + Math.random() * 1000);
+                }, 500);
+            }, nextAction);
+        }
+
+        document.getElementById('target').addEventListener('click', () => {
+            if (!isPlaying) return;
+            
+            if (guardState === 'watching') {
+                gameOver('駅員に見つかりました！');
+            } else {
+                score++;
+                document.getElementById('score').innerText = 'Score: ' + score;
+                document.getElementById('target').innerText = targetEmojis[Math.floor(Math.random() * targetEmojis.length)];
+                
+                // 成功エフェクト
+                document.getElementById('target').style.transform = 'scale(1.5)';
+                setTimeout(() => {
+                    document.getElementById('target').style.transform = 'scale(1)';
+                }, 100);
+            }
         });
 
-        // Initialize background with some points
-        for(let i=0; i<maxPoints; i++) {
-             points.push(new Point(width/2, height/2, piDigits[i%10]));
+        function gameOver(reason) {
+            isPlaying = false;
+            document.getElementById('result-title').innerText = 'MISSION FAILED';
+            document.getElementById('result-text').innerText = reason;
+            document.getElementById('message-overlay').style.display = 'flex';
+            document.getElementById('start-btn').disabled = false;
+        }
+
+        function resetGame() {
+            document.getElementById('message-overlay').style.display = 'none';
+            startGame();
+        }
+
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.getHours().toString().padStart(2, '0') + ':' + 
+                          now.getMinutes().toString().padStart(2, '0') + ':' + 
+                          now.getSeconds().toString().padStart(2, '0');
+            document.getElementById('time-display').innerText = timeStr;
+            if (isPlaying) setTimeout(updateTime, 1000);
         }
     </script>
 </body>
