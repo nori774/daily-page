@@ -3,12 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>隙間職人：イヤホン・ホールインワン | Gap Master: Earphone Hole-in-One</title>
-    <!-- Google Fonts: Outfit, Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Outfit:wght@300;600&display=swap" rel="stylesheet">
-    <!-- Google tag (gtag.js) -->
+    <title>π-Sweet Confession | 無限の愛を計算する</title>
+    <!-- Google Tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-PS2DX1HNVL"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -18,414 +14,246 @@
     </script>
     <style>
         :root {
-            --bg-color: #f0f2f5;
-            --primary-accent: #ff4d94; /* Pop Pink */
-            --secondary-accent: #4ade80; /* Success Green */
+            --primary-color: #e0f2fe;
+            --accent-color: #3b82f6;
+            --text-color: #1e293b;
+            --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
             --glass-bg: rgba(255, 255, 255, 0.7);
-            --border-color: rgba(0, 0, 0, 0.1);
-            --text-main: #1e293b;
-            --text-muted: #64748b;
+            --glass-border: rgba(255, 255, 255, 0.3);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
         }
 
         body {
-            font-family: 'Inter', 'Hiragino Sans', sans-serif;
-            background: var(--bg-color);
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(255, 77, 148, 0.05) 0, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(74, 222, 128, 0.05) 0, transparent 50%);
-            color: var(--text-main);
+            background: var(--bg-gradient);
+            color: var(--text-color);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 1.5rem;
-            overflow: hidden;
+            overflow-x: hidden;
         }
 
-        .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--border-color);
-            border-radius: 2rem;
-            padding: 2.5rem;
+        .container {
             width: 100%;
-            max-width: 440px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
+            max-width: 600px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 2rem;
+            padding: 3rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
             text-align: center;
             position: relative;
             z-index: 10;
         }
 
+        .pi-symbol {
+            font-size: 5rem;
+            color: var(--accent-color);
+            opacity: 0.1;
+            position: absolute;
+            top: -1rem;
+            left: 2rem;
+            font-weight: bold;
+        }
+
         h1 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            background: linear-gradient(135deg, var(--primary-accent), #8b5cf6);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #2563eb, #60a5fa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .subtitle {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-bottom: 1.5rem;
-            font-weight: 500;
+        p.description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            color: #64748b;
         }
 
-        /* Game Area */
-        #game-container {
+        .input-group {
+            margin-bottom: 2rem;
+        }
+
+        input {
             width: 100%;
-            height: 320px;
-            background: rgba(255, 255, 255, 0.4);
-            border: 1px solid var(--border-color);
-            border-radius: 1.5rem;
-            position: relative;
-            overflow: hidden;
-            cursor: crosshair;
-            margin-bottom: 1.5rem;
-        }
-
-        .gap-target {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 40px;
-            background: #334155;
-            border-radius: 0.5rem;
-        }
-
-        .gap-inner {
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 30px; /* Current Gap Width */
-            height: 100%;
-            background: #0f172a;
-            border-radius: 0.25rem;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
-        }
-
-        .earphone {
-            position: absolute;
-            top: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 24px;
-            height: 24px;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            pointer-events: none;
-        }
-
-        .earphone::after {
-            content: '';
-            width: 12px;
-            height: 12px;
-            background: #e2e8f0;
-            border-radius: 50%;
-        }
-
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 1rem;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--text-muted);
-        }
-
-        .stat-val {
-            color: var(--text-main);
-            font-size: 1rem;
-            display: block;
-        }
-
-        button {
-            width: 100%;
-            padding: 1rem;
+            padding: 1rem 1.5rem;
             border-radius: 1rem;
-            border: none;
-            background: var(--text-main);
-            color: white;
-            font-weight: 700;
+            border: 2px solid #e2e8f0;
+            background: white;
             font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 1rem 2rem;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, background 0.2s;
+            text-decoration: none;
         }
 
-        button:hover {
+        .btn:hover {
+            background: #2563eb;
             transform: translateY(-2px);
-            background: #000;
         }
 
-        button:active {
+        .btn:active {
             transform: translateY(0);
         }
 
-        .feedback-overlay {
+        .result-area {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px dashed #cbd5e1;
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .confession {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .pi-digits {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            word-break: break-all;
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .decorations .blob {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            pointer-events: none;
-            opacity: 0;
-            z-index: 20;
+            z-index: 1;
+            filter: blur(40px);
+            border-radius: 50%;
+            opacity: 0.4;
         }
 
-        .feedback-text {
-            font-family: 'Outfit', sans-serif;
-            font-size: 2.5rem;
-            font-weight: 600;
-            color: var(--primary-accent);
-            text-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        .blob-1 {
+            width: 300px;
+            height: 300px;
+            background: #bfdbfe;
+            top: -100px;
+            right: -100px;
         }
 
-        .human-comment {
-            margin-top: 1.5rem;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            min-height: 3em;
+        .blob-2 {
+            width: 250px;
+            height: 250px;
+            background: #bae6fd;
+            bottom: -50px;
+            left: -50px;
         }
 
-        .animate-pop {
-            animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-
-        @keyframes pop {
-            0% { opacity: 0; transform: scale(0.5); }
-            50% { opacity: 1; transform: scale(1.1); }
-            100% { opacity: 0; transform: scale(1); }
-        }
-
-        /* Mouse Follower */
-        #aimer {
-            position: absolute;
-            top: 30px;
-            width: 100%;
-            height: 2px;
-            background: dashed var(--primary-accent);
-            opacity: 0.3;
-            pointer-events: none;
+        footer {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: #94a3b8;
         }
     </style>
 </head>
 <body>
+    <div class="decorations">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
 
-<div class="glass-card">
-    <h1>隙間職人</h1>
-    <p class="subtitle">イヤホン・ホールインワン Simulator v1.0</p>
+    <div class="container">
+        <div class="card">
+            <div class="pi-symbol">π</div>
+            <h1>π-Sweet Confession</h1>
+            <p class="description">
+                3月14日はホワイトデー、そして円周率の日。<br>
+                あなたの想いを「π」の無限の数字に変換して、<br>
+                溶けない愛のメッセージを生成します。
+            </p>
 
-    <div class="stats">
-        <div>
-            SCORE
-            <span id="score" class="stat-val">0</span>
-        </div>
-        <div>
-            COMBO
-            <span id="combo" class="stat-val">0</span>
-        </div>
-        <div>
-            DIFFICULTY
-            <span id="level" class="stat-val">NORMAL</span>
+            <div class="input-group">
+                <input type="text" id="targetName" placeholder="お返しを贈る相手の名前" maxlength="20">
+            </div>
+
+            <button class="btn" onclick="generateConfession()">愛のπを計算する</button>
+
+            <div id="result" class="result-area">
+                <div id="confessionText" class="confession"></div>
+                <div id="piDigits" class="pi-digits"></div>
+                <p style="margin-top: 1rem; font-size: 0.9rem; color: #64748b;">
+                    ※このメッセージは円周率の無限の並びから抽出されました。
+                </p>
+            </div>
+
+            <footer>
+                &copy; 2026 Pi-Romance Lab. #PiDay #WhiteDay
+            </footer>
         </div>
     </div>
 
-    <div id="game-container">
-        <div id="aimer"></div>
-        <div class="gap-target" id="target">
-            <div class="gap-inner" id="gap"></div>
-        </div>
-        <div id="earphone-pool"></div>
-        <div class="feedback-overlay" id="feedback-overlay">
-            <span class="feedback-text" id="feedback-text">PERFECT!</span>
-        </div>
-    </div>
-
-    <button id="drop-btn">RELEASE (SPACE)</button>
-
-    <div class="human-comment" id="human-comment">
-        …えっと、SKE48の河村優愛さんが奇跡のホールインワン（隙間にイヤホン落下）を達成したそうですよ。2.8万いいね狙いましょう。
-    </div>
-</div>
-
-<script>
-    const container = document.getElementById('game-container');
-    const gap = document.getElementById('gap');
-    const target = document.getElementById('target');
-    const scoreEl = document.getElementById('score');
-    const comboEl = document.getElementById('combo');
-    const feedbackOverlay = document.getElementById('feedback-overlay');
-    const feedbackText = document.getElementById('feedback-text');
-    const commentEl = document.getElementById('human-comment');
-    const dropBtn = document.getElementById('drop-btn');
-
-    let score = 0;
-    let combo = 0;
-    let isDropping = false;
-    let gapPos = 50; // Percent
-    let gapWidth = 30; // px
-    let direction = 1;
-    let speed = 1.5;
-
-    // Move Gap
-    function updateGap() {
-        if (!isDropping) {
-            gapPos += speed * direction;
-            if (gapPos > 85 || gapPos < 15) direction *= -1;
-            target.style.left = gapPos + '%';
-        }
-        requestAnimationFrame(updateGap);
-    }
-    updateGap();
-
-    function dropEarphone() {
-        if (isDropping) return;
-        isDropping = true;
-
-        const earphone = document.createElement('div');
-        earphone.className = 'earphone';
-        earphone.style.left = '50%';
-        earphone.style.top = '40px';
-        container.appendChild(earphone);
-
-        let top = 40;
-        const fallSpeed = 8;
+    <script>
+        const PI_STR = "3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679";
         
-        const fall = setInterval(() => {
-            top += fallSpeed;
-            earphone.style.top = top + 'px';
+        const messages = [
+            "君への想いは、円周率のように終わりがないんだ。",
+            "3.14... この数字のどこかに、僕たちの未来が書かれている気がする。",
+            "マシュマロよりも甘く、πよりも長い愛を君に。",
+            "割り切れないこの気持ち、ホワイトデーに受け取ってほしい。",
+            "無限に続く数字の羅列の中で、君という唯一の解を見つけた。"
+        ];
 
-            // Collision check
-            if (top >= 260) {
-                clearInterval(fall);
-                checkResult(gapPos);
-                setTimeout(() => {
-                    earphone.remove();
-                    isDropping = false;
-                }, 1000);
+        function generateConfession() {
+            const name = document.getElementById('targetName').value.trim();
+            if (!name) {
+                alert("相手の名前を入力してくださいね。");
+                return;
             }
-        }, 16);
-    }
 
-    function checkResult(currentGapPos) {
-        // Earphone is at center (50%)
-        // Gap is at currentGapPos%
-        // Container width is 100% (around 400px)
-        const containerWidth = container.offsetWidth;
-        const gapCenterPx = (currentGapPos / 100) * containerWidth;
-        const earphoneCenterPx = containerWidth / 2;
-        
-        const diff = Math.abs(gapCenterPx - earphoneCenterPx);
-        const hitZone = gapWidth / 2;
+            const resultArea = document.getElementById('result');
+            const confessionText = document.getElementById('confessionText');
+            const piDigits = document.getElementById('piDigits');
 
-        if (diff < hitZone) {
-            // Hit!
-            score += 100 * (combo + 1);
-            combo++;
-            showFeedback("HOLE IN ONE!", "#4ade80");
-            updateStats();
-            updateComment("success");
+            const randomIndex = Math.floor(Math.random() * messages.length);
+            const randomOffset = Math.floor(Math.random() * 50);
             
-            // Level up
-            speed += 0.2;
-            gapWidth = Math.max(15, gapWidth - 2);
-            gap.style.width = gapWidth + 'px';
-        } else {
-            // Miss
-            combo = 0;
-            showFeedback("MISS...", "#ff4d94");
-            updateStats();
-            updateComment("fail");
-            
-            // Reset difficulty slightly
-            gapWidth = Math.min(30, gapWidth + 5);
-            gap.style.width = gapWidth + 'px';
+            confessionText.innerText = `${name}さんへ：\n${messages[randomIndex]}`;
+            piDigits.innerText = PI_STR.substring(0, 10 + randomOffset) + "...";
+
+            resultArea.style.display = 'block';
         }
-    }
-
-    function showFeedback(text, color) {
-        feedbackText.innerText = text;
-        feedbackText.style.color = color;
-        feedbackOverlay.classList.remove('animate-pop');
-        void feedbackOverlay.offsetWidth; // Trigger reflow
-        feedbackOverlay.classList.add('animate-pop');
-    }
-
-    function updateStats() {
-        scoreEl.innerText = score.toLocaleString();
-        comboEl.innerText = combo;
-        const level = speed > 5 ? "HARDCORE" : (speed > 3 ? "PRO" : "NORMAL");
-        document.getElementById('level').innerText = level;
-    }
-
-    function updateComment(type) {
-        const success = [
-            "…おお！まさに2.8万いいね級の奇跡！",
-            "…隙間職人の才能がありますね。転職しますか？",
-            "…完璧です。これ、ワイヤレスイヤホンじゃなくて宝石だったら良かったのに。",
-            "…よし！これでお掃除の時に絶望するフラグが立ちました！"
-        ];
-        const fail = [
-            "…あーあ、洗濯機の下に転がっていきましたよ。",
-            "…どんまいです。片耳だけメルカリで買うことになりますね。",
-            "…えっと、今の音、壊れた音じゃないですよね？",
-            "…隙間は甘くない。ホワイトデーのようにはいきません。"
-        ];
-        
-        const list = type === "success" ? success : fail;
-        commentEl.innerText = list[Math.floor(Math.random() * list.list)]; // Bug fixed below
-    }
-
-    // Fix the bug in updateComment
-    function updateCommentFixed(type) {
-        const success = [
-            "…おお！まさに2.8万いいね級の奇跡！",
-            "…隙間職人の才能がありますね。転職しますか？",
-            "…完璧です。これ、ワイヤレスイヤホンじゃなくて宝石だったら良かったのに。",
-            "…よし！これでお掃除の時に絶望するフラグが立ちました！"
-        ];
-        const fail = [
-            "…あーあ、洗濯機の下に転がっていきましたよ。",
-            "…どんまいです。片耳だけメルカリで買うことになりますね。",
-            "…えっと、今の音、壊れた音じゃないですよね？",
-            "…隙間は甘くない。ホワイトデーのようにはいきません。"
-        ];
-        const list = type === "success" ? success : fail;
-        commentEl.innerText = list[Math.floor(Math.random() * list.length)];
-    }
-
-    // Replace the buggy one
-    window.updateComment = updateCommentFixed;
-
-    dropBtn.addEventListener('click', dropEarphone);
-    window.addEventListener('keydown', (e) => {
-        if (e.code === 'Space') {
-            e.preventDefault();
-            dropEarphone();
-        }
-    });
-</script>
-
+    </script>
 </body>
 </html>
