@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WDP-RC | ホワイトデー・花粉指数・為替連動型お返し計算機</title>
+    <title>隙間職人：イヤホン・ホールインワン | Gap Master: Earphone Hole-in-One</title>
     <!-- Google Fonts: Outfit, Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,10 +18,9 @@
     </script>
     <style>
         :root {
-            --bg-color: #f8fafc;
+            --bg-color: #f0f2f5;
             --primary-accent: #ff4d94; /* Pop Pink */
-            --secondary-accent: #60a5fa; /* Blue for Financial */
-            --pollen-accent: #fbbf24; /* Yellow for Pollen */
+            --secondary-accent: #4ade80; /* Success Green */
             --glass-bg: rgba(255, 255, 255, 0.7);
             --border-color: rgba(0, 0, 0, 0.1);
             --text-main: #1e293b;
@@ -40,103 +39,122 @@
             background: var(--bg-color);
             background-image: 
                 radial-gradient(at 0% 0%, rgba(255, 77, 148, 0.05) 0, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(96, 165, 250, 0.05) 0, transparent 50%);
+                radial-gradient(at 100% 100%, rgba(74, 222, 128, 0.05) 0, transparent 50%);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 2rem;
-            line-height: 1.6;
+            padding: 1.5rem;
+            overflow: hidden;
         }
 
         .glass-card {
             background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--border-color);
             border-radius: 2rem;
             padding: 2.5rem;
             width: 100%;
-            max-width: 480px;
+            max-width: 440px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            position: relative;
+            z-index: 10;
         }
 
         h1 {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.75rem;
+            font-size: 1.5rem;
             font-weight: 600;
-            margin-bottom: 0.5rem;
-            text-align: center;
-            background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+            margin-bottom: 0.25rem;
+            background: linear-gradient(135deg, var(--primary-accent), #8b5cf6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .subtitle {
-            font-size: 0.875rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
-            text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
         }
 
-        .input-group {
+        /* Game Area */
+        #game-container {
+            width: 100%;
+            height: 320px;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--border-color);
+            border-radius: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            cursor: crosshair;
             margin-bottom: 1.5rem;
         }
 
-        label {
-            display: block;
+        .gap-target {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 40px;
+            background: #334155;
+            border-radius: 0.5rem;
+        }
+
+        .gap-inner {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px; /* Current Gap Width */
+            height: 100%;
+            background: #0f172a;
+            border-radius: 0.25rem;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .earphone {
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .earphone::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 50%;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 1rem;
             font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.5rem;
             color: var(--text-muted);
         }
 
-        input, select {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border-radius: 0.75rem;
-            border: 1px solid var(--border-color);
-            background: rgba(255, 255, 255, 0.5);
+        .stat-val {
+            color: var(--text-main);
             font-size: 1rem;
-            outline: none;
-        }
-
-        input:focus {
-            border-color: var(--primary-accent);
-            box-shadow: 0 0 0 3px rgba(255, 77, 148, 0.1);
-        }
-
-        .slider-container {
-            margin-bottom: 1.5rem;
-        }
-
-        .slider-label {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-
-        input[type="range"] {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 6px;
-            background: #e2e8f0;
-            border-radius: 5px;
-            outline: none;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 18px;
-            height: 18px;
-            background: var(--primary-accent);
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(255, 77, 148, 0.3);
+            display: block;
         }
 
         button {
@@ -149,169 +167,263 @@
             font-weight: 700;
             font-size: 1rem;
             cursor: pointer;
-            margin-top: 1rem;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
         button:hover {
-            transform: scale(1.02);
+            transform: translateY(-2px);
             background: #000;
         }
 
         button:active {
-            transform: scale(0.98);
+            transform: translateY(0);
         }
 
-        .result-panel {
-            margin-top: 2rem;
-            padding: 1.5rem;
-            border-radius: 1.5rem;
-            background: rgba(255, 255, 255, 0.8);
-            border: 1px dashed var(--border-color);
-            display: none;
+        .feedback-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            opacity: 0;
+            z-index: 20;
         }
 
-        .result-panel.active {
-            display: block;
-            animation: slideUp 0.5s ease-out;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .result-title {
-            font-size: 0.875rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: var(--text-muted);
-        }
-
-        .result-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary-accent);
+        .feedback-text {
             font-family: 'Outfit', sans-serif;
-        }
-
-        .result-advice {
-            font-size: 0.875rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border-color);
-            font-style: italic;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--primary-accent);
+            text-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
 
         .human-comment {
             margin-top: 1.5rem;
             font-size: 0.75rem;
             color: var(--text-muted);
-            text-align: center;
+            min-height: 3em;
         }
 
-        /* Responsive */
-        @media (max-width: 480px) {
-            .glass-card {
-                padding: 1.5rem;
-            }
+        .animate-pop {
+            animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes pop {
+            0% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1.1); }
+            100% { opacity: 0; transform: scale(1); }
+        }
+
+        /* Mouse Follower */
+        #aimer {
+            position: absolute;
+            top: 30px;
+            width: 100%;
+            height: 2px;
+            background: dashed var(--primary-accent);
+            opacity: 0.3;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
 
 <div class="glass-card">
-    <h1>WDP-RC</h1>
-    <p class="subtitle">ホワイトデー・指数連動型お返し計算機 v2026.3.14</p>
+    <h1>隙間職人</h1>
+    <p class="subtitle">イヤホン・ホールインワン Simulator v1.0</p>
 
-    <div class="input-group">
-        <label for="gift-value">バレンタインにもらった推定額 (JPY)</label>
-        <input type="number" id="gift-value" placeholder="例: 3000" value="3000">
-    </div>
-
-    <div class="slider-container">
-        <div class="slider-label">
-            <label>今日の都内花粉飛散レベル</label>
-            <span id="pollen-val" style="font-weight: 700; color: var(--pollen-accent);">非常に多い</span>
+    <div class="stats">
+        <div>
+            SCORE
+            <span id="score" class="stat-val">0</span>
         </div>
-        <input type="range" id="pollen-range" min="0" max="100" value="95">
+        <div>
+            COMBO
+            <span id="combo" class="stat-val">0</span>
+        </div>
+        <div>
+            DIFFICULTY
+            <span id="level" class="stat-val">NORMAL</span>
+        </div>
     </div>
 
-    <div class="input-group">
-        <label for="market-sentiment">現在の為替・市場マインド</label>
-        <select id="market-sentiment">
-            <option value="1.2">強気 (Bullish / 円安傾向)</option>
-            <option value="1.0" selected>中立 (Neutral / 4中銀待ち)</option>
-            <option value="0.8">弱気 (Bearish / 警戒モード)</option>
-        </select>
+    <div id="game-container">
+        <div id="aimer"></div>
+        <div class="gap-target" id="target">
+            <div class="gap-inner" id="gap"></div>
+        </div>
+        <div id="earphone-pool"></div>
+        <div class="feedback-overlay" id="feedback-overlay">
+            <span class="feedback-text" id="feedback-text">PERFECT!</span>
+        </div>
     </div>
 
-    <button onclick="calculateReturn()">適正お返し額を算出</button>
-
-    <div id="result" class="result-panel">
-        <p class="result-title">推奨リターン・バリュー</p>
-        <p id="return-value" class="result-value">¥0</p>
-        <div id="advice" class="result-advice"></div>
-    </div>
+    <button id="drop-btn">RELEASE (SPACE)</button>
 
     <div class="human-comment" id="human-comment">
-        …えっと、現在の花粉状況を考えると、味覚より「誠意」のインフレが起きていますね。
+        …えっと、SKE48の河村優愛さんが奇跡のホールインワン（隙間にイヤホン落下）を達成したそうですよ。2.8万いいね狙いましょう。
     </div>
 </div>
 
 <script>
-    const pollenLevels = [
-        { threshold: 0, text: "なし", advice: "味覚が鋭いので、高級スイーツ一択です。" },
-        { threshold: 20, text: "少ない", advice: "まだ余裕があります。定番のクッキーで攻めましょう。" },
-        { threshold: 40, text: "やや多い", advice: "喉の痛み（ニンバス株）に配慮して、マヌカハニーも添えて。" },
-        { threshold: 70, text: "多い", advice: "味より見た目。インスタ映え重視でいきましょう。" },
-        { threshold: 90, text: "非常に多い", advice: "鼻詰まりで味がしません。高級ティッシュとお菓子の抱き合わせが最適解です。" }
-    ];
+    const container = document.getElementById('game-container');
+    const gap = document.getElementById('gap');
+    const target = document.getElementById('target');
+    const scoreEl = document.getElementById('score');
+    const comboEl = document.getElementById('combo');
+    const feedbackOverlay = document.getElementById('feedback-overlay');
+    const feedbackText = document.getElementById('feedback-text');
+    const commentEl = document.getElementById('human-comment');
+    const dropBtn = document.getElementById('drop-btn');
 
-    function calculateReturn() {
-        const giftValue = parseFloat(document.getElementById('gift-value').value) || 0;
-        const pollenLevel = parseInt(document.getElementById('pollen-range').value);
-        const marketMultiplier = parseFloat(document.getElementById('market-sentiment').value);
+    let score = 0;
+    let combo = 0;
+    let isDropping = false;
+    let gapPos = 50; // Percent
+    let gapWidth = 30; // px
+    let direction = 1;
+    let speed = 1.5;
 
-        // 基本の3倍返しルール
-        let baseReturn = giftValue * 3;
-
-        // 花粉による調整 (花粉が多いと「お見舞い」要素が加算されるが、味覚減退により単価は抑えられる)
-        // 花粉指数 0-100
-        const pollenAdjustment = 1 + (pollenLevel / 200); // 最大1.5倍の「誠意」が必要
-
-        const finalValue = Math.round(baseReturn * marketMultiplier * pollenAdjustment);
-
-        document.getElementById('return-value').innerText = `¥${finalValue.toLocaleString()}`;
-        
-        let selectedLevel = pollenLevels[0];
-        for (let level of pollenLevels) {
-            if (pollenLevel >= level.threshold) {
-                selectedLevel = level;
-            }
+    // Move Gap
+    function updateGap() {
+        if (!isDropping) {
+            gapPos += speed * direction;
+            if (gapPos > 85 || gapPos < 15) direction *= -1;
+            target.style.left = gapPos + '%';
         }
+        requestAnimationFrame(updateGap);
+    }
+    updateGap();
 
-        document.getElementById('advice').innerText = `【AI判定】${selectedLevel.advice} (現在のマーケット係数: ${marketMultiplier})`;
-        document.getElementById('result').classList.add('active');
+    function dropEarphone() {
+        if (isDropping) return;
+        isDropping = true;
 
-        const comments = [
-            "…計算中。あ、今のドル円の動き、少しお返しに影響してますね。",
-            "…よし。これが『震災15年目の絆』と『ホワイトデー』の均衡点です。",
-            "…おっと。花粉が多すぎて、私のセンサーも少し霞んでいます。",
-            "…結論が出ました。正直、ティッシュの方が喜ばれるかもしれません。"
-        ];
-        document.getElementById('human-comment').innerText = comments[Math.floor(Math.random() * comments.length)];
+        const earphone = document.createElement('div');
+        earphone.className = 'earphone';
+        earphone.style.left = '50%';
+        earphone.style.top = '40px';
+        container.appendChild(earphone);
+
+        let top = 40;
+        const fallSpeed = 8;
+        
+        const fall = setInterval(() => {
+            top += fallSpeed;
+            earphone.style.top = top + 'px';
+
+            // Collision check
+            if (top >= 260) {
+                clearInterval(fall);
+                checkResult(gapPos);
+                setTimeout(() => {
+                    earphone.remove();
+                    isDropping = false;
+                }, 1000);
+            }
+        }, 16);
     }
 
-    document.getElementById('pollen-range').addEventListener('input', (e) => {
-        const val = e.target.value;
-        let text = "なし";
-        for (let level of pollenLevels) {
-            if (val >= level.threshold) {
-                text = level.text;
-            }
+    function checkResult(currentGapPos) {
+        // Earphone is at center (50%)
+        // Gap is at currentGapPos%
+        // Container width is 100% (around 400px)
+        const containerWidth = container.offsetWidth;
+        const gapCenterPx = (currentGapPos / 100) * containerWidth;
+        const earphoneCenterPx = containerWidth / 2;
+        
+        const diff = Math.abs(gapCenterPx - earphoneCenterPx);
+        const hitZone = gapWidth / 2;
+
+        if (diff < hitZone) {
+            // Hit!
+            score += 100 * (combo + 1);
+            combo++;
+            showFeedback("HOLE IN ONE!", "#4ade80");
+            updateStats();
+            updateComment("success");
+            
+            // Level up
+            speed += 0.2;
+            gapWidth = Math.max(15, gapWidth - 2);
+            gap.style.width = gapWidth + 'px';
+        } else {
+            // Miss
+            combo = 0;
+            showFeedback("MISS...", "#ff4d94");
+            updateStats();
+            updateComment("fail");
+            
+            // Reset difficulty slightly
+            gapWidth = Math.min(30, gapWidth + 5);
+            gap.style.width = gapWidth + 'px';
         }
-        document.getElementById('pollen-val').innerText = text;
+    }
+
+    function showFeedback(text, color) {
+        feedbackText.innerText = text;
+        feedbackText.style.color = color;
+        feedbackOverlay.classList.remove('animate-pop');
+        void feedbackOverlay.offsetWidth; // Trigger reflow
+        feedbackOverlay.classList.add('animate-pop');
+    }
+
+    function updateStats() {
+        scoreEl.innerText = score.toLocaleString();
+        comboEl.innerText = combo;
+        const level = speed > 5 ? "HARDCORE" : (speed > 3 ? "PRO" : "NORMAL");
+        document.getElementById('level').innerText = level;
+    }
+
+    function updateComment(type) {
+        const success = [
+            "…おお！まさに2.8万いいね級の奇跡！",
+            "…隙間職人の才能がありますね。転職しますか？",
+            "…完璧です。これ、ワイヤレスイヤホンじゃなくて宝石だったら良かったのに。",
+            "…よし！これでお掃除の時に絶望するフラグが立ちました！"
+        ];
+        const fail = [
+            "…あーあ、洗濯機の下に転がっていきましたよ。",
+            "…どんまいです。片耳だけメルカリで買うことになりますね。",
+            "…えっと、今の音、壊れた音じゃないですよね？",
+            "…隙間は甘くない。ホワイトデーのようにはいきません。"
+        ];
+        
+        const list = type === "success" ? success : fail;
+        commentEl.innerText = list[Math.floor(Math.random() * list.list)]; // Bug fixed below
+    }
+
+    // Fix the bug in updateComment
+    function updateCommentFixed(type) {
+        const success = [
+            "…おお！まさに2.8万いいね級の奇跡！",
+            "…隙間職人の才能がありますね。転職しますか？",
+            "…完璧です。これ、ワイヤレスイヤホンじゃなくて宝石だったら良かったのに。",
+            "…よし！これでお掃除の時に絶望するフラグが立ちました！"
+        ];
+        const fail = [
+            "…あーあ、洗濯機の下に転がっていきましたよ。",
+            "…どんまいです。片耳だけメルカリで買うことになりますね。",
+            "…えっと、今の音、壊れた音じゃないですよね？",
+            "…隙間は甘くない。ホワイトデーのようにはいきません。"
+        ];
+        const list = type === "success" ? success : fail;
+        commentEl.innerText = list[Math.floor(Math.random() * list.length)];
+    }
+
+    // Replace the buggy one
+    window.updateComment = updateCommentFixed;
+
+    dropBtn.addEventListener('click', dropEarphone);
+    window.addEventListener('keydown', (e) => {
+        if (e.code === 'Space') {
+            e.preventDefault();
+            dropEarphone();
+        }
     });
 </script>
 
